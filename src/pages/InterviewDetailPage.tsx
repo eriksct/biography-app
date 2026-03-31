@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useProject } from '@/lib/ProjectContext';
 import { AppLayout } from '@/components/AppLayout';
-import { ArrowLeft, Play, Pause, CheckCircle, Plus, Tag } from 'lucide-react';
+import { ArrowLeft, Play, Pause, CheckCircle, Plus, Tag, AlertCircle, Circle } from 'lucide-react';
 import { useState } from 'react';
 
 export default function InterviewDetailPage() {

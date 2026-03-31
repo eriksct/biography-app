@@ -32,16 +32,9 @@ export default function ManuscritPage() {
 
 
   const handleInsertPassage = (passage: typeof filteredPassages[0]) => {
-    if (!activeChapterId) return;
-    const block: ManuscriptBlock = {
-      id: `block-${Date.now()}`,
-      type: 'passage',
-      content: passage.text,
-      passageId: passage.id,
-      interviewId: passage.interviewId,
-      interviewNumber: passage.interviewNumber,
-    };
-    addBlockToChapter(activeChapterId, block);
+    if (!activeChapterId || !activeChapter) return;
+    const separator = activeChapter.content ? '\n\n' : '';
+    updateChapter(activeChapterId, { content: activeChapter.content + separator + passage.text });
     markPassageUsed(passage.interviewId, passage.id, activeChapterId);
     setShowPassagePanel(false);
   };

@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { useProject } from '@/lib/ProjectContext';
 import { AppLayout } from '@/components/AppLayout';
 import { ManuscriptBlock, PassageStatus } from '@/lib/types';
-import { Plus, FileText, Download, X, BookOpen, CheckCircle, AlertCircle, Circle } from 'lucide-react';
+import { Plus, FileText, Download, X, BookOpen, CheckCircle, AlertCircle, Circle, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 
 export default function ManuscritPage() {
   const { project, addChapter, updateBlock, addBlockToChapter, removeBlock, markPassageUsed, setPassageStatus } = useProject();
   const [activeChapterId, setActiveChapterId] = useState<string>(project.chapters[0]?.id || '');
   const [showPassagePanel, setShowPassagePanel] = useState(false);
+  const [chapterSidebarOpen, setChapterSidebarOpen] = useState(true);
   const [passageFilterThemes, setPassageFilterThemes] = useState<string[]>([]);
   const [passageFilterInterviews, setPassageFilterInterviews] = useState<string[]>([]);
   const [passageFilterStatuses, setPassageFilterStatuses] = useState<PassageStatus[]>([]);
@@ -64,9 +65,13 @@ export default function ManuscritPage() {
     <AppLayout>
       <div className="h-screen flex overflow-hidden">
         {/* Chapter sidebar */}
+        {chapterSidebarOpen ? (
         <div className="w-64 border-r border-border bg-card flex flex-col flex-shrink-0">
-          <div className="p-4 border-b border-border">
+          <div className="p-4 border-b border-border flex items-center justify-between">
             <h2 className="font-serif text-lg font-semibold">Chapitres</h2>
+            <button onClick={() => setChapterSidebarOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors">
+              <PanelLeftClose className="w-4 h-4" />
+            </button>
           </div>
           <div className="flex-1 overflow-y-auto p-3 space-y-1">
             {project.chapters.map(chapter => (
@@ -115,6 +120,13 @@ export default function ManuscritPage() {
             )}
           </div>
         </div>
+        ) : (
+          <div className="w-10 border-r border-border bg-card flex flex-col items-center py-3 flex-shrink-0">
+            <button onClick={() => setChapterSidebarOpen(true)} className="text-muted-foreground hover:text-foreground transition-colors">
+              <PanelLeftOpen className="w-4 h-4" />
+            </button>
+          </div>
+        )}
 
         {/* Main editor */}
         <div className="flex-1 flex flex-col overflow-hidden">

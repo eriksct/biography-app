@@ -30,15 +30,6 @@ export default function ManuscritPage() {
     return true;
   });
 
-  const handleAddTextBlock = () => {
-    if (!activeChapterId) return;
-    const block: ManuscriptBlock = {
-      id: `block-${Date.now()}`,
-      type: 'text',
-      content: '',
-    };
-    addBlockToChapter(activeChapterId, block);
-  };
 
   const handleInsertPassage = (passage: typeof filteredPassages[0]) => {
     if (!activeChapterId) return;

@@ -180,11 +180,13 @@ export default function ManuscritPage() {
                         )}
                       </div>
                     ))}
-                    {activeChapter.blocks.length === 0 && (
-                      <p className="text-center text-muted-foreground font-sans py-20">
-                        Ce chapitre est vide. Ajoutez du texte ou insérez un passage d'entretien.
-                      </p>
-                    )}
+                    <button
+                      onClick={handleAddTextBlock}
+                      className="w-full flex items-center justify-center gap-2 py-4 text-sm font-sans text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-md transition-colors"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Ajouter du texte
+                    </button>
                   </div>
                 </>
               ) : (

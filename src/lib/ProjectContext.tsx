@@ -123,6 +123,13 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     updateInterview(interviewId, { notes });
   }, [updateInterview]);
 
+  const addTheme = useCallback((theme: string) => {
+    setProject(prev => {
+      if (prev.allThemes.includes(theme)) return prev;
+      return { ...prev, allThemes: [...prev.allThemes, theme] };
+    });
+  }, []);
+
   return (
     <ProjectContext.Provider value={{
       project,

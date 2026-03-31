@@ -6,7 +6,6 @@ import { Plus, FileText, Download, X, BookOpen, CheckCircle, AlertCircle, Circle
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 export default function ManuscritPage() {
-  const navigate = useNavigate();
   const { project, addChapter, updateChapter, markPassageUsed, setPassageStatus } = useProject();
   const [activeChapterId, setActiveChapterId] = useState<string>(project.chapters[0]?.id || '');
   const [showPassagePanel, setShowPassagePanel] = useState(false);
@@ -16,6 +15,9 @@ export default function ManuscritPage() {
   const [passageFilterStatuses, setPassageFilterStatuses] = useState<PassageStatus[]>([]);
   const [newChapterTitle, setNewChapterTitle] = useState('');
   const [showNewChapter, setShowNewChapter] = useState(false);
+  const [dialogInterviewId, setDialogInterviewId] = useState<string | null>(null);
+  const [dialogPassageId, setDialogPassageId] = useState<string | null>(null);
+  const highlightRef = useRef<HTMLDivElement>(null);
 
   const activeChapter = project.chapters.find(c => c.id === activeChapterId);
 

@@ -322,14 +322,6 @@ export default function ManuscritPage() {
                           <option value="details-manquants">Détails manquants</option>
                           <option value="integre">Intégré</option>
                         </select>
-                        {passage.status !== 'integre' && (
-                          <button
-                            onClick={() => handleInsertPassage(passage)}
-                            className="px-3 py-1.5 text-xs font-sans bg-primary text-primary-foreground rounded-md hover:opacity-90 transition-opacity whitespace-nowrap"
-                          >
-                            Insérer
-                          </button>
-                        )}
                       </div>
                     </div>
                   );

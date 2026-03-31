@@ -12,6 +12,7 @@ interface ProjectContextType {
   updateBlock: (chapterId: string, blockId: string, updates: Partial<ManuscriptBlock>) => void;
   removeBlock: (chapterId: string, blockId: string) => void;
   markPassageUsed: (interviewId: string, passageId: string, chapterId: string) => void;
+  setPassageStatus: (interviewId: string, passageId: string, status: import('./types').PassageStatus) => void;
   addPersonToInterview: (interviewId: string, name: string, relation?: string) => void;
   addPlaceDateToInterview: (interviewId: string, label: string) => void;
   updateInterviewNotes: (interviewId: string, notes: string) => void;
@@ -94,7 +95,11 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, []);
 
   const markPassageUsed = useCallback((interviewId: string, passageId: string, chapterId: string) => {
-    updatePassage(interviewId, passageId, { used: true, usedInChapter: chapterId });
+    updatePassage(interviewId, passageId, { status: 'integre', usedInChapter: chapterId });
+  }, [updatePassage]);
+
+  const setPassageStatus = useCallback((interviewId: string, passageId: string, status: import('./types').PassageStatus) => {
+    updatePassage(interviewId, passageId, { status, usedInChapter: status === 'integre' ? undefined : undefined });
   }, [updatePassage]);
 
   const addPersonToInterview = useCallback((interviewId: string, name: string, relation?: string) => {
@@ -141,6 +146,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       updateBlock,
       removeBlock,
       markPassageUsed,
+      setPassageStatus,
       addPersonToInterview,
       addPlaceDateToInterview,
       updateInterviewNotes,

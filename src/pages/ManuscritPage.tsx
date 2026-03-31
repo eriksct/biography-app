@@ -213,6 +213,19 @@ export default function ManuscritPage() {
             {/* Filters */}
             <div className="p-4 border-b border-border space-y-3">
               <div>
+                <label className="text-xs font-sans text-muted-foreground mb-1 block">Par statut</label>
+                <select
+                  value={passageFilterStatus}
+                  onChange={e => setPassageFilterStatus(e.target.value as PassageStatus | 'all')}
+                  className="w-full px-3 py-2 text-sm font-sans bg-background border border-input rounded-md"
+                >
+                  <option value="all">Tous les statuts</option>
+                  <option value="non-integre">Non intégré</option>
+                  <option value="details-manquants">Détails manquants</option>
+                  <option value="integre">Intégré</option>
+                </select>
+              </div>
+              <div>
                 <label className="text-xs font-sans text-muted-foreground mb-1 block">Par thème</label>
                 <select
                   value={passageFilterTheme || ''}
@@ -242,33 +255,59 @@ export default function ManuscritPage() {
 
             {/* Passage list */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {unusedPassages.length === 0 ? (
+              {filteredPassages.length === 0 ? (
                 <p className="text-sm font-sans text-muted-foreground text-center py-8">
                   Aucun passage disponible.
                 </p>
               ) : (
-                unusedPassages.map(passage => (
-                  <button
-                    key={passage.id}
-                    onClick={() => handleInsertPassage(passage)}
-                    className="w-full text-left p-4 rounded-lg border border-border hover:bg-secondary/50 transition-colors"
-                  >
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs font-sans text-muted-foreground">
-                        Entretien n°{passage.interviewNumber}
-                      </span>
-                      <span className="text-xs font-mono text-muted-foreground">{passage.timestamp}</span>
-                    </div>
-                    <p className="font-serif text-sm leading-relaxed line-clamp-4">{passage.text}</p>
-                    <div className="flex gap-1 mt-2">
-                      {passage.themes.map(t => (
-                        <span key={t} className="px-2 py-0.5 rounded-full text-xs font-sans bg-secondary text-secondary-foreground">
-                          {t}
+                filteredPassages.map(passage => {
+                  const StatusIcon = passage.status === 'integre' ? CheckCircle : passage.status === 'details-manquants' ? AlertCircle : Circle;
+                  const statusColor = passage.status === 'integre' ? 'text-accent' : passage.status === 'details-manquants' ? 'text-amber-500' : 'text-muted-foreground';
+                  return (
+                    <div
+                      key={`${passage.interviewId}-${passage.id}`}
+                      className={`p-4 rounded-lg border border-border transition-colors ${passage.status === 'integre' ? 'opacity-50' : ''}`}
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <StatusIcon className={`w-3.5 h-3.5 ${statusColor}`} />
+                        <span className="text-xs font-sans text-muted-foreground">
+                          Entretien n°{passage.interviewNumber}
                         </span>
-                      ))}
+                        <span className="text-xs font-mono text-muted-foreground">{passage.timestamp}</span>
+                      </div>
+                      <p className="font-serif text-sm leading-relaxed line-clamp-4 mb-3">{passage.text}</p>
+                      <div className="flex gap-1 mb-3">
+                        {passage.themes.map(t => (
+                          <span key={t} className="px-2 py-0.5 rounded-full text-xs font-sans bg-secondary text-secondary-foreground">
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <select
+                          value={passage.status}
+                          onChange={e => {
+                            e.stopPropagation();
+                            setPassageStatus(passage.interviewId, passage.id, e.target.value as PassageStatus);
+                          }}
+                          className="flex-1 px-2 py-1.5 text-xs font-sans bg-secondary text-secondary-foreground rounded-md border-none cursor-pointer"
+                        >
+                          <option value="non-integre">Non intégré</option>
+                          <option value="details-manquants">Détails manquants</option>
+                          <option value="integre">Intégré</option>
+                        </select>
+                        {passage.status !== 'integre' && (
+                          <button
+                            onClick={() => handleInsertPassage(passage)}
+                            className="px-3 py-1.5 text-xs font-sans bg-primary text-primary-foreground rounded-md hover:opacity-90 transition-opacity whitespace-nowrap"
+                          >
+                            Insérer
+                          </button>
+                        )}
+                      </div>
                     </div>
-                  </button>
-                ))
+                  );
+                })
               )}
             </div>
           </div>

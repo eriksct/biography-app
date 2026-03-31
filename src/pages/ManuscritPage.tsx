@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useProject } from '@/lib/ProjectContext';
 import { AppLayout } from '@/components/AppLayout';
 import { ManuscriptBlock, PassageStatus } from '@/lib/types';
 import { Plus, FileText, Download, X, BookOpen, CheckCircle, AlertCircle, Circle, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 
 export default function ManuscritPage() {
+  const navigate = useNavigate();
   const { project, addChapter, updateBlock, addBlockToChapter, removeBlock, markPassageUsed, setPassageStatus } = useProject();
   const [activeChapterId, setActiveChapterId] = useState<string>(project.chapters[0]?.id || '');
   const [showPassagePanel, setShowPassagePanel] = useState(false);
@@ -301,7 +303,10 @@ export default function ManuscritPage() {
                         </span>
                         <span className="text-xs font-mono text-muted-foreground">{passage.timestamp}</span>
                       </div>
-                      <p className="font-serif text-sm leading-relaxed line-clamp-4 mb-3">{passage.text}</p>
+                      <p
+                        onClick={() => navigate(`/entretien/${passage.interviewId}`)}
+                        className="font-serif text-sm leading-relaxed line-clamp-4 mb-3 cursor-pointer hover:text-primary transition-colors"
+                      >{passage.text}</p>
                       <div className="flex gap-1 mb-3">
                         {passage.themes.map(t => (
                           <span key={t} className="px-2 py-0.5 rounded-full text-xs font-sans bg-secondary text-secondary-foreground">

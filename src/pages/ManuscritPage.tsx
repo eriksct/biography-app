@@ -152,14 +152,14 @@ export default function ManuscritPage() {
                     {activeChapter.blocks.map(block => (
                       <div key={block.id} className="group relative">
                         {block.type === 'passage' ? (
-                          <div className="bg-passage-inserted-bg border-l-4 border-primary/30 rounded-r-lg p-5 relative">
-                            <p className="font-serif text-content leading-relaxed italic">{block.content}</p>
+                          <div className="relative">
+                            <p className="font-serif text-content leading-relaxed">{block.content}</p>
                             <p className="text-xs font-sans text-muted-foreground mt-3">
                               — Entretien n°{block.interviewNumber}
                             </p>
                             <button
                               onClick={() => removeBlock(activeChapterId, block.id)}
-                              className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1 text-muted-foreground hover:text-destructive transition-all"
+                              className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 p-1 text-muted-foreground hover:text-destructive transition-all"
                             >
                               <X className="w-4 h-4" />
                             </button>

@@ -1,12 +1,11 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
 import { useProject } from '@/lib/ProjectContext';
 import { AppLayout } from '@/components/AppLayout';
 import { PassageStatus } from '@/lib/types';
 import { Plus, FileText, Download, X, BookOpen, CheckCircle, AlertCircle, Circle, PanelLeftOpen } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 export default function ManuscritPage() {
-  const navigate = useNavigate();
   const { project, addChapter, updateChapter, markPassageUsed, setPassageStatus } = useProject();
   const [activeChapterId, setActiveChapterId] = useState<string>(project.chapters[0]?.id || '');
   const [showPassagePanel, setShowPassagePanel] = useState(false);
@@ -16,6 +15,16 @@ export default function ManuscritPage() {
   const [passageFilterStatuses, setPassageFilterStatuses] = useState<PassageStatus[]>([]);
   const [newChapterTitle, setNewChapterTitle] = useState('');
   const [showNewChapter, setShowNewChapter] = useState(false);
+  const [dialogInterviewId, setDialogInterviewId] = useState<string | null>(null);
+  const [dialogPassageId, setDialogPassageId] = useState<string | null>(null);
+  const highlightRef = useRef<HTMLDivElement>(null);
+
+
+  useEffect(() => {
+    if (dialogInterviewId && dialogPassageId && highlightRef.current) {
+      setTimeout(() => highlightRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+    }
+  }, [dialogInterviewId, dialogPassageId]);
 
   const activeChapter = project.chapters.find(c => c.id === activeChapterId);
 
@@ -30,6 +39,11 @@ export default function ManuscritPage() {
     return true;
   });
 
+  useEffect(() => {
+    if (dialogInterviewId && dialogPassageId && highlightRef.current) {
+      setTimeout(() => highlightRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+    }
+  }, [dialogInterviewId, dialogPassageId]);
 
   const handleInsertPassage = (passage: typeof filteredPassages[0]) => {
     if (!activeChapterId || !activeChapter) return;
@@ -254,7 +268,7 @@ export default function ManuscritPage() {
                         <span className="text-xs font-mono text-muted-foreground">{passage.timestamp}</span>
                       </div>
                       <p
-                        onClick={() => navigate(`/entretien/${passage.interviewId}`)}
+                        onClick={() => { setDialogInterviewId(passage.interviewId); setDialogPassageId(passage.id); }}
                         className="font-serif text-sm leading-relaxed line-clamp-4 mb-3 cursor-pointer hover:text-primary transition-colors"
                       >{passage.text}</p>
                       <div className="flex gap-1 mb-3">
@@ -286,6 +300,63 @@ export default function ManuscritPage() {
           </div>
         )}
       </div>
+
+      {/* Interview transcript dialog */}
+      <Dialog open={!!dialogInterviewId} onOpenChange={(open) => { if (!open) { setDialogInterviewId(null); setDialogPassageId(null); } }}>
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-hidden flex flex-col">
+          {(() => {
+            const interview = project.interviews.find(i => i.id === dialogInterviewId);
+            if (!interview) return null;
+            return (
+              <>
+                <DialogHeader>
+                  <DialogTitle className="font-serif text-xl">
+                    Entretien n°{interview.number}
+                  </DialogTitle>
+                  <p className="text-sm font-sans text-muted-foreground">
+                    {new Date(interview.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })} · {interview.duration}
+                  </p>
+                </DialogHeader>
+                <div className="flex-1 overflow-y-auto space-y-6 py-4">
+                  {interview.passages.map(passage => {
+                    const isHighlighted = passage.id === dialogPassageId;
+                    const StatusIcon = passage.status === 'integre' ? CheckCircle : passage.status === 'details-manquants' ? AlertCircle : Circle;
+                    const statusColor = passage.status === 'integre' ? 'text-accent' : passage.status === 'details-manquants' ? 'text-amber-500' : 'text-muted-foreground';
+                    const statusLabel = passage.status === 'integre' ? 'Intégré' : passage.status === 'details-manquants' ? 'Détails manquants' : '';
+                    return (
+                      <div
+                        key={passage.id}
+                        ref={isHighlighted ? highlightRef : undefined}
+                        className={`rounded-lg p-5 transition-all ${
+                          isHighlighted
+                            ? 'bg-primary/10 ring-2 ring-primary/30'
+                            : passage.status === 'integre' ? 'opacity-50' : ''
+                        }`}
+                      >
+                        <div className="flex items-center gap-3 mb-3">
+                          <span className="text-xs font-sans text-muted-foreground font-mono">{passage.timestamp}</span>
+                          {passage.themes.map(t => (
+                            <span key={t} className="px-2 py-0.5 rounded-full text-xs font-sans font-medium bg-secondary text-secondary-foreground">
+                              {t}
+                            </span>
+                          ))}
+                          {passage.status !== 'non-integre' && (
+                            <>
+                              <StatusIcon className={`w-4 h-4 ${statusColor}`} />
+                              <span className={`text-xs font-sans ${statusColor}`}>{statusLabel}</span>
+                            </>
+                          )}
+                        </div>
+                        <p className="font-serif text-content leading-relaxed text-foreground">{passage.text}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            );
+          })()}
+        </DialogContent>
+      </Dialog>
     </AppLayout>
   );
 }

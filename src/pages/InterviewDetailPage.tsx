@@ -109,11 +109,15 @@ export default function InterviewDetailPage() {
 
             {/* Passages */}
             <div className="flex-1 overflow-y-auto px-8 py-6 space-y-6">
-              {filteredPassages.map((passage) => (
+              {filteredPassages.map((passage) => {
+                const statusLabel = passage.status === 'integre' ? 'Intégré' : passage.status === 'details-manquants' ? 'Détails manquants' : 'Non intégré';
+                const StatusIcon = passage.status === 'integre' ? CheckCircle : passage.status === 'details-manquants' ? AlertCircle : Circle;
+                const statusColor = passage.status === 'integre' ? 'text-accent' : passage.status === 'details-manquants' ? 'text-amber-500' : 'text-muted-foreground';
+                return (
                 <div
                   key={passage.id}
                   className={`group relative rounded-lg p-5 transition-all ${
-                    passage.used
+                    passage.status === 'integre'
                       ? 'opacity-50'
                       : 'hover:bg-card'
                   }`}
@@ -125,9 +129,8 @@ export default function InterviewDetailPage() {
                         {t}
                       </span>
                     ))}
-                    {passage.used && (
-                      <CheckCircle className="w-4 h-4 text-accent" />
-                    )}
+                    <StatusIcon className={`w-4 h-4 ${statusColor}`} />
+                    <span className={`text-xs font-sans ${statusColor}`}>{statusLabel}</span>
                   </div>
                   <p className="font-serif text-content leading-relaxed text-foreground">{passage.text}</p>
 
@@ -155,18 +158,20 @@ export default function InterviewDetailPage() {
                         </div>
                       )}
                     </div>
-                    {!passage.used && (
-                      <button
-                        onClick={() => updatePassage(interview.id, passage.id, { used: true })}
-                        className="flex items-center gap-1 px-3 py-1.5 text-xs font-sans bg-secondary hover:bg-border text-secondary-foreground rounded-md transition-colors"
-                      >
-                        <CheckCircle className="w-3 h-3" />
-                        Utilisé
-                      </button>
-                    )}
+                    {/* Status selector */}
+                    <select
+                      value={passage.status}
+                      onChange={e => setPassageStatus(interview.id, passage.id, e.target.value as import('@/lib/types').PassageStatus)}
+                      className="px-2 py-1.5 text-xs font-sans bg-secondary text-secondary-foreground rounded-md border-none cursor-pointer hover:bg-border transition-colors"
+                    >
+                      <option value="non-integre">Non intégré</option>
+                      <option value="details-manquants">Détails manquants</option>
+                      <option value="integre">Intégré</option>
+                    </select>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 

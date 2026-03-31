@@ -8,9 +8,9 @@ export default function ManuscritPage() {
   const { project, addChapter, updateBlock, addBlockToChapter, removeBlock, markPassageUsed, setPassageStatus } = useProject();
   const [activeChapterId, setActiveChapterId] = useState<string>(project.chapters[0]?.id || '');
   const [showPassagePanel, setShowPassagePanel] = useState(false);
-  const [passageFilterTheme, setPassageFilterTheme] = useState<string | null>(null);
-  const [passageFilterInterview, setPassageFilterInterview] = useState<string | null>(null);
-  const [passageFilterStatus, setPassageFilterStatus] = useState<PassageStatus | 'all'>('all');
+  const [passageFilterThemes, setPassageFilterThemes] = useState<string[]>([]);
+  const [passageFilterInterviews, setPassageFilterInterviews] = useState<string[]>([]);
+  const [passageFilterStatuses, setPassageFilterStatuses] = useState<PassageStatus[]>([]);
   const [newChapterTitle, setNewChapterTitle] = useState('');
   const [showNewChapter, setShowNewChapter] = useState(false);
 

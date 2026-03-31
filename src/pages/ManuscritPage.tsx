@@ -7,7 +7,7 @@ import { Plus, FileText, Download, X, BookOpen, CheckCircle, AlertCircle, Circle
 
 export default function ManuscritPage() {
   const navigate = useNavigate();
-  const { project, addChapter, updateChapter, addBlockToChapter, removeBlock, markPassageUsed, setPassageStatus } = useProject();
+  const { project, addChapter, updateChapter, markPassageUsed, setPassageStatus } = useProject();
   const [activeChapterId, setActiveChapterId] = useState<string>(project.chapters[0]?.id || '');
   const [showPassagePanel, setShowPassagePanel] = useState(false);
   const [chapterSidebarOpen, setChapterSidebarOpen] = useState(true);

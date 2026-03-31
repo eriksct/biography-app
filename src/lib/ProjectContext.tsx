@@ -144,6 +144,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       addPersonToInterview,
       addPlaceDateToInterview,
       updateInterviewNotes,
+      addTheme,
     }}>
       {children}
     </ProjectContext.Provider>

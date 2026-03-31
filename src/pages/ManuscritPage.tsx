@@ -217,7 +217,7 @@ export default function ManuscritPage() {
                 onChange={e => setPassageFilterStatus(e.target.value as PassageStatus | 'all')}
                 className="px-2 py-1 text-xs font-sans bg-secondary text-secondary-foreground rounded-md border-none cursor-pointer"
               >
-                <option value="all">Statut ▾</option>
+                <option value="all">Statut</option>
                 <option value="non-integre">Non intégré</option>
                 <option value="details-manquants">Détails manquants</option>
                 <option value="integre">Intégré</option>

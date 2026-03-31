@@ -21,9 +21,9 @@ export default function ManuscritPage() {
     interview.passages
       .map(p => ({ ...p, interviewId: interview.id, interviewNumber: interview.number }))
   ).filter(p => {
-    if (passageFilterStatus !== 'all' && p.status !== passageFilterStatus) return false;
-    if (passageFilterTheme && !p.themes.includes(passageFilterTheme)) return false;
-    if (passageFilterInterview && p.interviewId !== passageFilterInterview) return false;
+    if (passageFilterStatuses.length > 0 && !passageFilterStatuses.includes(p.status)) return false;
+    if (passageFilterThemes.length > 0 && !p.themes.some(t => passageFilterThemes.includes(t))) return false;
+    if (passageFilterInterviews.length > 0 && !passageFilterInterviews.includes(p.interviewId)) return false;
     return true;
   });
 

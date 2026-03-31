@@ -38,6 +38,7 @@ export interface Interview {
 export interface Chapter {
   id: string;
   title: string;
+  content: string;
   blocks: ManuscriptBlock[];
 }
 

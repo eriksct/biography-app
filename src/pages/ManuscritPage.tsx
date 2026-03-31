@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProject } from '@/lib/ProjectContext';
 import { AppLayout } from '@/components/AppLayout';
-import { ManuscriptBlock, PassageStatus } from '@/lib/types';
-import { Plus, FileText, Download, X, BookOpen, CheckCircle, AlertCircle, Circle, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { PassageStatus } from '@/lib/types';
+import { Plus, FileText, Download, X, BookOpen, CheckCircle, AlertCircle, Circle, PanelLeftOpen } from 'lucide-react';
 
 export default function ManuscritPage() {
   const navigate = useNavigate();
-  const { project, addChapter, updateBlock, addBlockToChapter, removeBlock, markPassageUsed, setPassageStatus } = useProject();
+  const { project, addChapter, updateChapter, markPassageUsed, setPassageStatus } = useProject();
   const [activeChapterId, setActiveChapterId] = useState<string>(project.chapters[0]?.id || '');
   const [showPassagePanel, setShowPassagePanel] = useState(false);
   const [chapterSidebarOpen, setChapterSidebarOpen] = useState(true);
@@ -30,27 +30,11 @@ export default function ManuscritPage() {
     return true;
   });
 
-  const handleAddTextBlock = () => {
-    if (!activeChapterId) return;
-    const block: ManuscriptBlock = {
-      id: `block-${Date.now()}`,
-      type: 'text',
-      content: '',
-    };
-    addBlockToChapter(activeChapterId, block);
-  };
 
   const handleInsertPassage = (passage: typeof filteredPassages[0]) => {
-    if (!activeChapterId) return;
-    const block: ManuscriptBlock = {
-      id: `block-${Date.now()}`,
-      type: 'passage',
-      content: passage.text,
-      passageId: passage.id,
-      interviewId: passage.interviewId,
-      interviewNumber: passage.interviewNumber,
-    };
-    addBlockToChapter(activeChapterId, block);
+    if (!activeChapterId || !activeChapter) return;
+    const separator = activeChapter.content ? '\n\n' : '';
+    updateChapter(activeChapterId, { content: activeChapter.content + separator + passage.text });
     markPassageUsed(passage.interviewId, passage.id, activeChapterId);
     setShowPassagePanel(false);
   };
@@ -150,46 +134,12 @@ export default function ManuscritPage() {
               {activeChapter ? (
                 <>
                   <h1 className="text-3xl font-serif font-semibold mb-10">{activeChapter.title}</h1>
-                  <div className="space-y-6">
-                    {activeChapter.blocks.map(block => (
-                      <div key={block.id} className="group relative">
-                        {block.type === 'passage' ? (
-                          <div className="relative">
-                            <p className="font-serif text-content leading-relaxed">{block.content}</p>
-                            <button
-                              onClick={() => removeBlock(activeChapterId, block.id)}
-                              className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 p-1 text-muted-foreground hover:text-destructive transition-all"
-                            >
-                              <X className="w-4 h-4" />
-                            </button>
-                          </div>
-                        ) : (
-                          <div className="relative">
-                            <textarea
-                              value={block.content}
-                              onChange={e => updateBlock(activeChapterId, block.id, { content: e.target.value })}
-                              className="w-full font-serif text-content leading-relaxed bg-transparent resize-none focus:outline-none min-h-[80px]"
-                              placeholder="Écrivez ici…"
-                              rows={Math.max(3, block.content.split('\n').length + 1)}
-                            />
-                            <button
-                              onClick={() => removeBlock(activeChapterId, block.id)}
-                              className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 p-1 text-muted-foreground hover:text-destructive transition-all"
-                            >
-                              <X className="w-4 h-4" />
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                    <button
-                      onClick={handleAddTextBlock}
-                      className="w-full flex items-center justify-center gap-2 py-4 text-sm font-sans text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-md transition-colors"
-                    >
-                      <Plus className="w-4 h-4" />
-                      Ajouter du texte
-                    </button>
-                  </div>
+                  <textarea
+                    value={activeChapter.content}
+                    onChange={e => updateChapter(activeChapterId, { content: e.target.value })}
+                    className="w-full font-serif text-content leading-relaxed bg-transparent resize-none focus:outline-none min-h-[calc(100vh-250px)]"
+                    placeholder="Écrivez ici…"
+                  />
                 </>
               ) : (
                 <div className="flex flex-col items-center justify-center py-20 text-center">

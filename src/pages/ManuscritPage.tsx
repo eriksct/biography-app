@@ -154,9 +154,6 @@ export default function ManuscritPage() {
                         {block.type === 'passage' ? (
                           <div className="relative">
                             <p className="font-serif text-content leading-relaxed">{block.content}</p>
-                            <p className="text-xs font-sans text-muted-foreground mt-3">
-                              — Entretien n°{block.interviewNumber}
-                            </p>
                             <button
                               onClick={() => removeBlock(activeChapterId, block.id)}
                               className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 p-1 text-muted-foreground hover:text-destructive transition-all"

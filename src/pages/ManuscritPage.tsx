@@ -8,9 +8,9 @@ export default function ManuscritPage() {
   const { project, addChapter, updateBlock, addBlockToChapter, removeBlock, markPassageUsed, setPassageStatus } = useProject();
   const [activeChapterId, setActiveChapterId] = useState<string>(project.chapters[0]?.id || '');
   const [showPassagePanel, setShowPassagePanel] = useState(false);
-  const [passageFilterTheme, setPassageFilterTheme] = useState<string | null>(null);
-  const [passageFilterInterview, setPassageFilterInterview] = useState<string | null>(null);
-  const [passageFilterStatus, setPassageFilterStatus] = useState<PassageStatus | 'all'>('all');
+  const [passageFilterThemes, setPassageFilterThemes] = useState<string[]>([]);
+  const [passageFilterInterviews, setPassageFilterInterviews] = useState<string[]>([]);
+  const [passageFilterStatuses, setPassageFilterStatuses] = useState<PassageStatus[]>([]);
   const [newChapterTitle, setNewChapterTitle] = useState('');
   const [showNewChapter, setShowNewChapter] = useState(false);
 
@@ -21,9 +21,9 @@ export default function ManuscritPage() {
     interview.passages
       .map(p => ({ ...p, interviewId: interview.id, interviewNumber: interview.number }))
   ).filter(p => {
-    if (passageFilterStatus !== 'all' && p.status !== passageFilterStatus) return false;
-    if (passageFilterTheme && !p.themes.includes(passageFilterTheme)) return false;
-    if (passageFilterInterview && p.interviewId !== passageFilterInterview) return false;
+    if (passageFilterStatuses.length > 0 && !passageFilterStatuses.includes(p.status)) return false;
+    if (passageFilterThemes.length > 0 && !p.themes.some(t => passageFilterThemes.includes(t))) return false;
+    if (passageFilterInterviews.length > 0 && !passageFilterInterviews.includes(p.interviewId)) return false;
     return true;
   });
 
@@ -211,41 +211,69 @@ export default function ManuscritPage() {
             </div>
 
             {/* Filters */}
-            <div className="px-4 py-3 border-b border-border flex flex-wrap gap-2">
-              <select
-                value={passageFilterStatus}
-                onChange={e => setPassageFilterStatus(e.target.value as PassageStatus | 'all')}
-                className="px-2 py-1 text-xs font-sans bg-secondary text-secondary-foreground rounded-md border-none cursor-pointer"
-              >
-                <option value="all">Statut</option>
-                <option value="non-integre">Non intégré</option>
-                <option value="details-manquants">Détails manquants</option>
-                <option value="integre">Intégré</option>
-              </select>
-              <select
-                value={passageFilterTheme || ''}
-                onChange={e => setPassageFilterTheme(e.target.value || null)}
-                className="px-2 py-1 text-xs font-sans bg-secondary text-secondary-foreground rounded-md border-none cursor-pointer"
-              >
-                <option value="">Thème</option>
-                {project.allThemes.map(t => (
-                  <option key={t} value={t}>{t}</option>
-                ))}
-              </select>
-              <select
-                value={passageFilterInterview || ''}
-                onChange={e => setPassageFilterInterview(e.target.value || null)}
-                className="px-2 py-1 text-xs font-sans bg-secondary text-secondary-foreground rounded-md border-none cursor-pointer"
-              >
-                <option value="">Entretien</option>
-                {project.interviews.map(i => (
-                  <option key={i.id} value={i.id}>N°{i.number}</option>
-                ))}
-              </select>
-              {(passageFilterStatus !== 'all' || passageFilterTheme || passageFilterInterview) && (
+            <div className="px-4 py-3 border-b border-border space-y-2">
+              {/* Statut */}
+              <div>
+                <span className="text-[10px] font-sans text-muted-foreground uppercase tracking-wider">Statut</span>
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {([
+                    { value: 'non-integre' as PassageStatus, label: 'Non intégré' },
+                    { value: 'details-manquants' as PassageStatus, label: 'Détails manquants' },
+                    { value: 'integre' as PassageStatus, label: 'Intégré' },
+                  ]).map(s => {
+                    const active = passageFilterStatuses.includes(s.value);
+                    return (
+                      <button
+                        key={s.value}
+                        onClick={() => setPassageFilterStatuses(prev => active ? prev.filter(v => v !== s.value) : [...prev, s.value])}
+                        className={`px-2 py-0.5 text-xs font-sans rounded-full transition-colors ${active ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground hover:bg-border'}`}
+                      >
+                        {s.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              {/* Thème */}
+              <div>
+                <span className="text-[10px] font-sans text-muted-foreground uppercase tracking-wider">Thème</span>
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {project.allThemes.map(t => {
+                    const active = passageFilterThemes.includes(t);
+                    return (
+                      <button
+                        key={t}
+                        onClick={() => setPassageFilterThemes(prev => active ? prev.filter(v => v !== t) : [...prev, t])}
+                        className={`px-2 py-0.5 text-xs font-sans rounded-full transition-colors ${active ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground hover:bg-border'}`}
+                      >
+                        {t}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              {/* Entretien */}
+              <div>
+                <span className="text-[10px] font-sans text-muted-foreground uppercase tracking-wider">Entretien</span>
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {project.interviews.map(i => {
+                    const active = passageFilterInterviews.includes(i.id);
+                    return (
+                      <button
+                        key={i.id}
+                        onClick={() => setPassageFilterInterviews(prev => active ? prev.filter(v => v !== i.id) : [...prev, i.id])}
+                        className={`px-2 py-0.5 text-xs font-sans rounded-full transition-colors ${active ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground hover:bg-border'}`}
+                      >
+                        N°{i.number}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              {(passageFilterStatuses.length > 0 || passageFilterThemes.length > 0 || passageFilterInterviews.length > 0) && (
                 <button
-                  onClick={() => { setPassageFilterStatus('all'); setPassageFilterTheme(null); setPassageFilterInterview(null); }}
-                  className="px-2 py-1 text-xs font-sans text-muted-foreground hover:text-foreground transition-colors"
+                  onClick={() => { setPassageFilterStatuses([]); setPassageFilterThemes([]); setPassageFilterInterviews([]); }}
+                  className="px-2 py-0.5 text-xs font-sans text-muted-foreground hover:text-foreground transition-colors"
                 >
                   ✕ Réinitialiser
                 </button>

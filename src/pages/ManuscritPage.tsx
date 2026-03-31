@@ -217,7 +217,7 @@ export default function ManuscritPage() {
                 onChange={e => setPassageFilterStatus(e.target.value as PassageStatus | 'all')}
                 className="px-2 py-1 text-xs font-sans bg-secondary text-secondary-foreground rounded-md border-none cursor-pointer"
               >
-                <option value="all">Statut ▾</option>
+                <option value="all">Statut</option>
                 <option value="non-integre">Non intégré</option>
                 <option value="details-manquants">Détails manquants</option>
                 <option value="integre">Intégré</option>
@@ -227,7 +227,7 @@ export default function ManuscritPage() {
                 onChange={e => setPassageFilterTheme(e.target.value || null)}
                 className="px-2 py-1 text-xs font-sans bg-secondary text-secondary-foreground rounded-md border-none cursor-pointer"
               >
-                <option value="">Thème ▾</option>
+                <option value="">Thème</option>
                 {project.allThemes.map(t => (
                   <option key={t} value={t}>{t}</option>
                 ))}
@@ -237,7 +237,7 @@ export default function ManuscritPage() {
                 onChange={e => setPassageFilterInterview(e.target.value || null)}
                 className="px-2 py-1 text-xs font-sans bg-secondary text-secondary-foreground rounded-md border-none cursor-pointer"
               >
-                <option value="">Entretien ▾</option>
+                <option value="">Entretien</option>
                 {project.interviews.map(i => (
                   <option key={i.id} value={i.id}>N°{i.number}</option>
                 ))}

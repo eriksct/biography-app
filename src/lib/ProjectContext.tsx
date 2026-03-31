@@ -12,6 +12,7 @@ interface ProjectContextType {
   updateBlock: (chapterId: string, blockId: string, updates: Partial<ManuscriptBlock>) => void;
   removeBlock: (chapterId: string, blockId: string) => void;
   markPassageUsed: (interviewId: string, passageId: string, chapterId: string) => void;
+  setPassageStatus: (interviewId: string, passageId: string, status: import('./types').PassageStatus) => void;
   addPersonToInterview: (interviewId: string, name: string, relation?: string) => void;
   addPlaceDateToInterview: (interviewId: string, label: string) => void;
   updateInterviewNotes: (interviewId: string, notes: string) => void;

@@ -3,23 +3,29 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import Index from "./pages/Index.tsx";
-import NotFound from "./pages/NotFound.tsx";
+import { ProjectProvider } from "@/lib/ProjectContext";
+import InterviewsPage from "./pages/InterviewsPage";
+import InterviewDetailPage from "./pages/InterviewDetailPage";
+import ManuscritPage from "./pages/ManuscritPage";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <ProjectProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<InterviewsPage />} />
+            <Route path="/entretien/:id" element={<InterviewDetailPage />} />
+            <Route path="/manuscrit" element={<ManuscritPage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </ProjectProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

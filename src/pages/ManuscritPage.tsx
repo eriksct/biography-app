@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useProject } from '@/lib/ProjectContext';
 import { AppLayout } from '@/components/AppLayout';
-import { ManuscriptBlock } from '@/lib/types';
-import { Plus, FileText, Download, X, BookOpen } from 'lucide-react';
+import { ManuscriptBlock, PassageStatus } from '@/lib/types';
+import { Plus, FileText, Download, X, BookOpen, CheckCircle, AlertCircle, Circle } from 'lucide-react';
 
 export default function ManuscritPage() {
   const { project, addChapter, updateBlock, addBlockToChapter, removeBlock, markPassageUsed } = useProject();

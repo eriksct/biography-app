@@ -159,6 +159,7 @@ export const demoProject: Project = {
     {
       id: 'chap-1',
       title: 'Chapitre 1 — Les brumes d\'Honfleur',
+      content: 'Honfleur, novembre 1938. Le brouillard enveloppait l\'estuaire de la Seine comme un châle de laine grise. Dans une petite maison de pêcheurs aux murs de colombages, une enfant venait de naître.\n\nJe suis née un matin de novembre 1938, à Honfleur. Ma mère me racontait toujours que ce jour-là, il y avait un brouillard si épais sur l\'estuaire qu\'on ne voyait plus le pont. Mon père disait en riant que j\'étais arrivée « enveloppée de mystère ». C\'était une petite maison de pêcheurs, avec les murs en colombages et un jardin qui descendait presque jusqu\'à la mer.\n\nHenri Moreau, son père, était un homme de peu de mots mais de beaucoup de gestes. Dans son atelier au fond du jardin, il façonnait le bois avec une tendresse qui ne le quittait jamais.\n\nMon père était menuisier. Il avait son atelier au fond du jardin, une petite cabane qui sentait le bois frais et la colle. Je passais des heures à le regarder travailler. Il ne parlait pas beaucoup, mon père, mais ses mains racontaient tout. Quand il rabotait une planche, on aurait dit qu\'il caressait quelque chose de vivant. C\'est lui qui m\'a appris la patience, sans jamais prononcer le mot.',
       blocks: [
         {
           id: 'block-1',

@@ -52,7 +52,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const id = `chap-${Date.now()}`;
     setProject(prev => ({
       ...prev,
-      chapters: [...prev.chapters, { id, title, blocks: [] }],
+      chapters: [...prev.chapters, { id, title, content: '', blocks: [] }],
     }));
   }, []);
 

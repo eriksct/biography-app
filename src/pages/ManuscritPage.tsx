@@ -18,7 +18,7 @@ export default function ManuscritPage() {
   // All unused passages across interviews
   const unusedPassages = project.interviews.flatMap(interview =>
     interview.passages
-      .filter(p => !p.used)
+      .filter(p => p.status !== 'integre')
       .map(p => ({ ...p, interviewId: interview.id, interviewNumber: interview.number }))
   ).filter(p => {
     if (passageFilterTheme && !p.themes.includes(passageFilterTheme)) return false;

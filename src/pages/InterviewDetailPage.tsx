@@ -7,7 +7,7 @@ import { useState } from 'react';
 export default function InterviewDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { project, updatePassage, addPersonToInterview, addPlaceDateToInterview, updateInterviewNotes, addTheme } = useProject();
+  const { project, updatePassage, addPersonToInterview, addPlaceDateToInterview, updateInterviewNotes, addTheme, setPassageStatus } = useProject();
   const interview = project.interviews.find(i => i.id === id);
   const [activeThemeFilter, setActiveThemeFilter] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);

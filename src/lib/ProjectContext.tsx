@@ -15,6 +15,7 @@ interface ProjectContextType {
   addPersonToInterview: (interviewId: string, name: string, relation?: string) => void;
   addPlaceDateToInterview: (interviewId: string, label: string) => void;
   updateInterviewNotes: (interviewId: string, notes: string) => void;
+  addTheme: (theme: string) => void;
 }
 
 const ProjectContext = createContext<ProjectContextType | null>(null);
@@ -122,6 +123,13 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     updateInterview(interviewId, { notes });
   }, [updateInterview]);
 
+  const addTheme = useCallback((theme: string) => {
+    setProject(prev => {
+      if (prev.allThemes.includes(theme)) return prev;
+      return { ...prev, allThemes: [...prev.allThemes, theme] };
+    });
+  }, []);
+
   return (
     <ProjectContext.Provider value={{
       project,
@@ -136,6 +144,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       addPersonToInterview,
       addPlaceDateToInterview,
       updateInterviewNotes,
+      addTheme,
     }}>
       {children}
     </ProjectContext.Provider>

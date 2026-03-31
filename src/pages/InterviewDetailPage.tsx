@@ -7,13 +7,14 @@ import { useState } from 'react';
 export default function InterviewDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { project, updatePassage, addPersonToInterview, addPlaceDateToInterview, updateInterviewNotes } = useProject();
+  const { project, updatePassage, addPersonToInterview, addPlaceDateToInterview, updateInterviewNotes, addTheme } = useProject();
   const interview = project.interviews.find(i => i.id === id);
   const [activeThemeFilter, setActiveThemeFilter] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [newPerson, setNewPerson] = useState('');
   const [newPlace, setNewPlace] = useState('');
   const [showThemeMenu, setShowThemeMenu] = useState<string | null>(null);
+  const [newTheme, setNewTheme] = useState('');
 
   if (!interview) {
     return (
@@ -55,6 +56,14 @@ export default function InterviewDetailPage() {
       updatePassage(interview.id, passageId, { themes: [...passage.themes, theme] });
     }
     setShowThemeMenu(null);
+  };
+
+  const handleAddTheme = () => {
+    const trimmed = newTheme.trim();
+    if (trimmed) {
+      addTheme(trimmed);
+      setNewTheme('');
+    }
   };
 
   return (
@@ -250,6 +259,19 @@ export default function InterviewDetailPage() {
                     Tout afficher
                   </button>
                 )}
+              </div>
+              <div className="flex gap-2 mt-3">
+                <input
+                  type="text"
+                  value={newTheme}
+                  onChange={e => setNewTheme(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && handleAddTheme()}
+                  placeholder="Nouveau thème…"
+                  className="flex-1 px-3 py-2 text-sm font-sans bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+                <button onClick={handleAddTheme} className="p-2 text-primary hover:bg-secondary rounded-md transition-colors">
+                  <Plus className="w-4 h-4" />
+                </button>
               </div>
             </section>
 

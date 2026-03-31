@@ -37,7 +37,7 @@ export default function ManuscritPage() {
     addBlockToChapter(activeChapterId, block);
   };
 
-  const handleInsertPassage = (passage: typeof unusedPassages[0]) => {
+  const handleInsertPassage = (passage: typeof filteredPassages[0]) => {
     if (!activeChapterId) return;
     const block: ManuscriptBlock = {
       id: `block-${Date.now()}`,

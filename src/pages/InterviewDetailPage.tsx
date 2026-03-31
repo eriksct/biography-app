@@ -129,8 +129,12 @@ export default function InterviewDetailPage() {
                         {t}
                       </span>
                     ))}
-                    <StatusIcon className={`w-4 h-4 ${statusColor}`} />
-                    <span className={`text-xs font-sans ${statusColor}`}>{statusLabel}</span>
+                    {passage.status !== 'non-integre' && (
+                      <>
+                        <StatusIcon className={`w-4 h-4 ${statusColor}`} />
+                        <span className={`text-xs font-sans ${statusColor}`}>{statusLabel}</span>
+                      </>
+                    )}
                   </div>
                   <p className="font-serif text-content leading-relaxed text-foreground">{passage.text}</p>
 

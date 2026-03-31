@@ -32,6 +32,11 @@ export default function ManuscritPage() {
     return true;
   });
 
+  useEffect(() => {
+    if (dialogInterviewId && dialogPassageId && highlightRef.current) {
+      setTimeout(() => highlightRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+    }
+  }, [dialogInterviewId, dialogPassageId]);
 
   const handleInsertPassage = (passage: typeof filteredPassages[0]) => {
     if (!activeChapterId || !activeChapter) return;

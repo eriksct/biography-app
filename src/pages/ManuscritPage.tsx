@@ -141,7 +141,7 @@ export default function ManuscritPage() {
                 Insérer un passage
               </button>
             </div>
-            <button className="flex items-center gap-2 px-4 py-2 text-sm font-sans rounded-md hover:opacity-90 transition-opacity text-secondary-foreground bg-primary-foreground">
+            <button className="flex items-center gap-2 px-4 py-2 text-sm font-sans rounded-md hover:opacity-90 transition-opacity text-secondary-foreground bg-secondary">
               <Download className="w-4 h-4" />
               Exporter en .docx
             </button>

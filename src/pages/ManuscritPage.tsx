@@ -5,22 +5,23 @@ import { ManuscriptBlock, PassageStatus } from '@/lib/types';
 import { Plus, FileText, Download, X, BookOpen, CheckCircle, AlertCircle, Circle } from 'lucide-react';
 
 export default function ManuscritPage() {
-  const { project, addChapter, updateBlock, addBlockToChapter, removeBlock, markPassageUsed } = useProject();
+  const { project, addChapter, updateBlock, addBlockToChapter, removeBlock, markPassageUsed, setPassageStatus } = useProject();
   const [activeChapterId, setActiveChapterId] = useState<string>(project.chapters[0]?.id || '');
   const [showPassagePanel, setShowPassagePanel] = useState(false);
   const [passageFilterTheme, setPassageFilterTheme] = useState<string | null>(null);
   const [passageFilterInterview, setPassageFilterInterview] = useState<string | null>(null);
+  const [passageFilterStatus, setPassageFilterStatus] = useState<PassageStatus | 'all'>('all');
   const [newChapterTitle, setNewChapterTitle] = useState('');
   const [showNewChapter, setShowNewChapter] = useState(false);
 
   const activeChapter = project.chapters.find(c => c.id === activeChapterId);
 
-  // All unused passages across interviews
-  const unusedPassages = project.interviews.flatMap(interview =>
+  // All passages across interviews (filterable)
+  const filteredPassages = project.interviews.flatMap(interview =>
     interview.passages
-      .filter(p => p.status !== 'integre')
       .map(p => ({ ...p, interviewId: interview.id, interviewNumber: interview.number }))
   ).filter(p => {
+    if (passageFilterStatus !== 'all' && p.status !== passageFilterStatus) return false;
     if (passageFilterTheme && !p.themes.includes(passageFilterTheme)) return false;
     if (passageFilterInterview && p.interviewId !== passageFilterInterview) return false;
     return true;

@@ -128,13 +128,6 @@ export default function ManuscritPage() {
                 <BookOpen className="w-4 h-4" />
                 Insérer un passage
               </button>
-              <button
-                onClick={handleAddTextBlock}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-sans text-muted-foreground hover:bg-secondary rounded-md transition-colors"
-              >
-                <Plus className="w-4 h-4" />
-                Ajouter du texte
-              </button>
             </div>
             <button className="flex items-center gap-2 px-4 py-2 text-sm font-sans bg-primary text-primary-foreground rounded-md hover:opacity-90 transition-opacity">
               <Download className="w-4 h-4" />

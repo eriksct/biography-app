@@ -65,9 +65,14 @@ export default function ManuscritPage() {
     <AppLayout>
       <div className="h-screen flex overflow-hidden">
         {/* Chapter sidebar */}
+        {chapterSidebarOpen ? (
         <div className="w-64 border-r border-border bg-card flex flex-col flex-shrink-0">
-          <div className="p-4 border-b border-border">
+          <div className="p-4 border-b border-border flex items-center justify-between">
             <h2 className="font-serif text-lg font-semibold">Chapitres</h2>
+            <button onClick={() => setChapterSidebarOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors">
+              <PanelLeftClose className="w-4 h-4" />
+            </button>
+          </div>
           </div>
           <div className="flex-1 overflow-y-auto p-3 space-y-1">
             {project.chapters.map(chapter => (

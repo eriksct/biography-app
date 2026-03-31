@@ -19,6 +19,13 @@ export default function ManuscritPage() {
   const [dialogPassageId, setDialogPassageId] = useState<string | null>(null);
   const highlightRef = useRef<HTMLDivElement>(null);
 
+
+  useEffect(() => {
+    if (dialogInterviewId && dialogPassageId && highlightRef.current) {
+      setTimeout(() => highlightRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+    }
+  }, [dialogInterviewId, dialogPassageId]);
+
   const activeChapter = project.chapters.find(c => c.id === activeChapterId);
 
   // All passages across interviews (filterable)

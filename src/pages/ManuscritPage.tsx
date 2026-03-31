@@ -121,6 +121,13 @@ export default function ManuscritPage() {
             )}
           </div>
         </div>
+        ) : (
+          <div className="w-10 border-r border-border bg-card flex flex-col items-center py-3 flex-shrink-0">
+            <button onClick={() => setChapterSidebarOpen(true)} className="text-muted-foreground hover:text-foreground transition-colors">
+              <PanelLeftOpen className="w-4 h-4" />
+            </button>
+          </div>
+        )}
 
         {/* Main editor */}
         <div className="flex-1 flex flex-col overflow-hidden">

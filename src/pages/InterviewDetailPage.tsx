@@ -58,6 +58,14 @@ export default function InterviewDetailPage() {
     setShowThemeMenu(null);
   };
 
+  const handleAddTheme = () => {
+    const trimmed = newTheme.trim();
+    if (trimmed) {
+      addTheme(trimmed);
+      setNewTheme('');
+    }
+  };
+
   return (
     <AppLayout>
       <div className="h-screen flex flex-col overflow-hidden">

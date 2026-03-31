@@ -241,15 +241,16 @@ export default function InterviewDetailPage() {
                 {project.allThemes.map(theme => {
                   const isActive = activeThemeFilter === theme;
                   const count = interview.passages.filter(p => p.themes.includes(theme)).length;
-                  if (count === 0) return null;
                   return (
                     <button
                       key={theme}
-                      onClick={() => setActiveThemeFilter(isActive ? null : theme)}
+                      onClick={() => count > 0 ? setActiveThemeFilter(isActive ? null : theme) : null}
                       className={`px-3 py-1.5 rounded-full text-sm font-sans font-medium transition-colors ${
                         isActive
                           ? 'bg-primary text-primary-foreground'
-                          : 'bg-secondary text-secondary-foreground hover:bg-border'
+                          : count > 0
+                            ? 'bg-secondary text-secondary-foreground hover:bg-border'
+                            : 'bg-secondary/50 text-muted-foreground'
                       }`}
                     >
                       {theme} ({count})

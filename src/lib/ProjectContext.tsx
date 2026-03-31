@@ -146,6 +146,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       updateBlock,
       removeBlock,
       markPassageUsed,
+      setPassageStatus,
       addPersonToInterview,
       addPlaceDateToInterview,
       updateInterviewNotes,

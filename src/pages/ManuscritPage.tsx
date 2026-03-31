@@ -135,13 +135,13 @@ export default function ManuscritPage() {
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setShowPassagePanel(!showPassagePanel)}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-sans bg-secondary text-secondary-foreground rounded-md hover:bg-border transition-colors"
+                className="flex items-center gap-2 px-4 py-2 text-sm font-sans rounded-md transition-colors bg-primary text-primary-foreground"
               >
                 <BookOpen className="w-4 h-4" />
                 Insérer un passage
               </button>
             </div>
-            <button className="flex items-center gap-2 px-4 py-2 text-sm font-sans bg-primary text-primary-foreground rounded-md hover:opacity-90 transition-opacity">
+            <button className="flex items-center gap-2 px-4 py-2 text-sm font-sans rounded-md hover:opacity-90 transition-opacity text-secondary-foreground bg-primary-foreground">
               <Download className="w-4 h-4" />
               Exporter en .docx
             </button>

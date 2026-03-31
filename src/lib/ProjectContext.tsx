@@ -15,6 +15,7 @@ interface ProjectContextType {
   addPersonToInterview: (interviewId: string, name: string, relation?: string) => void;
   addPlaceDateToInterview: (interviewId: string, label: string) => void;
   updateInterviewNotes: (interviewId: string, notes: string) => void;
+  addTheme: (theme: string) => void;
 }
 
 const ProjectContext = createContext<ProjectContextType | null>(null);

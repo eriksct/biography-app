@@ -211,46 +211,45 @@ export default function ManuscritPage() {
             </div>
 
             {/* Filters */}
-            <div className="p-4 border-b border-border space-y-3">
-              <div>
-                <label className="text-xs font-sans text-muted-foreground mb-1 block">Par statut</label>
-                <select
-                  value={passageFilterStatus}
-                  onChange={e => setPassageFilterStatus(e.target.value as PassageStatus | 'all')}
-                  className="w-full px-3 py-2 text-sm font-sans bg-background border border-input rounded-md"
+            <div className="px-4 py-3 border-b border-border flex flex-wrap gap-2">
+              <select
+                value={passageFilterStatus}
+                onChange={e => setPassageFilterStatus(e.target.value as PassageStatus | 'all')}
+                className="px-2 py-1 text-xs font-sans bg-secondary text-secondary-foreground rounded-md border-none cursor-pointer"
+              >
+                <option value="all">Statut ▾</option>
+                <option value="non-integre">Non intégré</option>
+                <option value="details-manquants">Détails manquants</option>
+                <option value="integre">Intégré</option>
+              </select>
+              <select
+                value={passageFilterTheme || ''}
+                onChange={e => setPassageFilterTheme(e.target.value || null)}
+                className="px-2 py-1 text-xs font-sans bg-secondary text-secondary-foreground rounded-md border-none cursor-pointer"
+              >
+                <option value="">Thème ▾</option>
+                {project.allThemes.map(t => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
+              <select
+                value={passageFilterInterview || ''}
+                onChange={e => setPassageFilterInterview(e.target.value || null)}
+                className="px-2 py-1 text-xs font-sans bg-secondary text-secondary-foreground rounded-md border-none cursor-pointer"
+              >
+                <option value="">Entretien ▾</option>
+                {project.interviews.map(i => (
+                  <option key={i.id} value={i.id}>N°{i.number}</option>
+                ))}
+              </select>
+              {(passageFilterStatus !== 'all' || passageFilterTheme || passageFilterInterview) && (
+                <button
+                  onClick={() => { setPassageFilterStatus('all'); setPassageFilterTheme(null); setPassageFilterInterview(null); }}
+                  className="px-2 py-1 text-xs font-sans text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  <option value="all">Tous les statuts</option>
-                  <option value="non-integre">Non intégré</option>
-                  <option value="details-manquants">Détails manquants</option>
-                  <option value="integre">Intégré</option>
-                </select>
-              </div>
-              <div>
-                <label className="text-xs font-sans text-muted-foreground mb-1 block">Par thème</label>
-                <select
-                  value={passageFilterTheme || ''}
-                  onChange={e => setPassageFilterTheme(e.target.value || null)}
-                  className="w-full px-3 py-2 text-sm font-sans bg-background border border-input rounded-md"
-                >
-                  <option value="">Tous les thèmes</option>
-                  {project.allThemes.map(t => (
-                    <option key={t} value={t}>{t}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="text-xs font-sans text-muted-foreground mb-1 block">Par entretien</label>
-                <select
-                  value={passageFilterInterview || ''}
-                  onChange={e => setPassageFilterInterview(e.target.value || null)}
-                  className="w-full px-3 py-2 text-sm font-sans bg-background border border-input rounded-md"
-                >
-                  <option value="">Tous les entretiens</option>
-                  {project.interviews.map(i => (
-                    <option key={i.id} value={i.id}>Entretien n°{i.number}</option>
-                  ))}
-                </select>
-              </div>
+                  ✕ Réinitialiser
+                </button>
+              )}
             </div>
 
             {/* Passage list */}

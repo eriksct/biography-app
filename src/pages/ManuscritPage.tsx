@@ -6,6 +6,7 @@ import { ManuscriptBlock, PassageStatus } from '@/lib/types';
 import { Plus, FileText, Download, X, BookOpen, CheckCircle, AlertCircle, Circle, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 
 export default function ManuscritPage() {
+  const navigate = useNavigate();
   const { project, addChapter, updateBlock, addBlockToChapter, removeBlock, markPassageUsed, setPassageStatus } = useProject();
   const [activeChapterId, setActiveChapterId] = useState<string>(project.chapters[0]?.id || '');
   const [showPassagePanel, setShowPassagePanel] = useState(false);

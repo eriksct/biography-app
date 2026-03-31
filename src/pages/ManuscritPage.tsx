@@ -132,18 +132,16 @@ export default function ManuscritPage() {
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Toolbar */}
           <div className="border-b border-border px-8 py-4 flex items-center justify-between flex-shrink-0">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => setShowPassagePanel(!showPassagePanel)}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-sans rounded-md transition-colors bg-primary text-primary-foreground"
-              >
-                <BookOpen className="w-4 h-4" />
-                Insérer un passage
-              </button>
-            </div>
             <button className="flex items-center gap-2 px-4 py-2 text-sm font-sans rounded-md hover:opacity-90 transition-opacity text-secondary-foreground bg-secondary">
               <Download className="w-4 h-4" />
               Exporter en .docx
+            </button>
+            <button
+              onClick={() => setShowPassagePanel(!showPassagePanel)}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-sans rounded-md transition-colors bg-primary text-primary-foreground"
+            >
+              <BookOpen className="w-4 h-4" />
+              Insérer un passage
             </button>
           </div>
 

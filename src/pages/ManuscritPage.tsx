@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProject } from '@/lib/ProjectContext';
 import { AppLayout } from '@/components/AppLayout';
-import { ManuscriptBlock, PassageStatus } from '@/lib/types';
-import { Plus, FileText, Download, X, BookOpen, CheckCircle, AlertCircle, Circle, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { PassageStatus } from '@/lib/types';
+import { Plus, FileText, Download, X, BookOpen, CheckCircle, AlertCircle, Circle, PanelLeftOpen } from 'lucide-react';
 
 export default function ManuscritPage() {
   const navigate = useNavigate();

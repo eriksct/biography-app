@@ -3,7 +3,7 @@ import { useProject } from '@/lib/ProjectContext';
 import { AppLayout } from '@/components/AppLayout';
 import { ArrowLeft, Play, Pause, CheckCircle, Plus, AlertCircle, Circle } from 'lucide-react';
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { AnnotatedPassageText } from '@/components/AnnotatedPassageText';
+import { AnnotatedPassageText, getTagColor } from '@/components/AnnotatedPassageText';
 
 export default function InterviewDetailPage() {
   const { id } = useParams<{ id: string }>();

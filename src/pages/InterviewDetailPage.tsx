@@ -192,7 +192,7 @@ export default function InterviewDetailPage() {
                 return (
                   <div
                     key={passage.id}
-                    className={`group relative rounded-lg p-5 transition-all ${
+                    className={`group group/passage relative rounded-lg p-5 transition-all ${
                       passage.status === 'integre'
                         ? 'opacity-50'
                         : 'hover:bg-card'

@@ -1,0 +1,104 @@
+import { ThemeAnnotation } from '@/lib/types';
+import { X } from 'lucide-react';
+
+// Theme color map using HSL-based backgrounds
+const THEME_COLORS: Record<string, string> = {};
+const PALETTE = [
+  'bg-blue-100 text-blue-900',
+  'bg-amber-100 text-amber-900',
+  'bg-emerald-100 text-emerald-900',
+  'bg-purple-100 text-purple-900',
+  'bg-rose-100 text-rose-900',
+  'bg-cyan-100 text-cyan-900',
+  'bg-orange-100 text-orange-900',
+  'bg-lime-100 text-lime-900',
+];
+
+function getThemeColor(theme: string, allThemes: string[]) {
+  if (!THEME_COLORS[theme]) {
+    const idx = allThemes.indexOf(theme);
+    THEME_COLORS[theme] = PALETTE[idx % PALETTE.length];
+  }
+  return THEME_COLORS[theme];
+}
+
+// Merge overlapping annotations into segments
+interface Segment {
+  start: number;
+  end: number;
+  text: string;
+  annotations: ThemeAnnotation[];
+}
+
+function buildSegments(text: string, annotations: ThemeAnnotation[]): Segment[] {
+  if (annotations.length === 0) {
+    return [{ start: 0, end: text.length, text, annotations: [] }];
+  }
+
+  // Collect all boundary points
+  const points = new Set<number>();
+  points.add(0);
+  points.add(text.length);
+  for (const a of annotations) {
+    points.add(a.start);
+    points.add(a.end);
+  }
+  const sorted = [...points].sort((a, b) => a - b);
+
+  const segments: Segment[] = [];
+  for (let i = 0; i < sorted.length - 1; i++) {
+    const start = sorted[i];
+    const end = sorted[i + 1];
+    const covering = annotations.filter(a => a.start <= start && a.end >= end);
+    segments.push({ start, end, text: text.slice(start, end), annotations: covering });
+  }
+  return segments;
+}
+
+interface Props {
+  text: string;
+  annotations: ThemeAnnotation[];
+  allThemes: string[];
+  onRemoveAnnotation?: (annotationId: string) => void;
+}
+
+export function AnnotatedPassageText({ text, annotations, allThemes, onRemoveAnnotation }: Props) {
+  const segments = buildSegments(text, annotations);
+
+  return (
+    <span>
+      {segments.map((seg, i) => {
+        if (seg.annotations.length === 0) {
+          return <span key={i}>{seg.text}</span>;
+        }
+        // Use the first annotation's theme for the color
+        const primary = seg.annotations[0];
+        const colorClass = getThemeColor(primary.theme, allThemes);
+        return (
+          <span
+            key={i}
+            className={`${colorClass} rounded-sm px-0.5 relative group/ann inline`}
+            title={seg.annotations.map(a => a.theme).join(', ')}
+          >
+            {seg.text}
+            {onRemoveAnnotation && seg.annotations.length > 0 && (
+              <span className="opacity-0 group-hover/ann:opacity-100 absolute -top-5 left-1/2 -translate-x-1/2 flex gap-1 z-20">
+                {seg.annotations.map(a => (
+                  <button
+                    key={a.id}
+                    onClick={(e) => { e.stopPropagation(); onRemoveAnnotation(a.id); }}
+                    className="flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-sans bg-destructive text-destructive-foreground rounded shadow whitespace-nowrap"
+                    title={`Retirer « ${a.theme} »`}
+                  >
+                    <X className="w-2.5 h-2.5" />
+                    {a.theme}
+                  </button>
+                ))}
+              </span>
+            )}
+          </span>
+        );
+      })}
+    </span>
+  );
+}

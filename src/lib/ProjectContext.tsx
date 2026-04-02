@@ -137,6 +137,48 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     });
   }, []);
 
+  const addThemeAnnotation = useCallback((interviewId: string, passageId: string, start: number, end: number, theme: string) => {
+    const annotation: ThemeAnnotation = { id: `ann-${Date.now()}`, start, end, theme };
+    setProject(prev => ({
+      ...prev,
+      interviews: prev.interviews.map(i =>
+        i.id === interviewId
+          ? {
+              ...i,
+              passages: i.passages.map(p =>
+                p.id === passageId
+                  ? {
+                      ...p,
+                      themeAnnotations: [...p.themeAnnotations, annotation],
+                      themes: p.themes.includes(theme) ? p.themes : [...p.themes, theme],
+                    }
+                  : p
+              ),
+            }
+          : i
+      ),
+    }));
+  }, []);
+
+  const removeThemeAnnotation = useCallback((interviewId: string, passageId: string, annotationId: string) => {
+    setProject(prev => ({
+      ...prev,
+      interviews: prev.interviews.map(i =>
+        i.id === interviewId
+          ? {
+              ...i,
+              passages: i.passages.map(p => {
+                if (p.id !== passageId) return p;
+                const newAnnotations = p.themeAnnotations.filter(a => a.id !== annotationId);
+                const remainingThemes = [...new Set(newAnnotations.map(a => a.theme))];
+                return { ...p, themeAnnotations: newAnnotations, themes: remainingThemes };
+              }),
+            }
+          : i
+      ),
+    }));
+  }, []);
+
   return (
     <ProjectContext.Provider value={{
       project,
@@ -153,6 +195,8 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       addPlaceDateToInterview,
       updateInterviewNotes,
       addTheme,
+      addThemeAnnotation,
+      removeThemeAnnotation,
     }}>
       {children}
     </ProjectContext.Provider>

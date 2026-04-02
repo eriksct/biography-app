@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { Project, Interview, Chapter, ManuscriptBlock, Passage } from './types';
+import { Project, Interview, Chapter, ManuscriptBlock, Passage, ThemeAnnotation } from './types';
 import { demoProject } from './demoData';
 
 interface ProjectContextType {

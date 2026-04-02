@@ -2,11 +2,19 @@ export type InterviewStatus = 'recording' | 'transcribed' | 'processed';
 
 export type PassageStatus = 'non-integre' | 'details-manquants' | 'integre';
 
+export interface ThemeAnnotation {
+  id: string;
+  start: number;
+  end: number;
+  theme: string;
+}
+
 export interface Passage {
   id: string;
   text: string;
   timestamp: string; // e.g. "00:03:21"
   themes: string[];
+  themeAnnotations: ThemeAnnotation[];
   status: PassageStatus;
   usedInChapter?: string;
 }

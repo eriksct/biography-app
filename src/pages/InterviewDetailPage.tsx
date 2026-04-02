@@ -207,14 +207,28 @@ export default function InterviewDetailPage() {
                         </>
                       )}
                     </div>
-                    <p className="font-serif text-base leading-relaxed text-foreground" data-passage-id={passage.id}>
-                      <AnnotatedPassageText
-                        text={passage.text}
-                        annotations={passage.themeAnnotations}
-                        allThemes={project.allThemes}
-                        onRemoveAnnotation={(annId) => removeThemeAnnotation(interview.id, passage.id, annId)}
-                      />
-                    </p>
+                    <div className="flex gap-4">
+                      <p className="font-serif text-base leading-relaxed text-foreground flex-1" data-passage-id={passage.id}>
+                        <AnnotatedPassageText
+                          text={passage.text}
+                          annotations={passage.themeAnnotations}
+                          allThemes={project.allThemes}
+                          onRemoveAnnotation={(annId) => removeThemeAnnotation(interview.id, passage.id, annId)}
+                        />
+                      </p>
+                      {passage.themeAnnotations && passage.themeAnnotations.length > 0 && (
+                        <div className="flex flex-col gap-1 flex-shrink-0 pt-0.5">
+                          {[...new Set(passage.themeAnnotations.map(a => a.theme))].map(theme => (
+                            <span
+                              key={theme}
+                              className={`px-2 py-0.5 rounded-full text-[10px] font-sans font-medium whitespace-nowrap ${getTagColor(theme, project.allThemes)}`}
+                            >
+                              {theme}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
 
                     {/* Hover actions - status only */}
                     <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">

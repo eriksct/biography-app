@@ -2,22 +2,38 @@ import { ThemeAnnotation } from '@/lib/types';
 import { X } from 'lucide-react';
 
 // Theme color map using HSL-based backgrounds
-const THEME_COLORS: Record<string, string> = {};
+const THEME_COLORS: Record<string, { bg: string; hover: string }> = {};
 const PALETTE = [
-  'bg-blue-100 text-blue-900',
-  'bg-amber-100 text-amber-900',
-  'bg-emerald-100 text-emerald-900',
-  'bg-purple-100 text-purple-900',
-  'bg-rose-100 text-rose-900',
-  'bg-cyan-100 text-cyan-900',
-  'bg-orange-100 text-orange-900',
-  'bg-lime-100 text-lime-900',
+  { bg: 'bg-blue-100/0', hover: 'hover:bg-blue-100 group-hover/passage:bg-blue-100' },
+  { bg: 'bg-amber-100/0', hover: 'hover:bg-amber-100 group-hover/passage:bg-amber-100' },
+  { bg: 'bg-emerald-100/0', hover: 'hover:bg-emerald-100 group-hover/passage:bg-emerald-100' },
+  { bg: 'bg-purple-100/0', hover: 'hover:bg-purple-100 group-hover/passage:bg-purple-100' },
+  { bg: 'bg-rose-100/0', hover: 'hover:bg-rose-100 group-hover/passage:bg-rose-100' },
+  { bg: 'bg-cyan-100/0', hover: 'hover:bg-cyan-100 group-hover/passage:bg-cyan-100' },
+  { bg: 'bg-orange-100/0', hover: 'hover:bg-orange-100 group-hover/passage:bg-orange-100' },
+  { bg: 'bg-lime-100/0', hover: 'hover:bg-lime-100 group-hover/passage:bg-lime-100' },
 ];
+
+const TAG_COLORS = [
+  'bg-blue-100 text-blue-800',
+  'bg-amber-100 text-amber-800',
+  'bg-emerald-100 text-emerald-800',
+  'bg-purple-100 text-purple-800',
+  'bg-rose-100 text-rose-800',
+  'bg-cyan-100 text-cyan-800',
+  'bg-orange-100 text-orange-800',
+  'bg-lime-100 text-lime-800',
+];
+
+export function getTagColor(theme: string, allThemes: string[]) {
+  const idx = allThemes.indexOf(theme);
+  return TAG_COLORS[idx >= 0 ? idx % TAG_COLORS.length : 0];
+}
 
 function getThemeColor(theme: string, allThemes: string[]) {
   if (!THEME_COLORS[theme]) {
     const idx = allThemes.indexOf(theme);
-    THEME_COLORS[theme] = PALETTE[idx % PALETTE.length];
+    THEME_COLORS[theme] = PALETTE[idx >= 0 ? idx % PALETTE.length : 0];
   }
   return THEME_COLORS[theme];
 }
@@ -36,7 +52,6 @@ function buildSegments(text: string, annotations: ThemeAnnotation[]): Segment[] 
     return [{ start: 0, end: text.length, text, annotations: [] }];
   }
 
-  // Collect all boundary points
   const points = new Set<number>();
   points.add(0);
   points.add(text.length);
@@ -72,13 +87,12 @@ export function AnnotatedPassageText({ text, annotations, allThemes, onRemoveAnn
         if (seg.annotations.length === 0) {
           return <span key={i}>{seg.text}</span>;
         }
-        // Use the first annotation's theme for the color
         const primary = seg.annotations[0];
-        const colorClass = getThemeColor(primary.theme, allThemes);
+        const colors = getThemeColor(primary.theme, allThemes);
         return (
           <span
             key={i}
-            className={`${colorClass} rounded-sm px-0.5 relative group/ann inline`}
+            className={`${colors.hover} rounded-sm px-0.5 relative group/ann inline transition-colors duration-200`}
             title={seg.annotations.map(a => a.theme).join(', ')}
           >
             {seg.text}

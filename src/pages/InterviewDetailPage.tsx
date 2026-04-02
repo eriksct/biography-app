@@ -3,7 +3,7 @@ import { useProject } from '@/lib/ProjectContext';
 import { AppLayout } from '@/components/AppLayout';
 import { ArrowLeft, Play, Pause, CheckCircle, Plus, AlertCircle, Circle } from 'lucide-react';
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { AnnotatedPassageText } from '@/components/AnnotatedPassageText';
+import { AnnotatedPassageText, getTagColor } from '@/components/AnnotatedPassageText';
 
 export default function InterviewDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -192,7 +192,7 @@ export default function InterviewDetailPage() {
                 return (
                   <div
                     key={passage.id}
-                    className={`group relative rounded-lg p-5 transition-all ${
+                    className={`group group/passage relative rounded-lg p-5 transition-all ${
                       passage.status === 'integre'
                         ? 'opacity-50'
                         : 'hover:bg-card'
@@ -207,14 +207,28 @@ export default function InterviewDetailPage() {
                         </>
                       )}
                     </div>
-                    <p className="font-serif text-base leading-relaxed text-foreground" data-passage-id={passage.id}>
-                      <AnnotatedPassageText
-                        text={passage.text}
-                        annotations={passage.themeAnnotations}
-                        allThemes={project.allThemes}
-                        onRemoveAnnotation={(annId) => removeThemeAnnotation(interview.id, passage.id, annId)}
-                      />
-                    </p>
+                    <div className="flex gap-4">
+                      <p className="font-serif text-base leading-relaxed text-foreground flex-1" data-passage-id={passage.id}>
+                        <AnnotatedPassageText
+                          text={passage.text}
+                          annotations={passage.themeAnnotations}
+                          allThemes={project.allThemes}
+                          onRemoveAnnotation={(annId) => removeThemeAnnotation(interview.id, passage.id, annId)}
+                        />
+                      </p>
+                      {passage.themeAnnotations && passage.themeAnnotations.length > 0 && (
+                        <div className="flex flex-col gap-1 flex-shrink-0 pt-0.5">
+                          {[...new Set(passage.themeAnnotations.map(a => a.theme))].map(theme => (
+                            <span
+                              key={theme}
+                              className={`px-2 py-0.5 rounded-full text-[10px] font-sans font-medium whitespace-nowrap ${getTagColor(theme, project.allThemes)}`}
+                            >
+                              {theme}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
 
                     {/* Hover actions - status only */}
                     <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">

@@ -31,7 +31,8 @@ interface Segment {
 }
 
 function buildSegments(text: string, annotations: ThemeAnnotation[]): Segment[] {
-  if (annotations.length === 0) {
+  if (!text) return [{ start: 0, end: 0, text: '', annotations: [] }];
+  if (!annotations || annotations.length === 0) {
     return [{ start: 0, end: text.length, text, annotations: [] }];
   }
 

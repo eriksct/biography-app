@@ -11,7 +11,7 @@ export const demoProject: Project = {
       date: '2024-09-12',
       duration: '1h 23min',
       status: 'processed',
-      themeAnnotations: [], themes: ['Enfance', 'Famille'],
+      themes: ['Enfance', 'Famille'],
       notes: 'Premier entretien très riche. Jeanne était très émue en parlant de son enfance. Revenir sur l\'épisode du jardin lors du prochain entretien.',
       persons: [
         { id: 'p1', name: 'Jeanne Moreau', relation: 'Narratrice' },
@@ -70,7 +70,7 @@ export const demoProject: Project = {
       date: '2024-09-26',
       duration: '1h 05min',
       status: 'transcribed',
-      themeAnnotations: [], themes: ['Études', 'Carrière'],
+      themes: ['Études', 'Carrière'],
       notes: 'Jeanne parle avec beaucoup de fierté de ses années d\'études. Le passage sur l\'arrivée à Paris est très fort visuellement.',
       persons: [
         { id: 'p5', name: 'Professeur Langlois', relation: 'Professeur de lettres à la Sorbonne' },
@@ -119,7 +119,7 @@ export const demoProject: Project = {
       date: '2024-10-10',
       duration: '58min',
       status: 'transcribed',
-      themeAnnotations: [], themes: ['Carrière', 'Famille'],
+      themes: ['Carrière', 'Famille'],
       notes: 'Entretien plus court, Jeanne était fatiguée. Mais le passage sur sa première classe est magnifique. Prévoir un entretien sur la retraite.',
       persons: [
         { id: 'p8', name: 'Robert Moreau', relation: 'Époux' },

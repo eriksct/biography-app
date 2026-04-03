@@ -5,6 +5,8 @@ import { Mic, FileText, CheckCircle, Plus, Search, X } from 'lucide-react';
 import { InterviewStatus, Interview, Passage } from '@/lib/types';
 import { AppLayout } from '@/components/AppLayout';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { RecordingDialog } from '@/components/RecordingDialog';
 
 const statusConfig: Record<InterviewStatus, { icon: React.ElementType; label: string; className: string }> = {
   recording: { icon: Mic, label: 'En cours', className: 'text-primary' },
@@ -38,6 +40,12 @@ export default function InterviewsPage() {
   const { project } = useProject();
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
+  const [recordingOpen, setRecordingOpen] = useState(false);
+
+  const handleRecordingComplete = (duration: string) => {
+    // For now, just log — later this will create an actual interview
+    console.log('Recording completed:', duration);
+  };
 
   const isSearching = query.trim().length > 0;
   const normalizedQuery = query.trim().toLowerCase();
@@ -83,7 +91,17 @@ export default function InterviewsPage() {
       <div className="max-w-3xl mx-auto px-8 py-10">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-serif font-semibold">Mes entretiens</h1>
+          <Button onClick={() => setRecordingOpen(true)}>
+            <Plus className="w-4 h-4" />
+            Nouvel entretien
+          </Button>
         </div>
+
+        <RecordingDialog
+          open={recordingOpen}
+          onOpenChange={setRecordingOpen}
+          onRecordingComplete={handleRecordingComplete}
+        />
 
         {/* Search bar */}
         <div className="relative mb-8">

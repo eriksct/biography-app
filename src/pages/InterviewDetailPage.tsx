@@ -481,6 +481,40 @@ function SummaryTab({
             </div>
           </section>
         </div>
+
+        {/* Enjeux */}
+        {interview.issues && interview.issues.length > 0 && (
+          <section>
+            <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+              Enjeux
+            </h3>
+            <ul className="space-y-2">
+              {interview.issues.map((issue: string, i: number) => (
+                <li key={i} className="flex items-start gap-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2.5 flex-shrink-0" />
+                  <span className="font-sans text-sm leading-relaxed text-foreground">{issue}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {/* Résumé de l'entretien */}
+        {interview.summarySections && interview.summarySections.length > 0 && (
+          <section>
+            <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+              Résumé de l'entretien
+            </h3>
+            <div className="space-y-6">
+              {interview.summarySections.map((section: any, i: number) => (
+                <div key={i}>
+                  <h4 className="text-lg font-serif font-semibold mb-2">{section.title}</h4>
+                  <p className="font-sans text-sm leading-relaxed text-foreground">{section.content}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );

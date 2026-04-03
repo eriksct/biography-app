@@ -97,6 +97,27 @@ export const demoProject: Project = {
       status: 'transcribed',
       themes: ['Études', 'Carrière'],
       notes: 'Jeanne parle avec beaucoup de fierté de ses années d\'études. Le passage sur l\'arrivée à Paris est très fort visuellement.',
+      issues: [
+        'Le choc culturel entre la Normandie rurale et Paris',
+        'L\'importance de la chambre à soi (lien avec Virginia Woolf)',
+        'Le rôle du professeur Langlois comme mentor',
+        'L\'amitié durable avec Françoise Delorme',
+      ],
+      summary: 'Deuxième entretien centré sur les années d\'études de Jeanne à Paris. Elle raconte son arrivée à la gare Saint-Lazare, sa chambre de bonne rue Mouffetard, la Sorbonne et ses amitiés fondatrices.',
+      summarySections: [
+        {
+          title: 'L\'arrivée à Paris',
+          content: 'En septembre 1956, Jeanne arrive à Paris avec une valise en carton fabriquée par son père. Le choc de la grande ville après le calme d\'Honfleur est considérable.',
+        },
+        {
+          title: 'La vie d\'étudiante',
+          content: 'Sa chambre de bonne de huit mètres carrés rue Mouffetard devient son premier espace à elle. Malgré le froid hivernal, elle y trouve le bonheur de l\'indépendance.',
+        },
+        {
+          title: 'La vocation enseignante',
+          content: 'Le professeur Langlois, par une simple phrase d\'encouragement après un cours sur Chrétien de Troyes, oriente toute la carrière de Jeanne vers l\'enseignement.',
+        },
+      ],
       persons: [
         { id: 'p5', name: 'Professeur Langlois', relation: 'Professeur de lettres à la Sorbonne' },
         { id: 'p6', name: 'Françoise Delorme', relation: 'Amie d\'université' },

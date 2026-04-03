@@ -404,7 +404,11 @@ function TranscriptTab({
 function SummaryTab({
   interview,
   addPersonToInterview,
+  removePersonFromInterview,
   addPlaceDateToInterview,
+  removePlaceDateFromInterview,
+  updateInterviewIssues,
+  updateInterviewSummarySections,
 }: any) {
   const [newPerson, setNewPerson] = useState('');
   const [newPlace, setNewPlace] = useState('');
@@ -423,6 +427,25 @@ function SummaryTab({
     }
   };
 
+  // Issues as a single text block, one bullet per line
+  const issuesText = (interview.issues || []).join('\n');
+  const handleIssuesChange = (value: string) => {
+    const lines = value.split('\n').filter((l: string) => l.trim() !== '');
+    updateInterviewIssues(interview.id, lines);
+  };
+
+  const handleSectionContentChange = (index: number, content: string) => {
+    const updated = [...(interview.summarySections || [])];
+    updated[index] = { ...updated[index], content };
+    updateInterviewSummarySections(interview.id, updated);
+  };
+
+  const handleSectionTitleChange = (index: number, title: string) => {
+    const updated = [...(interview.summarySections || [])];
+    updated[index] = { ...updated[index], title };
+    updateInterviewSummarySections(interview.id, updated);
+  };
+
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="max-w-3xl mx-auto px-8 py-10 space-y-10">
@@ -436,9 +459,17 @@ function SummaryTab({
             </h3>
             <div className="space-y-2">
               {interview.persons.map((p: any) => (
-                <div key={p.id} className="flex items-center justify-between py-2 px-3 rounded-md bg-card">
-                  <span className="font-sans text-sm font-medium">{p.name}</span>
-                  {p.relation && <span className="text-xs font-sans text-muted-foreground">{p.relation}</span>}
+                <div key={p.id} className="flex items-center justify-between py-2 px-3 rounded-md bg-card group">
+                  <div>
+                    <span className="font-sans text-sm font-medium">{p.name}</span>
+                    {p.relation && <span className="text-xs font-sans text-muted-foreground ml-2">{p.relation}</span>}
+                  </div>
+                  <button
+                    onClick={() => removePersonFromInterview(interview.id, p.id)}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               ))}
               <div className="flex gap-2 mt-2">
@@ -465,8 +496,14 @@ function SummaryTab({
             </h3>
             <div className="space-y-2">
               {interview.placesDates.map((pd: any) => (
-                <div key={pd.id} className="py-2 px-3 rounded-md bg-card font-sans text-sm">
-                  {pd.label}
+                <div key={pd.id} className="flex items-center justify-between py-2 px-3 rounded-md bg-card font-sans text-sm group">
+                  <span>{pd.label}</span>
+                  <button
+                    onClick={() => removePlaceDateFromInterview(interview.id, pd.id)}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               ))}
               <div className="flex gap-2 mt-2">
@@ -487,38 +524,42 @@ function SummaryTab({
         </div>
 
         {/* Enjeux */}
-        {interview.issues && interview.issues.length > 0 && (
-          <section>
-            <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-              Enjeux
-            </h3>
-            <ul className="space-y-2">
-              {interview.issues.map((issue: string, i: number) => (
-                <li key={i} className="flex items-start gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2.5 flex-shrink-0" />
-                  <span className="font-sans text-sm leading-relaxed text-foreground">{issue}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
+        <section>
+          <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+            Enjeux
+          </h3>
+          <p className="text-xs text-muted-foreground mb-2 italic">Un enjeu par ligne</p>
+          <textarea
+            value={issuesText}
+            onChange={(e) => handleIssuesChange(e.target.value)}
+            className="w-full min-h-[120px] px-4 py-3 font-sans text-sm leading-relaxed bg-card border border-border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-ring"
+            placeholder="Saisissez les enjeux, un par ligne…"
+          />
+        </section>
 
         {/* Résumé de l'entretien */}
-        {interview.summarySections && interview.summarySections.length > 0 && (
-          <section>
-            <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-              Résumé de l'entretien
-            </h3>
-            <div className="space-y-6">
-              {interview.summarySections.map((section: any, i: number) => (
-                <div key={i}>
-                  <h4 className="text-lg font-serif font-semibold mb-2">{section.title}</h4>
-                  <p className="font-sans text-sm leading-relaxed text-foreground">{section.content}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
+        <section>
+          <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+            Résumé de l'entretien
+          </h3>
+          <div className="space-y-6">
+            {(interview.summarySections || []).map((section: any, i: number) => (
+              <div key={i}>
+                <input
+                  type="text"
+                  value={section.title}
+                  onChange={(e) => handleSectionTitleChange(i, e.target.value)}
+                  className="text-lg font-serif font-semibold mb-2 w-full bg-transparent border-none focus:outline-none focus:ring-0 p-0"
+                />
+                <textarea
+                  value={section.content}
+                  onChange={(e) => handleSectionContentChange(i, e.target.value)}
+                  className="w-full min-h-[80px] px-4 py-3 font-sans text-sm leading-relaxed bg-card border border-border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
     </div>
   );

@@ -14,12 +14,8 @@ interface ProjectContextType {
   markPassageUsed: (interviewId: string, passageId: string, chapterId: string) => void;
   setPassageStatus: (interviewId: string, passageId: string, status: import('./types').PassageStatus) => void;
   addPersonToInterview: (interviewId: string, name: string, relation?: string) => void;
-  removePersonFromInterview: (interviewId: string, personId: string) => void;
   addPlaceDateToInterview: (interviewId: string, label: string) => void;
-  removePlaceDateFromInterview: (interviewId: string, placeDateId: string) => void;
   updateInterviewNotes: (interviewId: string, notes: string) => void;
-  updateInterviewIssues: (interviewId: string, issues: string[]) => void;
-  updateInterviewSummarySections: (interviewId: string, sections: import('./types').SummarySection[]) => void;
   addTheme: (theme: string) => void;
   addThemeAnnotation: (interviewId: string, passageId: string, start: number, end: number, theme: string) => void;
   removeThemeAnnotation: (interviewId: string, passageId: string, annotationId: string) => void;
@@ -130,38 +126,8 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }));
   }, []);
 
-  const removePersonFromInterview = useCallback((interviewId: string, personId: string) => {
-    setProject(prev => ({
-      ...prev,
-      interviews: prev.interviews.map(i =>
-        i.id === interviewId
-          ? { ...i, persons: i.persons.filter(p => p.id !== personId) }
-          : i
-      ),
-    }));
-  }, []);
-
-  const removePlaceDateFromInterview = useCallback((interviewId: string, placeDateId: string) => {
-    setProject(prev => ({
-      ...prev,
-      interviews: prev.interviews.map(i =>
-        i.id === interviewId
-          ? { ...i, placesDates: i.placesDates.filter(pd => pd.id !== placeDateId) }
-          : i
-      ),
-    }));
-  }, []);
-
   const updateInterviewNotes = useCallback((interviewId: string, notes: string) => {
     updateInterview(interviewId, { notes });
-  }, [updateInterview]);
-
-  const updateInterviewIssues = useCallback((interviewId: string, issues: string[]) => {
-    updateInterview(interviewId, { issues });
-  }, [updateInterview]);
-
-  const updateInterviewSummarySections = useCallback((interviewId: string, sections: import('./types').SummarySection[]) => {
-    updateInterview(interviewId, { summarySections: sections });
   }, [updateInterview]);
 
   const addTheme = useCallback((theme: string) => {
@@ -226,12 +192,8 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       markPassageUsed,
       setPassageStatus,
       addPersonToInterview,
-      removePersonFromInterview,
       addPlaceDateToInterview,
-      removePlaceDateFromInterview,
       updateInterviewNotes,
-      updateInterviewIssues,
-      updateInterviewSummarySections,
       addTheme,
       addThemeAnnotation,
       removeThemeAnnotation,

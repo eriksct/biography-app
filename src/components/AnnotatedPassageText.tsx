@@ -4,14 +4,14 @@ import { X } from 'lucide-react';
 // Theme color map using HSL-based backgrounds
 const THEME_COLORS: Record<string, { bg: string; hover: string }> = {};
 const PALETTE = [
-  { bg: 'bg-blue-100/0', hover: 'hover:bg-blue-100 group-hover/passage:bg-blue-100' },
-  { bg: 'bg-amber-100/0', hover: 'hover:bg-amber-100 group-hover/passage:bg-amber-100' },
-  { bg: 'bg-emerald-100/0', hover: 'hover:bg-emerald-100 group-hover/passage:bg-emerald-100' },
-  { bg: 'bg-purple-100/0', hover: 'hover:bg-purple-100 group-hover/passage:bg-purple-100' },
-  { bg: 'bg-rose-100/0', hover: 'hover:bg-rose-100 group-hover/passage:bg-rose-100' },
-  { bg: 'bg-cyan-100/0', hover: 'hover:bg-cyan-100 group-hover/passage:bg-cyan-100' },
-  { bg: 'bg-orange-100/0', hover: 'hover:bg-orange-100 group-hover/passage:bg-orange-100' },
-  { bg: 'bg-lime-100/0', hover: 'hover:bg-lime-100 group-hover/passage:bg-lime-100' },
+  { bg: 'bg-blue-50', hover: '' },
+  { bg: 'bg-amber-50', hover: '' },
+  { bg: 'bg-emerald-50', hover: '' },
+  { bg: 'bg-purple-50', hover: '' },
+  { bg: 'bg-rose-50', hover: '' },
+  { bg: 'bg-cyan-50', hover: '' },
+  { bg: 'bg-orange-50', hover: '' },
+  { bg: 'bg-lime-50', hover: '' },
 ];
 
 const TAG_COLORS = [

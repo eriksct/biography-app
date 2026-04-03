@@ -79,7 +79,7 @@ export function AppSidebar() {
           activeClassName="bg-sidebar-accent font-medium text-primary"
         >
           <BookOpen className="w-5 h-5 flex-shrink-0" />
-          <span>Manuscrit</span>
+          <span>Rédaction</span>
         </NavLink>
       </nav>
 

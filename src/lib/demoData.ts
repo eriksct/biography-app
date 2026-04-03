@@ -167,6 +167,22 @@ export const demoProject: Project = {
       status: 'transcribed',
       themes: ['Carrière', 'Famille'],
       notes: 'Entretien plus court, Jeanne était fatiguée. Mais le passage sur sa première classe est magnifique. Prévoir un entretien sur la retraite.',
+      issues: [
+        'La vocation d\'enseignante et le trac du premier jour',
+        'L\'équilibre entre vie professionnelle et familiale',
+        'Le rôle de Robert comme partenaire égalitaire',
+      ],
+      summary: 'Troisième entretien couvrant le début de la carrière d\'enseignante de Jeanne à Rouen et la fondation de sa famille avec Robert Moreau.',
+      summarySections: [
+        {
+          title: 'Le premier jour de classe',
+          content: 'En septembre 1962, Jeanne fait face à sa première classe de troisième au lycée Victor Hugo. Le trac initial se dissipe dès qu\'elle commence à parler de Molière.',
+        },
+        {
+          title: 'Le mariage et la famille',
+          content: 'Jeanne épouse Robert en 1963 dans un mariage simple à Rouen. Leurs enfants Catherine (1965) et Marc (1968) complètent la famille. Le couple partage la correction des copies le soir.',
+        },
+      ],
       persons: [
         { id: 'p8', name: 'Robert Moreau', relation: 'Époux' },
         { id: 'p9', name: 'Catherine Moreau', relation: 'Fille aînée' },

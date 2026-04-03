@@ -92,7 +92,7 @@ export function AnnotatedPassageText({ text, annotations, allThemes, onRemoveAnn
         return (
           <span
             key={i}
-            className={`${colors.hover} rounded-sm px-0.5 relative group/ann inline transition-colors duration-200`}
+            className={`${colors.bg} rounded-sm px-0.5 relative group/ann inline transition-colors duration-200`}
             title={seg.annotations.map(a => a.theme).join(', ')}
           >
             {seg.text}

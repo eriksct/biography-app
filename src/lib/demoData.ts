@@ -13,6 +13,31 @@ export const demoProject: Project = {
       status: 'processed',
       themes: ['Enfance', 'Famille'],
       notes: 'Premier entretien très riche. Jeanne était très émue en parlant de son enfance. Revenir sur l\'épisode du jardin lors du prochain entretien.',
+      issues: [
+        'Comprendre l\'influence du père menuisier sur la personnalité de Jeanne',
+        'Le rôle de la mère comme pilier familial pendant la guerre',
+        'L\'impact de l\'institutrice Mademoiselle Duval sur le goût des lettres',
+        'La résilience des enfants face à la guerre',
+      ],
+      summary: 'Ce premier entretien couvre l\'enfance de Jeanne Moreau à Honfleur, de sa naissance en 1938 à la fin de la guerre. Elle évoque la maison familiale, le métier de son père menuisier, l\'école et l\'institutrice qui lui a transmis le goût des livres, ainsi que la vie quotidienne pendant l\'Occupation.',
+      summarySections: [
+        {
+          title: 'La naissance et la maison d\'Honfleur',
+          content: 'Jeanne naît en novembre 1938 à Honfleur, dans une petite maison de pêcheurs aux murs en colombages. Son père plaisante sur le brouillard qui enveloppait l\'estuaire ce jour-là, disant qu\'elle était arrivée « enveloppée de mystère ».',
+        },
+        {
+          title: 'Le père menuisier',
+          content: 'Henri Moreau est menuisier avec un atelier au fond du jardin. Homme taiseux, il transmet à sa fille la patience et l\'amour du travail bien fait à travers ses gestes. Jeanne passe des heures à le regarder travailler le bois.',
+        },
+        {
+          title: 'L\'école et la découverte des livres',
+          content: 'L\'institutrice Mademoiselle Duval éveille chez Jeanne le goût de la lecture et de l\'écriture. Le prêt du « Grand Meaulnes » à onze ans constitue un moment fondateur.',
+        },
+        {
+          title: 'La guerre au quotidien',
+          content: 'Pendant l\'Occupation, les enfants jouent dans les ruines tandis que la mère s\'épuise à nourrir la famille. Malgré les privations, elle trouve le moyen de préparer un gâteau le dimanche.',
+        },
+      ],
       persons: [
         { id: 'p1', name: 'Jeanne Moreau', relation: 'Narratrice' },
         { id: 'p2', name: 'Henri Moreau', relation: 'Père' },
@@ -72,6 +97,27 @@ export const demoProject: Project = {
       status: 'transcribed',
       themes: ['Études', 'Carrière'],
       notes: 'Jeanne parle avec beaucoup de fierté de ses années d\'études. Le passage sur l\'arrivée à Paris est très fort visuellement.',
+      issues: [
+        'Le choc culturel entre la Normandie rurale et Paris',
+        'L\'importance de la chambre à soi (lien avec Virginia Woolf)',
+        'Le rôle du professeur Langlois comme mentor',
+        'L\'amitié durable avec Françoise Delorme',
+      ],
+      summary: 'Deuxième entretien centré sur les années d\'études de Jeanne à Paris. Elle raconte son arrivée à la gare Saint-Lazare, sa chambre de bonne rue Mouffetard, la Sorbonne et ses amitiés fondatrices.',
+      summarySections: [
+        {
+          title: 'L\'arrivée à Paris',
+          content: 'En septembre 1956, Jeanne arrive à Paris avec une valise en carton fabriquée par son père. Le choc de la grande ville après le calme d\'Honfleur est considérable.',
+        },
+        {
+          title: 'La vie d\'étudiante',
+          content: 'Sa chambre de bonne de huit mètres carrés rue Mouffetard devient son premier espace à elle. Malgré le froid hivernal, elle y trouve le bonheur de l\'indépendance.',
+        },
+        {
+          title: 'La vocation enseignante',
+          content: 'Le professeur Langlois, par une simple phrase d\'encouragement après un cours sur Chrétien de Troyes, oriente toute la carrière de Jeanne vers l\'enseignement.',
+        },
+      ],
       persons: [
         { id: 'p5', name: 'Professeur Langlois', relation: 'Professeur de lettres à la Sorbonne' },
         { id: 'p6', name: 'Françoise Delorme', relation: 'Amie d\'université' },
@@ -121,6 +167,22 @@ export const demoProject: Project = {
       status: 'transcribed',
       themes: ['Carrière', 'Famille'],
       notes: 'Entretien plus court, Jeanne était fatiguée. Mais le passage sur sa première classe est magnifique. Prévoir un entretien sur la retraite.',
+      issues: [
+        'La vocation d\'enseignante et le trac du premier jour',
+        'L\'équilibre entre vie professionnelle et familiale',
+        'Le rôle de Robert comme partenaire égalitaire',
+      ],
+      summary: 'Troisième entretien couvrant le début de la carrière d\'enseignante de Jeanne à Rouen et la fondation de sa famille avec Robert Moreau.',
+      summarySections: [
+        {
+          title: 'Le premier jour de classe',
+          content: 'En septembre 1962, Jeanne fait face à sa première classe de troisième au lycée Victor Hugo. Le trac initial se dissipe dès qu\'elle commence à parler de Molière.',
+        },
+        {
+          title: 'Le mariage et la famille',
+          content: 'Jeanne épouse Robert en 1963 dans un mariage simple à Rouen. Leurs enfants Catherine (1965) et Marc (1968) complètent la famille. Le couple partage la correction des copies le soir.',
+        },
+      ],
       persons: [
         { id: 'p8', name: 'Robert Moreau', relation: 'Époux' },
         { id: 'p9', name: 'Catherine Moreau', relation: 'Fille aînée' },

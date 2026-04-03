@@ -32,7 +32,7 @@ export function AppSidebar() {
             to="/manuscrit"
             className="p-2.5 rounded-md text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
             activeClassName="bg-sidebar-accent text-primary"
-            title="Manuscrit"
+            title="Rédaction"
           >
             <BookOpen className="w-5 h-5" />
           </NavLink>

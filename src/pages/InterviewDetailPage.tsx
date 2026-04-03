@@ -182,7 +182,11 @@ export default function InterviewDetailPage() {
           <SummaryTab
             interview={interview}
             addPersonToInterview={addPersonToInterview}
+            removePersonFromInterview={removePersonFromInterview}
             addPlaceDateToInterview={addPlaceDateToInterview}
+            removePlaceDateFromInterview={removePlaceDateFromInterview}
+            updateInterviewIssues={updateInterviewIssues}
+            updateInterviewSummarySections={updateInterviewSummarySections}
           />
         )}
       </div>

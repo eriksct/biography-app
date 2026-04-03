@@ -34,7 +34,7 @@ export function AppSidebar() {
             activeClassName="bg-sidebar-accent text-primary"
             title="Rédaction"
           >
-            <BookOpen className="w-5 h-5" />
+            <PenLine className="w-5 h-5" />
           </NavLink>
         </nav>
 

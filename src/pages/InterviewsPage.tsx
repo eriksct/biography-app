@@ -42,9 +42,8 @@ export default function InterviewsPage() {
   const [query, setQuery] = useState('');
   const [recordingOpen, setRecordingOpen] = useState(false);
 
-  const handleRecordingComplete = (duration: string) => {
-    // For now, just log — later this will create an actual interview
-    console.log('Recording completed:', duration);
+  const handleRecordingComplete = (duration: string, title: string) => {
+    console.log('Recording completed:', title, duration);
   };
 
   const isSearching = query.trim().length > 0;

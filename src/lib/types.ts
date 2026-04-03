@@ -30,6 +30,11 @@ export interface PlaceDate {
   label: string;
 }
 
+export interface SummarySection {
+  title: string;
+  content: string;
+}
+
 export interface Interview {
   id: string;
   number: number;
@@ -41,6 +46,9 @@ export interface Interview {
   placesDates: PlaceDate[];
   themes: string[];
   notes: string;
+  issues: string[];
+  summary: string;
+  summarySections: SummarySection[];
 }
 
 export interface Chapter {

@@ -13,6 +13,31 @@ export const demoProject: Project = {
       status: 'processed',
       themes: ['Enfance', 'Famille'],
       notes: 'Premier entretien très riche. Jeanne était très émue en parlant de son enfance. Revenir sur l\'épisode du jardin lors du prochain entretien.',
+      issues: [
+        'Comprendre l\'influence du père menuisier sur la personnalité de Jeanne',
+        'Le rôle de la mère comme pilier familial pendant la guerre',
+        'L\'impact de l\'institutrice Mademoiselle Duval sur le goût des lettres',
+        'La résilience des enfants face à la guerre',
+      ],
+      summary: 'Ce premier entretien couvre l\'enfance de Jeanne Moreau à Honfleur, de sa naissance en 1938 à la fin de la guerre. Elle évoque la maison familiale, le métier de son père menuisier, l\'école et l\'institutrice qui lui a transmis le goût des livres, ainsi que la vie quotidienne pendant l\'Occupation.',
+      summarySections: [
+        {
+          title: 'La naissance et la maison d\'Honfleur',
+          content: 'Jeanne naît en novembre 1938 à Honfleur, dans une petite maison de pêcheurs aux murs en colombages. Son père plaisante sur le brouillard qui enveloppait l\'estuaire ce jour-là, disant qu\'elle était arrivée « enveloppée de mystère ».',
+        },
+        {
+          title: 'Le père menuisier',
+          content: 'Henri Moreau est menuisier avec un atelier au fond du jardin. Homme taiseux, il transmet à sa fille la patience et l\'amour du travail bien fait à travers ses gestes. Jeanne passe des heures à le regarder travailler le bois.',
+        },
+        {
+          title: 'L\'école et la découverte des livres',
+          content: 'L\'institutrice Mademoiselle Duval éveille chez Jeanne le goût de la lecture et de l\'écriture. Le prêt du « Grand Meaulnes » à onze ans constitue un moment fondateur.',
+        },
+        {
+          title: 'La guerre au quotidien',
+          content: 'Pendant l\'Occupation, les enfants jouent dans les ruines tandis que la mère s\'épuise à nourrir la famille. Malgré les privations, elle trouve le moyen de préparer un gâteau le dimanche.',
+        },
+      ],
       persons: [
         { id: 'p1', name: 'Jeanne Moreau', relation: 'Narratrice' },
         { id: 'p2', name: 'Henri Moreau', relation: 'Père' },

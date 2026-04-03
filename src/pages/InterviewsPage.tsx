@@ -5,6 +5,8 @@ import { Mic, FileText, CheckCircle, Plus, Search, X } from 'lucide-react';
 import { InterviewStatus, Interview, Passage } from '@/lib/types';
 import { AppLayout } from '@/components/AppLayout';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { RecordingDialog } from '@/components/RecordingDialog';
 
 const statusConfig: Record<InterviewStatus, { icon: React.ElementType; label: string; className: string }> = {
   recording: { icon: Mic, label: 'En cours', className: 'text-primary' },

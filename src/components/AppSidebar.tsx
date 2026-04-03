@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BookOpen, FileText, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { PenLine, FileText, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useProject } from '@/lib/ProjectContext';
 
@@ -34,7 +34,7 @@ export function AppSidebar() {
             activeClassName="bg-sidebar-accent text-primary"
             title="Rédaction"
           >
-            <BookOpen className="w-5 h-5" />
+            <PenLine className="w-5 h-5" />
           </NavLink>
         </nav>
 
@@ -78,7 +78,7 @@ export function AppSidebar() {
           className="flex items-center gap-3 px-4 py-3 rounded-md text-content-sm font-sans text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
           activeClassName="bg-sidebar-accent font-medium text-primary"
         >
-          <BookOpen className="w-5 h-5 flex-shrink-0" />
+          <PenLine className="w-5 h-5 flex-shrink-0" />
           <span>Rédaction</span>
         </NavLink>
       </nav>

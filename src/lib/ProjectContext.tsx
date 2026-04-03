@@ -14,8 +14,12 @@ interface ProjectContextType {
   markPassageUsed: (interviewId: string, passageId: string, chapterId: string) => void;
   setPassageStatus: (interviewId: string, passageId: string, status: import('./types').PassageStatus) => void;
   addPersonToInterview: (interviewId: string, name: string, relation?: string) => void;
+  removePersonFromInterview: (interviewId: string, personId: string) => void;
   addPlaceDateToInterview: (interviewId: string, label: string) => void;
+  removePlaceDateFromInterview: (interviewId: string, placeDateId: string) => void;
   updateInterviewNotes: (interviewId: string, notes: string) => void;
+  updateInterviewIssues: (interviewId: string, issues: string[]) => void;
+  updateInterviewSummarySections: (interviewId: string, sections: import('./types').SummarySection[]) => void;
   addTheme: (theme: string) => void;
   addThemeAnnotation: (interviewId: string, passageId: string, start: number, end: number, theme: string) => void;
   removeThemeAnnotation: (interviewId: string, passageId: string, annotationId: string) => void;

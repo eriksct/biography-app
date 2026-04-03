@@ -94,12 +94,20 @@ export function RecordingDialog({ open, onOpenChange, onRecordingComplete }: Rec
   const stopRecording = useCallback(() => {
     const duration = formatTime(elapsed);
     cleanup();
+    setFinalDuration(duration);
+    setState('stopped');
+    setLevels(new Array(40).fill(0));
+  }, [elapsed, cleanup]);
+
+  const confirmRecording = useCallback(() => {
+    onRecordingComplete(finalDuration, title.trim() || `Entretien`);
     setState('idle');
     setElapsed(0);
+    setTitle('');
+    setFinalDuration('');
     setLevels(new Array(40).fill(0));
-    onRecordingComplete(duration);
     onOpenChange(false);
-  }, [elapsed, cleanup, onRecordingComplete, onOpenChange]);
+  }, [finalDuration, title, onRecordingComplete, onOpenChange]);
 
   useEffect(() => {
     if (!open) {

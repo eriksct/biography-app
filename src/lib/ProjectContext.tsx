@@ -130,8 +130,38 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }));
   }, []);
 
+  const removePersonFromInterview = useCallback((interviewId: string, personId: string) => {
+    setProject(prev => ({
+      ...prev,
+      interviews: prev.interviews.map(i =>
+        i.id === interviewId
+          ? { ...i, persons: i.persons.filter(p => p.id !== personId) }
+          : i
+      ),
+    }));
+  }, []);
+
+  const removePlaceDateFromInterview = useCallback((interviewId: string, placeDateId: string) => {
+    setProject(prev => ({
+      ...prev,
+      interviews: prev.interviews.map(i =>
+        i.id === interviewId
+          ? { ...i, placesDates: i.placesDates.filter(pd => pd.id !== placeDateId) }
+          : i
+      ),
+    }));
+  }, []);
+
   const updateInterviewNotes = useCallback((interviewId: string, notes: string) => {
     updateInterview(interviewId, { notes });
+  }, [updateInterview]);
+
+  const updateInterviewIssues = useCallback((interviewId: string, issues: string[]) => {
+    updateInterview(interviewId, { issues });
+  }, [updateInterview]);
+
+  const updateInterviewSummarySections = useCallback((interviewId: string, sections: import('./types').SummarySection[]) => {
+    updateInterview(interviewId, { summarySections: sections });
   }, [updateInterview]);
 
   const addTheme = useCallback((theme: string) => {

@@ -123,69 +123,90 @@ export function RecordingDialog({ open, onOpenChange, onRecordingComplete }: Rec
       <DialogContent className="sm:max-w-md p-0 overflow-hidden bg-card border-border">
         <div className="flex flex-col items-center px-8 py-10 gap-8">
           <DialogTitle className="font-serif text-xl font-semibold text-foreground">
-            {state === 'idle' ? 'Nouvel entretien' : state === 'paused' ? 'En pause' : 'Enregistrement'}
+            {state === 'idle' ? 'Nouvel entretien' : state === 'stopped' ? 'Enregistrement terminé' : state === 'paused' ? 'En pause' : 'Enregistrement'}
           </DialogTitle>
 
-          {/* Waveform visualization */}
-          <div className="flex items-center justify-center gap-[2px] h-24 w-full max-w-xs">
-            {levels.map((level, i) => (
-              <div
-                key={i}
-                className="w-[4px] rounded-full bg-primary/60 transition-all duration-75"
-                style={{
-                  height: `${Math.max(4, level * 96)}px`,
-                  opacity: state === 'recording' ? 0.4 + level * 0.6 : 0.2,
-                }}
-              />
-            ))}
-          </div>
+          {state === 'stopped' ? (
+            /* Title input after recording */
+            <div className="flex flex-col items-center gap-6 w-full">
+              <span className="font-mono text-2xl font-light text-muted-foreground tracking-wider">
+                {finalDuration}
+              </span>
+              <div className="w-full space-y-2">
+                <label className="text-sm font-sans text-muted-foreground">Titre de l'entretien</label>
+                <Input
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Ex : Entretien avec Marie"
+                  className="font-sans"
+                  autoFocus
+                  onKeyDown={(e) => e.key === 'Enter' && confirmRecording()}
+                />
+              </div>
+              <Button onClick={confirmRecording} className="w-full">
+                <Check className="w-4 h-4" />
+                Enregistrer
+              </Button>
+            </div>
+          ) : (
+            <>
+              {/* Waveform visualization */}
+              <div className="flex items-center justify-center gap-[2px] h-24 w-full max-w-xs">
+                {levels.map((level, i) => (
+                  <div
+                    key={i}
+                    className="w-[4px] rounded-full bg-primary/60 transition-all duration-75"
+                    style={{
+                      height: `${Math.max(4, level * 96)}px`,
+                      opacity: state === 'recording' ? 0.4 + level * 0.6 : 0.2,
+                    }}
+                  />
+                ))}
+              </div>
 
-          {/* Timer */}
-          <span className="font-mono text-4xl font-light text-foreground tracking-wider">
-            {formatTime(elapsed)}
-          </span>
+              {/* Timer */}
+              <span className="font-mono text-4xl font-light text-foreground tracking-wider">
+                {formatTime(elapsed)}
+              </span>
 
-          {/* Controls */}
-          <div className="flex items-center gap-6">
-            {state === 'idle' ? (
-              <button
-                onClick={startRecording}
-                className="w-16 h-16 rounded-full bg-destructive flex items-center justify-center hover:bg-destructive/90 transition-colors shadow-lg"
-              >
-                <Mic className="w-7 h-7 text-destructive-foreground" />
-              </button>
-            ) : (
-              <>
-                {/* Pause / Resume */}
-                <button
-                  onClick={state === 'paused' ? resumeRecording : pauseRecording}
-                  className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center hover:bg-secondary/80 transition-colors"
-                >
-                  {state === 'paused' ? (
-                    <Play className="w-5 h-5 text-foreground ml-0.5" />
-                  ) : (
-                    <Pause className="w-5 h-5 text-foreground" />
-                  )}
-                </button>
+              {/* Controls */}
+              <div className="flex items-center gap-6">
+                {state === 'idle' ? (
+                  <button
+                    onClick={startRecording}
+                    className="w-16 h-16 rounded-full bg-destructive flex items-center justify-center hover:bg-destructive/90 transition-colors shadow-lg"
+                  >
+                    <Mic className="w-7 h-7 text-destructive-foreground" />
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      onClick={state === 'paused' ? resumeRecording : pauseRecording}
+                      className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center hover:bg-secondary/80 transition-colors"
+                    >
+                      {state === 'paused' ? (
+                        <Play className="w-5 h-5 text-foreground ml-0.5" />
+                      ) : (
+                        <Pause className="w-5 h-5 text-foreground" />
+                      )}
+                    </button>
+                    <button
+                      onClick={stopRecording}
+                      className="w-16 h-16 rounded-full bg-destructive flex items-center justify-center hover:bg-destructive/90 transition-colors shadow-lg"
+                    >
+                      <Square className="w-6 h-6 text-destructive-foreground" />
+                    </button>
+                    <div className="w-12" />
+                  </>
+                )}
+              </div>
 
-                {/* Stop */}
-                <button
-                  onClick={stopRecording}
-                  className="w-16 h-16 rounded-full bg-destructive flex items-center justify-center hover:bg-destructive/90 transition-colors shadow-lg"
-                >
-                  <Square className="w-6 h-6 text-destructive-foreground" />
-                </button>
-
-                {/* Spacer for visual balance */}
-                <div className="w-12" />
-              </>
-            )}
-          </div>
-
-          {state === 'idle' && (
-            <p className="text-sm text-muted-foreground font-sans text-center">
-              Appuyez sur le bouton pour commencer l'enregistrement
-            </p>
+              {state === 'idle' && (
+                <p className="text-sm text-muted-foreground font-sans text-center">
+                  Appuyez sur le bouton pour commencer l'enregistrement
+                </p>
+              )}
+            </>
           )}
         </div>
       </DialogContent>

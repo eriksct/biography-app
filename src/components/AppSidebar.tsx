@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BookOpen, FileText, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { PenLine, FileText, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useProject } from '@/lib/ProjectContext';
 

@@ -422,43 +422,6 @@ function SummaryTab({
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="max-w-3xl mx-auto px-8 py-10 space-y-10">
-        {/* Summary overview */}
-        {interview.summary && (
-          <section>
-            <h2 className="text-2xl font-serif font-semibold mb-4">Vue d'ensemble</h2>
-            <p className="font-sans text-base leading-relaxed text-foreground">
-              {interview.summary}
-            </p>
-          </section>
-        )}
-
-        {/* Enjeux */}
-        {interview.issues && interview.issues.length > 0 && (
-          <section>
-            <h2 className="text-xl font-serif font-semibold mb-4">Enjeux</h2>
-            <ul className="space-y-2">
-              {interview.issues.map((issue: string, i: number) => (
-                <li key={i} className="flex items-start gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2.5 flex-shrink-0" />
-                  <span className="font-sans text-sm leading-relaxed text-foreground">{issue}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        {/* Summary sections */}
-        {interview.summarySections && interview.summarySections.length > 0 && (
-          <section className="space-y-6">
-            {interview.summarySections.map((section: any, i: number) => (
-              <div key={i}>
-                <h3 className="text-lg font-serif font-semibold mb-2">{section.title}</h3>
-                <p className="font-sans text-sm leading-relaxed text-foreground">{section.content}</p>
-              </div>
-            ))}
-          </section>
-        )}
-
         {/* Personnes et Lieux side by side */}
         <div className="grid grid-cols-2 gap-8">
           {/* Personnes */}
@@ -518,6 +481,40 @@ function SummaryTab({
             </div>
           </section>
         </div>
+
+        {/* Enjeux */}
+        {interview.issues && interview.issues.length > 0 && (
+          <section>
+            <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+              Enjeux
+            </h3>
+            <ul className="space-y-2">
+              {interview.issues.map((issue: string, i: number) => (
+                <li key={i} className="flex items-start gap-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2.5 flex-shrink-0" />
+                  <span className="font-sans text-sm leading-relaxed text-foreground">{issue}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {/* Résumé de l'entretien */}
+        {interview.summarySections && interview.summarySections.length > 0 && (
+          <section>
+            <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+              Résumé de l'entretien
+            </h3>
+            <div className="space-y-6">
+              {interview.summarySections.map((section: any, i: number) => (
+                <div key={i}>
+                  <h4 className="text-lg font-serif font-semibold mb-2">{section.title}</h4>
+                  <p className="font-sans text-sm leading-relaxed text-foreground">{section.content}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );

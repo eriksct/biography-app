@@ -7,7 +7,7 @@ import { Mic, Square, Pause, Play, Check } from 'lucide-react';
 interface RecordingDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onRecordingComplete: (duration: string) => void;
+  onRecordingComplete: (duration: string, title: string) => void;
 }
 
 function formatTime(seconds: number): string {

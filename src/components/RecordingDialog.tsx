@@ -19,8 +19,10 @@ function formatTime(seconds: number): string {
 }
 
 export function RecordingDialog({ open, onOpenChange, onRecordingComplete }: RecordingDialogProps) {
-  const [state, setState] = useState<'idle' | 'recording' | 'paused'>('idle');
+  const [state, setState] = useState<'idle' | 'recording' | 'paused' | 'stopped'>('idle');
   const [elapsed, setElapsed] = useState(0);
+  const [title, setTitle] = useState('');
+  const [finalDuration, setFinalDuration] = useState('');
   const [levels, setLevels] = useState<number[]>(new Array(40).fill(0));
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const animFrameRef = useRef<number | null>(null);

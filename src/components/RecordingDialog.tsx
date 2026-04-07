@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Mic, Square, Pause, Play, Check } from 'lucide-react';
+import { Mic, Square, Pause, Play, Check, Upload } from 'lucide-react';
 
 interface RecordingDialogProps {
   open: boolean;
@@ -24,11 +24,13 @@ export function RecordingDialog({ open, onOpenChange, onRecordingComplete }: Rec
   const [title, setTitle] = useState('');
   const [finalDuration, setFinalDuration] = useState('');
   const [levels, setLevels] = useState<number[]>(new Array(40).fill(0));
+  const [uploadedFileName, setUploadedFileName] = useState('');
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const animFrameRef = useRef<number | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const cleanup = useCallback(() => {
     if (intervalRef.current) clearInterval(intervalRef.current);
@@ -99,12 +101,36 @@ export function RecordingDialog({ open, onOpenChange, onRecordingComplete }: Rec
     setLevels(new Array(40).fill(0));
   }, [elapsed, cleanup]);
 
+  const handleFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const name = file.name.replace(/\.[^/.]+$/, '');
+    setUploadedFileName(name);
+    setTitle(name);
+
+    // Get duration from audio file
+    const url = URL.createObjectURL(file);
+    const audio = new Audio(url);
+    audio.addEventListener('loadedmetadata', () => {
+      const secs = Math.round(audio.duration);
+      setFinalDuration(formatTime(secs));
+      URL.revokeObjectURL(url);
+      setState('stopped');
+    });
+    audio.addEventListener('error', () => {
+      setFinalDuration('--:--');
+      URL.revokeObjectURL(url);
+      setState('stopped');
+    });
+  }, []);
+
   const confirmRecording = useCallback(() => {
     onRecordingComplete(finalDuration, title.trim() || `Entretien`);
     setState('idle');
     setElapsed(0);
     setTitle('');
     setFinalDuration('');
+    setUploadedFileName('');
     setLevels(new Array(40).fill(0));
     onOpenChange(false);
   }, [finalDuration, title, onRecordingComplete, onOpenChange]);
@@ -114,6 +140,8 @@ export function RecordingDialog({ open, onOpenChange, onRecordingComplete }: Rec
       cleanup();
       setState('idle');
       setElapsed(0);
+      setUploadedFileName('');
+      setTitle('');
       setLevels(new Array(40).fill(0));
     }
   }, [open, cleanup]);
@@ -202,9 +230,32 @@ export function RecordingDialog({ open, onOpenChange, onRecordingComplete }: Rec
               </div>
 
               {state === 'idle' && (
-                <p className="text-sm text-muted-foreground font-sans text-center">
-                  Appuyez sur le bouton pour commencer l'enregistrement
-                </p>
+                <div className="flex flex-col items-center gap-3 w-full">
+                  <p className="text-sm text-muted-foreground font-sans text-center">
+                    Appuyez sur le bouton pour commencer l'enregistrement
+                  </p>
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <div className="h-px w-8 bg-border" />
+                    <span className="text-xs font-sans">ou</span>
+                    <div className="h-px w-8 bg-border" />
+                  </div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="audio/*,.mp3,.m4a,.wav,.ogg,.webm"
+                    className="hidden"
+                    onChange={handleFileUpload}
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="gap-2"
+                  >
+                    <Upload className="w-4 h-4" />
+                    Importer un fichier audio
+                  </Button>
+                </div>
               )}
             </>
           )}

@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Mic, Square, Pause, Play, Check } from 'lucide-react';
+import { Mic, Square, Pause, Play, Check, Upload } from 'lucide-react';
 
 interface RecordingDialogProps {
   open: boolean;

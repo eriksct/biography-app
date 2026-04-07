@@ -274,7 +274,7 @@ export default function ManuscritPage() {
                       >{passage.text}</p>
                       <div className="flex gap-1 mb-3">
                         {passage.themes.map(t => (
-                          <span key={t} className="px-2 py-0.5 rounded-full text-xs font-sans bg-secondary text-secondary-foreground">
+                          <span key={t} className={`px-2 py-0.5 rounded-full text-xs font-sans ${getTagColor(t, project.allThemes)}`}>
                             {t}
                           </span>
                         ))}
@@ -337,7 +337,7 @@ export default function ManuscritPage() {
                         <div className="flex items-center gap-3 mb-3">
                           <span className="text-xs font-sans text-muted-foreground font-mono">{passage.timestamp}</span>
                           {passage.themes.map(t => (
-                            <span key={t} className="px-2 py-0.5 rounded-full text-xs font-sans font-medium bg-secondary text-secondary-foreground">
+                            <span key={t} className={`px-2 py-0.5 rounded-full text-xs font-sans font-medium ${getTagColor(t, project.allThemes)}`}>
                               {t}
                             </span>
                           ))}

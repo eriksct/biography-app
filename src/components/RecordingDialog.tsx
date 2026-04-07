@@ -140,6 +140,8 @@ export function RecordingDialog({ open, onOpenChange, onRecordingComplete }: Rec
       cleanup();
       setState('idle');
       setElapsed(0);
+      setUploadedFileName('');
+      setTitle('');
       setLevels(new Array(40).fill(0));
     }
   }, [open, cleanup]);

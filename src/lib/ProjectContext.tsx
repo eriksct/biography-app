@@ -8,6 +8,7 @@ interface ProjectContextType {
   updatePassage: (interviewId: string, passageId: string, updates: Partial<Passage>) => void;
   addChapter: (title: string) => void;
   updateChapter: (id: string, updates: Partial<Chapter>) => void;
+  reorderChapter: (chapterId: string, direction: 'up' | 'down') => void;
   addBlockToChapter: (chapterId: string, block: ManuscriptBlock) => void;
   updateBlock: (chapterId: string, blockId: string, updates: Partial<ManuscriptBlock>) => void;
   removeBlock: (chapterId: string, blockId: string) => void;
@@ -186,6 +187,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       updatePassage,
       addChapter,
       updateChapter,
+      reorderChapter,
       addBlockToChapter,
       updateBlock,
       removeBlock,

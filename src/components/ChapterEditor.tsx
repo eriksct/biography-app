@@ -1,7 +1,7 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import { Bold, Italic, Underline as UnderlineIcon, Strikethrough, Heading2 } from 'lucide-react';
 
 interface ChapterEditorProps {
@@ -11,6 +11,8 @@ interface ChapterEditorProps {
 }
 
 export function ChapterEditor({ content, onUpdate, placeholder }: ChapterEditorProps) {
+  const isInternalUpdate = useRef(false);
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -25,12 +27,17 @@ export function ChapterEditor({ content, onUpdate, placeholder }: ChapterEditorP
       },
     },
     onUpdate: ({ editor }) => {
+      isInternalUpdate.current = true;
       onUpdate(editor.getHTML());
     },
   });
 
-  // Sync content from outside (e.g. passage insertion)
+  // Sync content from outside (e.g. passage insertion) — skip if the change came from the editor itself
   useEffect(() => {
+    if (isInternalUpdate.current) {
+      isInternalUpdate.current = false;
+      return;
+    }
     if (editor && content !== editor.getHTML()) {
       editor.commands.setContent(content || '<p></p>', { emitUpdate: false });
     }

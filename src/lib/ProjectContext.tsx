@@ -8,6 +8,7 @@ interface ProjectContextType {
   updatePassage: (interviewId: string, passageId: string, updates: Partial<Passage>) => void;
   addChapter: (title: string) => void;
   updateChapter: (id: string, updates: Partial<Chapter>) => void;
+  reorderChapter: (chapterId: string, direction: 'up' | 'down') => void;
   addBlockToChapter: (chapterId: string, block: ManuscriptBlock) => void;
   updateBlock: (chapterId: string, blockId: string, updates: Partial<ManuscriptBlock>) => void;
   removeBlock: (chapterId: string, blockId: string) => void;
@@ -63,6 +64,18 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       ...prev,
       chapters: prev.chapters.map(c => c.id === id ? { ...c, ...updates } : c),
     }));
+  }, []);
+
+  const reorderChapter = useCallback((chapterId: string, direction: 'up' | 'down') => {
+    setProject(prev => {
+      const idx = prev.chapters.findIndex(c => c.id === chapterId);
+      if (idx === -1) return prev;
+      const newIdx = direction === 'up' ? idx - 1 : idx + 1;
+      if (newIdx < 0 || newIdx >= prev.chapters.length) return prev;
+      const chapters = [...prev.chapters];
+      [chapters[idx], chapters[newIdx]] = [chapters[newIdx], chapters[idx]];
+      return { ...prev, chapters };
+    });
   }, []);
 
   const addBlockToChapter = useCallback((chapterId: string, block: ManuscriptBlock) => {
@@ -186,6 +199,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       updatePassage,
       addChapter,
       updateChapter,
+      reorderChapter,
       addBlockToChapter,
       updateBlock,
       removeBlock,

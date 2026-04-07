@@ -93,7 +93,7 @@ export function ChapterEditor({ content, onUpdate, placeholder }: ChapterEditorP
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
           title="Titre de paragraphe"
         >
-          <span className="text-xs font-sans font-medium">Titre</span>
+          <span className="font-sans font-medium text-sm">Titre</span>
         </ToolbarButton>
       </div>
 

@@ -32,7 +32,7 @@ export function ChapterEditor({ content, onUpdate, placeholder }: ChapterEditorP
   // Sync content from outside (e.g. passage insertion)
   useEffect(() => {
     if (editor && content !== editor.getHTML()) {
-      editor.commands.setContent(content || '<p></p>', false);
+      editor.commands.setContent(content || '<p></p>', { emitUpdate: false });
     }
   }, [content, editor]);
 

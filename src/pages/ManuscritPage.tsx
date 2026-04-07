@@ -4,6 +4,7 @@ import { AppLayout } from '@/components/AppLayout';
 import { PassageStatus } from '@/lib/types';
 import { Plus, FileText, Download, X, BookOpen, CheckCircle, AlertCircle, Circle, PanelLeftOpen } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { getTagColor } from '@/components/AnnotatedPassageText';
 
 export default function ManuscritPage() {
   const { project, addChapter, updateChapter, markPassageUsed, setPassageStatus } = useProject();
@@ -209,7 +210,7 @@ export default function ManuscritPage() {
                       <button
                         key={t}
                         onClick={() => setPassageFilterThemes(prev => active ? prev.filter(v => v !== t) : [...prev, t])}
-                        className={`px-2 py-0.5 text-xs font-sans rounded-full transition-colors ${active ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground hover:bg-border'}`}
+                        className={`px-2 py-0.5 text-xs font-sans rounded-full transition-colors ${active ? getTagColor(t, project.allThemes) + ' ring-2 ring-primary/50' : getTagColor(t, project.allThemes)}`}
                       >
                         {t}
                       </button>
@@ -273,7 +274,7 @@ export default function ManuscritPage() {
                       >{passage.text}</p>
                       <div className="flex gap-1 mb-3">
                         {passage.themes.map(t => (
-                          <span key={t} className="px-2 py-0.5 rounded-full text-xs font-sans bg-secondary text-secondary-foreground">
+                          <span key={t} className={`px-2 py-0.5 rounded-full text-xs font-sans ${getTagColor(t, project.allThemes)}`}>
                             {t}
                           </span>
                         ))}
@@ -336,7 +337,7 @@ export default function ManuscritPage() {
                         <div className="flex items-center gap-3 mb-3">
                           <span className="text-xs font-sans text-muted-foreground font-mono">{passage.timestamp}</span>
                           {passage.themes.map(t => (
-                            <span key={t} className="px-2 py-0.5 rounded-full text-xs font-sans font-medium bg-secondary text-secondary-foreground">
+                            <span key={t} className={`px-2 py-0.5 rounded-full text-xs font-sans font-medium ${getTagColor(t, project.allThemes)}`}>
                               {t}
                             </span>
                           ))}

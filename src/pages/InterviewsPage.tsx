@@ -233,10 +233,6 @@ export default function InterviewsPage() {
                         </p>
                       </div>
                     </div>
-                    <div className={`flex items-center gap-2 ${status.className}`}>
-                      <StatusIcon className="w-5 h-5" />
-                      <span className="font-sans text-sm">{status.label}</span>
-                    </div>
                   </div>
                   {interview.themes.length > 0 && (
                     <div className="flex gap-2 mt-4 ml-14">

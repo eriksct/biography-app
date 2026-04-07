@@ -230,9 +230,32 @@ export function RecordingDialog({ open, onOpenChange, onRecordingComplete }: Rec
               </div>
 
               {state === 'idle' && (
-                <p className="text-sm text-muted-foreground font-sans text-center">
-                  Appuyez sur le bouton pour commencer l'enregistrement
-                </p>
+                <div className="flex flex-col items-center gap-3 w-full">
+                  <p className="text-sm text-muted-foreground font-sans text-center">
+                    Appuyez sur le bouton pour commencer l'enregistrement
+                  </p>
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <div className="h-px w-8 bg-border" />
+                    <span className="text-xs font-sans">ou</span>
+                    <div className="h-px w-8 bg-border" />
+                  </div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="audio/*,.mp3,.m4a,.wav,.ogg,.webm"
+                    className="hidden"
+                    onChange={handleFileUpload}
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="gap-2"
+                  >
+                    <Upload className="w-4 h-4" />
+                    Importer un fichier audio
+                  </Button>
+                </div>
               )}
             </>
           )}

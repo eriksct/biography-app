@@ -230,7 +230,7 @@ export default function ManuscritPage() {
                         onClick={() => setPassageFilterInterviews(prev => active ? prev.filter(v => v !== i.id) : [...prev, i.id])}
                         className={`px-2 py-0.5 text-xs font-sans rounded-full transition-colors ${active ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground hover:bg-border'}`}
                       >
-                        N°{i.number}
+                        Entretien n°{i.number}
                       </button>
                     );
                   })}

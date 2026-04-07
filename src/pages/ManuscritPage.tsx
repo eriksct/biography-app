@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useProject } from '@/lib/ProjectContext';
 import { AppLayout } from '@/components/AppLayout';
 import { PassageStatus } from '@/lib/types';
 import { Plus, FileText, Download, X, BookOpen, CheckCircle, AlertCircle, Circle, PanelLeftOpen } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { getTagColor } from '@/components/AnnotatedPassageText';
-
+import { ChapterEditor, extractHeadings } from '@/components/ChapterEditor';
 export default function ManuscritPage() {
   const { project, addChapter, updateChapter, markPassageUsed, setPassageStatus } = useProject();
   const [activeChapterId, setActiveChapterId] = useState<string>(project.chapters[0]?.id || '');
@@ -29,6 +29,15 @@ export default function ManuscritPage() {
 
   const activeChapter = project.chapters.find(c => c.id === activeChapterId);
 
+  // Extract headings per chapter for TOC
+  const chapterHeadings = useMemo(() => {
+    const map: Record<string, { id: string; text: string }[]> = {};
+    project.chapters.forEach(c => {
+      map[c.id] = extractHeadings(c.content);
+    });
+    return map;
+  }, [project.chapters]);
+
   // All passages across interviews (filterable)
   const filteredPassages = project.interviews.flatMap(interview =>
     interview.passages
@@ -48,8 +57,9 @@ export default function ManuscritPage() {
 
   const handleInsertPassage = (passage: typeof filteredPassages[0]) => {
     if (!activeChapterId || !activeChapter) return;
-    const separator = activeChapter.content ? '\n\n' : '';
-    updateChapter(activeChapterId, { content: activeChapter.content + separator + passage.text });
+    const newParagraph = `<p>${passage.text}</p>`;
+    const updatedContent = activeChapter.content ? activeChapter.content + newParagraph : newParagraph;
+    updateChapter(activeChapterId, { content: updatedContent });
     markPassageUsed(passage.interviewId, passage.id, activeChapterId);
     setShowPassagePanel(false);
   };
@@ -71,19 +81,38 @@ export default function ManuscritPage() {
           <div className="p-4 border-b border-border">
             <h2 className="font-serif text-lg font-semibold">Chapitres</h2>
           </div>
-          <div className="flex-1 overflow-y-auto p-3 space-y-1">
+          <div className="flex-1 overflow-y-auto p-3 space-y-0.5">
             {project.chapters.map(chapter => (
-              <button
-                key={chapter.id}
-                onClick={() => setActiveChapterId(chapter.id)}
-                className={`w-full text-left px-3 py-3 rounded-md font-sans text-sm transition-colors ${
-                  activeChapterId === chapter.id
-                    ? 'bg-secondary font-medium text-foreground'
-                    : 'text-muted-foreground hover:bg-secondary/50'
-                }`}
-              >
-                {chapter.title}
-              </button>
+              <div key={chapter.id}>
+                <button
+                  onClick={() => setActiveChapterId(chapter.id)}
+                  className={`w-full text-left px-3 py-2.5 rounded-md font-sans text-sm transition-colors ${
+                    activeChapterId === chapter.id
+                      ? 'bg-secondary font-medium text-foreground'
+                      : 'text-muted-foreground hover:bg-secondary/50'
+                  }`}
+                >
+                  {chapter.title}
+                </button>
+                {/* Sub-headings (H2) from chapter content */}
+                {(chapterHeadings[chapter.id] || []).map((h, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      setActiveChapterId(chapter.id);
+                      // Scroll to heading in editor
+                      setTimeout(() => {
+                        const editorEl = document.querySelector('.ProseMirror');
+                        const h2s = editorEl?.querySelectorAll('h2');
+                        h2s?.[idx]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }, 100);
+                    }}
+                    className="w-full text-left pl-7 pr-3 py-1.5 text-xs font-sans text-muted-foreground hover:text-foreground hover:bg-secondary/30 rounded-md transition-colors truncate"
+                  >
+                    {h.text}
+                  </button>
+                ))}
+              </div>
             ))}
           </div>
           <div className="p-3 border-t border-border">
@@ -148,11 +177,10 @@ export default function ManuscritPage() {
             <div className="max-w-3xl mx-auto px-8 py-10">
               {activeChapter ? (
                 <>
-                  <h1 className="text-3xl font-serif font-semibold mb-10">{activeChapter.title}</h1>
-                  <textarea
-                    value={activeChapter.content}
-                    onChange={e => updateChapter(activeChapterId, { content: e.target.value })}
-                    className="w-full font-serif text-content leading-relaxed bg-transparent resize-none focus:outline-none min-h-[calc(100vh-250px)]"
+                  <h1 className="text-3xl font-serif font-semibold mb-6">{activeChapter.title}</h1>
+                  <ChapterEditor
+                    content={activeChapter.content}
+                    onUpdate={(html) => updateChapter(activeChapterId, { content: html })}
                     placeholder="Écrivez ici…"
                   />
                 </>

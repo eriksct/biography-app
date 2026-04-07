@@ -24,11 +24,13 @@ export function RecordingDialog({ open, onOpenChange, onRecordingComplete }: Rec
   const [title, setTitle] = useState('');
   const [finalDuration, setFinalDuration] = useState('');
   const [levels, setLevels] = useState<number[]>(new Array(40).fill(0));
+  const [uploadedFileName, setUploadedFileName] = useState('');
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const animFrameRef = useRef<number | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const cleanup = useCallback(() => {
     if (intervalRef.current) clearInterval(intervalRef.current);

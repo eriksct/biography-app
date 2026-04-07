@@ -242,6 +242,29 @@ function TranscriptTab({
 
         {/* Passages */}
         <div ref={passagesContainerRef} className="flex-1 overflow-y-auto px-8 py-6 space-y-6 relative">
+          {interview.status === 'recording' && (
+            <div className="flex flex-col items-center justify-center py-16 gap-4">
+              <div className="flex items-center gap-3">
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
+                </span>
+                <span className="font-sans text-lg text-foreground animate-pulse">Transcription en cours…</span>
+              </div>
+              <p className="font-sans text-sm text-muted-foreground text-center max-w-sm">
+                L'entretien est en cours de transcription. Le texte apparaîtra ici automatiquement.
+              </p>
+              <div className="flex gap-1 mt-4">
+                {[0, 1, 2, 3, 4].map(i => (
+                  <div
+                    key={i}
+                    className="w-2 h-2 rounded-full bg-primary/40 animate-bounce"
+                    style={{ animationDelay: `${i * 0.15}s` }}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
           {filteredPassages.map((passage: any) => {
             const statusLabel = passage.status === 'integre' ? 'Intégré' : passage.status === 'details-manquants' ? 'Détails manquants' : '';
             const StatusIcon = passage.status === 'integre' ? CheckCircle : passage.status === 'details-manquants' ? AlertCircle : Circle;

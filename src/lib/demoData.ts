@@ -254,7 +254,7 @@ export const demoProject: Project = {
     {
       id: 'chap-2',
       title: 'Chapitre 2 — Paris, enfin',
-      content: 'En septembre 1956, Jeanne Moreau quittait la Normandie pour la première fois. Paris l\'attendait, immense et indifférente, avec ses promesses et ses solitudes.',
+      content: '<h2>L\'arrivée</h2><p>En septembre 1956, Jeanne Moreau quittait la Normandie pour la première fois. Paris l\'attendait, immense et indifférente, avec ses promesses et ses solitudes.</p>',
       blocks: [
         {
           id: 'block-5',

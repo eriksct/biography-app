@@ -101,12 +101,36 @@ export function RecordingDialog({ open, onOpenChange, onRecordingComplete }: Rec
     setLevels(new Array(40).fill(0));
   }, [elapsed, cleanup]);
 
+  const handleFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const name = file.name.replace(/\.[^/.]+$/, '');
+    setUploadedFileName(name);
+    setTitle(name);
+
+    // Get duration from audio file
+    const url = URL.createObjectURL(file);
+    const audio = new Audio(url);
+    audio.addEventListener('loadedmetadata', () => {
+      const secs = Math.round(audio.duration);
+      setFinalDuration(formatTime(secs));
+      URL.revokeObjectURL(url);
+      setState('stopped');
+    });
+    audio.addEventListener('error', () => {
+      setFinalDuration('--:--');
+      URL.revokeObjectURL(url);
+      setState('stopped');
+    });
+  }, []);
+
   const confirmRecording = useCallback(() => {
     onRecordingComplete(finalDuration, title.trim() || `Entretien`);
     setState('idle');
     setElapsed(0);
     setTitle('');
     setFinalDuration('');
+    setUploadedFileName('');
     setLevels(new Array(40).fill(0));
     onOpenChange(false);
   }, [finalDuration, title, onRecordingComplete, onOpenChange]);

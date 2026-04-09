@@ -249,7 +249,25 @@ export default function ManuscritPage() {
             <div className="max-w-3xl mx-auto px-8 py-10">
               {activeChapter ? (
                 <>
-                  <h1 className="text-3xl font-serif font-semibold mb-6">{activeChapter.title}</h1>
+                  <h1
+                    className="text-3xl font-serif font-semibold mb-6 outline-none focus:ring-0"
+                    contentEditable
+                    suppressContentEditableWarning
+                    onBlur={(e) => {
+                      const newTitle = e.currentTarget.textContent?.trim() || activeChapter.title;
+                      if (newTitle !== activeChapter.title) {
+                        updateChapter(activeChapterId, { title: newTitle });
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        e.currentTarget.blur();
+                      }
+                    }}
+                  >
+                    {activeChapter.title}
+                  </h1>
                   <ChapterEditor
                     content={activeChapter.content}
                     onUpdate={(html) => updateChapter(activeChapterId, { content: html })}

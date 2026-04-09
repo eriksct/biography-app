@@ -1,7 +1,5 @@
 export type InterviewStatus = 'recording' | 'transcribed' | 'processed';
 
-export type PassageStatus = 'non-integre' | 'details-manquants' | 'integre';
-
 export interface ThemeAnnotation {
   id: string;
   start: number;

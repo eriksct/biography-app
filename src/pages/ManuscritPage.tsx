@@ -418,14 +418,6 @@ export default function ManuscritPage() {
                                   </span>
                                 ))}
                               </div>
-                              {activeChapter && (
-                                <button
-                                  onClick={() => handleInsertPassage({ ...passage, interviewId: interview.id, interviewNumber: interview.number })}
-                                  className="text-xs font-sans text-primary hover:underline"
-                                >
-                                  + Insérer dans le chapitre
-                                </button>
-                              )}
                             </div>
                           );
                         })}

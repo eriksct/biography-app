@@ -82,6 +82,50 @@ export default function ManuscritPage() {
     return () => document.removeEventListener('mousedown', handleClick);
   }, [selectionInfo]);
 
+  const handleDialogTextSelect = useCallback(() => {
+    if (!dialogInterviewId) return;
+    const selection = window.getSelection();
+    if (!selection || selection.isCollapsed || !selection.rangeCount) return;
+    const range = selection.getRangeAt(0);
+    const selectedText = selection.toString().trim();
+    if (!selectedText) return;
+    let node: Node | null = range.startContainer;
+    let passageEl: HTMLElement | null = null;
+    while (node) {
+      if (node instanceof HTMLElement && node.dataset.dialogPassageId) { passageEl = node; break; }
+      node = node.parentNode;
+    }
+    if (!passageEl) return;
+    const passageId = passageEl.dataset.dialogPassageId!;
+    const interview = project.interviews.find(i => i.id === dialogInterviewId);
+    const passage = interview?.passages.find(p => p.id === passageId);
+    if (!passage) return;
+    const selText = selection.toString();
+    const startIdx = passage.text.indexOf(selText);
+    if (startIdx === -1) return;
+    const rect = range.getBoundingClientRect();
+    setDialogSelectionInfo({
+      passageId, start: startIdx, end: startIdx + selText.length, selectedText: selText,
+      rect: { top: rect.bottom, left: rect.left + rect.width / 2 },
+    });
+  }, [dialogInterviewId, project.interviews]);
+
+  useEffect(() => {
+    if (!dialogInterviewId) return;
+    document.addEventListener('mouseup', handleDialogTextSelect);
+    return () => document.removeEventListener('mouseup', handleDialogTextSelect);
+  }, [handleDialogTextSelect, dialogInterviewId]);
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (dialogSelectionInfo && !(e.target as HTMLElement).closest('[data-dialog-theme-popup]')) {
+        setDialogSelectionInfo(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [dialogSelectionInfo]);
+
   useEffect(() => {
     if (dialogInterviewId && dialogPassageId && highlightRef.current) {
       setTimeout(() => highlightRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);

@@ -512,7 +512,7 @@ export default function ManuscritPage() {
                 <div className="px-4 py-3 border-b border-border space-y-2">
                   <p className="text-xs font-sans text-muted-foreground">Cliquez sur les étiquettes pour filtrer les passages</p>
                   <div>
-                    <span className="text-[10px] font-sans text-muted-foreground uppercase tracking-wider">Étiquette</span>
+                    <span className="text-[10px] font-sans text-muted-foreground uppercase tracking-wider">Étiquettes</span>
                     <div className="flex flex-wrap gap-1 mt-1">
                       {project.allThemes.map(t => {
                         const active = passageFilterThemes.includes(t);

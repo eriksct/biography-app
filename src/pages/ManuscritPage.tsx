@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useProject } from '@/lib/ProjectContext';
 import { AppLayout } from '@/components/AppLayout';
 import { Plus, FileText, Download, X, BookOpen, PanelLeftOpen, GripVertical, ArrowLeft, Play } from 'lucide-react';
@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { getTagColor, AnnotatedPassageText } from '@/components/AnnotatedPassageText';
 import { ChapterEditor, extractHeadings } from '@/components/ChapterEditor';
 export default function ManuscritPage() {
-  const { project, addChapter, updateChapter, reorderChapter, moveChapter, markPassageUsed } = useProject();
+  const { project, addChapter, updateChapter, reorderChapter, moveChapter, markPassageUsed, addTheme, addThemeAnnotation, removeThemeAnnotation } = useProject();
   const [activeChapterId, setActiveChapterId] = useState<string>(project.chapters[0]?.id || '');
   const [showPassagePanel, setShowPassagePanel] = useState(false);
   const [chapterSidebarOpen, setChapterSidebarOpen] = useState(true);
@@ -22,6 +22,57 @@ export default function ManuscritPage() {
   const [selectedInterviewId, setSelectedInterviewId] = useState<string | null>(null);
   const [draggedChapterIdx, setDraggedChapterIdx] = useState<number | null>(null);
   const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
+  const [newThemeManuscrit, setNewThemeManuscrit] = useState('');
+  const [selectionInfo, setSelectionInfo] = useState<{
+    passageId: string;
+    start: number;
+    end: number;
+    selectedText: string;
+    rect: { top: number; left: number };
+  } | null>(null);
+
+  const handleTextSelectManuscrit = useCallback(() => {
+    if (!selectedInterviewId) return;
+    const selection = window.getSelection();
+    if (!selection || selection.isCollapsed || !selection.rangeCount) return;
+    const range = selection.getRangeAt(0);
+    const selectedText = selection.toString().trim();
+    if (!selectedText) return;
+    let node: Node | null = range.startContainer;
+    let passageEl: HTMLElement | null = null;
+    while (node) {
+      if (node instanceof HTMLElement && node.dataset.passageId) { passageEl = node; break; }
+      node = node.parentNode;
+    }
+    if (!passageEl) return;
+    const passageId = passageEl.dataset.passageId!;
+    const interview = project.interviews.find(i => i.id === selectedInterviewId);
+    const passage = interview?.passages.find(p => p.id === passageId);
+    if (!passage) return;
+    const selText = selection.toString();
+    const startIdx = passage.text.indexOf(selText);
+    if (startIdx === -1) return;
+    const rect = range.getBoundingClientRect();
+    setSelectionInfo({
+      passageId, start: startIdx, end: startIdx + selText.length, selectedText: selText,
+      rect: { top: rect.bottom + window.scrollY, left: rect.left + rect.width / 2 },
+    });
+  }, [selectedInterviewId, project.interviews]);
+
+  useEffect(() => {
+    document.addEventListener('mouseup', handleTextSelectManuscrit);
+    return () => document.removeEventListener('mouseup', handleTextSelectManuscrit);
+  }, [handleTextSelectManuscrit]);
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (selectionInfo && !(e.target as HTMLElement).closest('[data-theme-popup-manuscrit]')) {
+        setSelectionInfo(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [selectionInfo]);
 
   useEffect(() => {
     if (dialogInterviewId && dialogPassageId && highlightRef.current) {
@@ -271,8 +322,12 @@ export default function ManuscritPage() {
                           </div>
                           <span className="text-[10px] font-sans text-muted-foreground whitespace-nowrap">{interview.duration}</span>
                         </div>
+                        {/* Hint */}
+                        <p className="px-4 py-1.5 text-[11px] font-sans text-muted-foreground italic border-b border-border">
+                          Sélectionnez du texte pour y associer une étiquette
+                        </p>
                       </div>
-                      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                      <div className="flex-1 overflow-y-auto p-4 space-y-4 relative">
                         {interview.passages.map(passage => {
                           return (
                             <div
@@ -282,8 +337,13 @@ export default function ManuscritPage() {
                               <div className="flex items-center gap-2 mb-2">
                                 <span className="text-xs font-mono text-muted-foreground">{passage.timestamp}</span>
                               </div>
-                              <p className="font-serif text-sm leading-relaxed mb-2">
-                                <AnnotatedPassageText text={passage.text} annotations={passage.themeAnnotations} allThemes={project.allThemes} />
+                              <p className="font-serif text-sm leading-relaxed mb-2" data-passage-id={passage.id}>
+                                <AnnotatedPassageText
+                                  text={passage.text}
+                                  annotations={passage.themeAnnotations}
+                                  allThemes={project.allThemes}
+                                  onRemoveAnnotation={(annId: string) => removeThemeAnnotation(interview.id, passage.id, annId)}
+                                />
                               </p>
                               <div className="flex flex-wrap gap-1 mb-2">
                                 {passage.themes.map(t => (
@@ -303,6 +363,68 @@ export default function ManuscritPage() {
                             </div>
                           );
                         })}
+
+                        {/* Theme assignment popup */}
+                        {selectionInfo && (
+                          <div
+                            data-theme-popup-manuscrit
+                            className="fixed z-50 bg-popover border border-border rounded-lg shadow-xl py-2 min-w-[180px]"
+                            style={{
+                              top: selectionInfo.rect.top + 8,
+                              left: selectionInfo.rect.left,
+                              transform: 'translateX(-50%)',
+                            }}
+                          >
+                            <div className="px-3 py-1.5 border-b border-border mb-1">
+                              <p className="text-xs font-sans text-muted-foreground">Associer une étiquette :</p>
+                            </div>
+                            {project.allThemes.map((theme: string) => (
+                              <button
+                                key={theme}
+                                onClick={() => {
+                                  addThemeAnnotation(interview.id, selectionInfo.passageId, selectionInfo.start, selectionInfo.end, theme);
+                                  setSelectionInfo(null);
+                                  window.getSelection()?.removeAllRanges();
+                                }}
+                                className="w-full text-left px-3 py-2 text-sm font-sans hover:bg-secondary transition-colors"
+                              >
+                                {theme}
+                              </button>
+                            ))}
+                            <div className="border-t border-border mt-1 px-3 pt-2 flex gap-1">
+                              <input
+                                type="text"
+                                value={newThemeManuscrit}
+                                onChange={(e) => setNewThemeManuscrit(e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter' && newThemeManuscrit.trim()) {
+                                    addTheme(newThemeManuscrit.trim());
+                                    addThemeAnnotation(interview.id, selectionInfo.passageId, selectionInfo.start, selectionInfo.end, newThemeManuscrit.trim());
+                                    setNewThemeManuscrit('');
+                                    setSelectionInfo(null);
+                                    window.getSelection()?.removeAllRanges();
+                                  }
+                                }}
+                                placeholder="Créer une étiquette..."
+                                className="flex-1 px-2 py-1 text-xs font-sans bg-background border border-input rounded focus:outline-none focus:ring-1 focus:ring-ring"
+                              />
+                              <button
+                                onClick={() => {
+                                  if (newThemeManuscrit.trim()) {
+                                    addTheme(newThemeManuscrit.trim());
+                                    addThemeAnnotation(interview.id, selectionInfo.passageId, selectionInfo.start, selectionInfo.end, newThemeManuscrit.trim());
+                                    setNewThemeManuscrit('');
+                                    setSelectionInfo(null);
+                                    window.getSelection()?.removeAllRanges();
+                                  }
+                                }}
+                                className="p-1 text-primary hover:bg-secondary rounded transition-colors"
+                              >
+                                <Plus className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   );

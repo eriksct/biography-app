@@ -1,54 +1,51 @@
+# Panneau droit Rédaction — Onglets "Entretiens" et "Thèmes"
+
+## Ce qui change
+
+Le panneau droit (w-96) actuellement titré "Passages disponibles" sera restructuré avec **deux onglets** en haut :
+
+### Onglet "Entretiens"
+
+- Liste des entretiens disponibles (boutons/cards cliquables)
+- Quand un entretien est sélectionné :
+  - Bouton retour pour revenir à la liste
+  - Lecteur audio `<audio controls>` (placeholder — pas d'URL audio réelle dans les données actuelles, mais le player sera prêt)
+  - Transcription complète : tous les passages de l'entretien affichés à la suite, avec timestamps et thèmes
+
+### Onglet "Thèmes"
+
+- Contenu identique à l'actuel : filtres (statut, thème, entretien) + liste de passages filtrés
+
+## Modifications techniques
 
 
-# Formatting minimal + titres de paragraphes — Page Rédaction
+| Fichier                       | Changement                                                                                                                                                                                          |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/pages/ManuscritPage.tsx` | Ajout d'un état `panelTab` (`'entretiens' | 'themes'`), d'un état `selectedInterviewId` pour l'onglet Entretiens. Restructuration du panneau droit avec les deux onglets et leur contenu respectif. |
 
-## Approche recommandée : Tiptap
 
-Remplacer le `<textarea>` actuel par un éditeur **Tiptap** (basé sur ProseMirror). C'est la solution la plus adaptée car :
-- Léger, headless (on garde notre design system)
-- Supporte nativement gras, italique, souligné, barré, headings
-- Le contenu est stocké en HTML ou JSON, ce qui permet d'extraire les titres pour la table des matières
-- Compatible avec l'export Word futur
-- Raccourcis clavier standards (Cmd+B, Cmd+I, etc.)
+Aucun nouveau fichier, aucune nouvelle dépendance. L'interface `Interview` a déjà toutes les données nécessaires (passages, date, duration). Le champ audio sera préparé mais vide pour l'instant (les interviews n'ont pas encore de `audioUrl`).
 
-## Ce qui sera construit
-
-### 1. Éditeur rich text minimal
-- **Barre de formatage** discrète entre le titre du chapitre et le contenu, avec des icônes pour : **G** · *I* · <u>S</u> · ~~B~~ · Titre (H2)
-- La barre apparaît toujours, style épuré (petites icônes toggle, séparateurs discrets)
-- Raccourcis clavier fonctionnels
-
-### 2. Titres de paragraphes dans la table des matières
-- Les headings (H2) insérés dans l'éditeur sont **extraits automatiquement** du contenu
-- Affichés dans la sidebar gauche, **indentés sous leur chapitre** avec une police plus petite
-- Clic sur un titre = scroll vers ce heading dans l'éditeur
-
-### 3. Stockage
-- Le champ `content` du chapitre passe de texte brut à **HTML** (rétro-compatible : le texte existant sera wrappé dans `<p>`)
-- L'insertion de passages continuera de fonctionner (ajout d'un paragraphe HTML)
-
-## Fichiers modifiés
-
-| Fichier | Changement |
-|---|---|
-| `package.json` | Ajout `@tiptap/react`, `@tiptap/starter-kit`, `@tiptap/extension-underline` |
-| `src/components/ChapterEditor.tsx` | **Nouveau** — composant éditeur Tiptap avec toolbar |
-| `src/pages/ManuscritPage.tsx` | Remplacer le textarea par `<ChapterEditor>`, extraire les headings pour la sidebar |
-| `src/lib/demoData.ts` | Convertir le contenu demo en HTML avec quelques H2 d'exemple |
-
-## Aperçu de l'interface
+## Aperçu
 
 ```text
-┌─ Chapitres ──────────┐  ┌─ Éditeur ─────────────────────────────┐
-│ Chapitre 1            │  │ [Exporter]              [Passages]    │
-│   ├ L'enfance         │  │──────────────────────────────────────── │
-│   └ Les années lycée  │  │ B  I  U  S  │  Titre                  │
-│ Chapitre 2            │  │──────────────────────────────────────── │
-│ Chapitre 3            │  │                                        │
-│   └ Le départ         │  │ Chapitre 1                            │
-│                       │  │                                        │
-│ + Nouveau chapitre    │  │ L'enfance                             │
-└───────────────────────┘  │ Lorem ipsum dolor sit amet...         │
-                           └────────────────────────────────────────┘
+┌─ Panneau droit ──────────────┐
+│  [Entretiens]  [Thèmes]     │  ← onglets
+│──────────────────────────────│
+│  (si onglet Entretiens)      │
+│  ← Retour                   │
+│  ▶ ━━━━━━━━━━━ 00:45:00     │  ← audio player
+│                              │
+│  00:03:21                    │
+│  "Texte du passage..."      │
+│  [Enfance] [Famille]        │
+│                              │
+│  00:07:45                    │
+│  "Autre passage..."         │
+│  [Voyage]                   │
+│──────────────────────────────│
+│  (si onglet Thèmes)         │
+│  → filtres + passages        │
+│  (comme actuellement)        │
+└──────────────────────────────┘
 ```
-

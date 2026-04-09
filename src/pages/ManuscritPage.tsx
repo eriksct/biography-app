@@ -17,6 +17,14 @@ export default function ManuscritPage() {
   const [showNewChapter, setShowNewChapter] = useState(false);
   const [dialogInterviewId, setDialogInterviewId] = useState<string | null>(null);
   const [dialogPassageId, setDialogPassageId] = useState<string | null>(null);
+  const [dialogSelectionInfo, setDialogSelectionInfo] = useState<{
+    passageId: string;
+    start: number;
+    end: number;
+    selectedText: string;
+    rect: { top: number; left: number };
+  } | null>(null);
+  const [dialogNewTheme, setDialogNewTheme] = useState('');
   const highlightRef = useRef<HTMLDivElement>(null);
   const [panelTab, setPanelTab] = useState<'entretiens' | 'themes'>('entretiens');
   const [selectedInterviewId, setSelectedInterviewId] = useState<string | null>(null);

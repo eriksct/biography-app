@@ -2,12 +2,12 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { useProject } from '@/lib/ProjectContext';
 import { AppLayout } from '@/components/AppLayout';
 import { PassageStatus } from '@/lib/types';
-import { Plus, FileText, Download, X, BookOpen, CheckCircle, AlertCircle, Circle, PanelLeftOpen, ChevronUp, ChevronDown, ArrowLeft } from 'lucide-react';
+import { Plus, FileText, Download, X, BookOpen, CheckCircle, AlertCircle, Circle, PanelLeftOpen, GripVertical, ArrowLeft } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { getTagColor } from '@/components/AnnotatedPassageText';
 import { ChapterEditor, extractHeadings } from '@/components/ChapterEditor';
 export default function ManuscritPage() {
-  const { project, addChapter, updateChapter, reorderChapter, markPassageUsed, setPassageStatus } = useProject();
+  const { project, addChapter, updateChapter, reorderChapter, moveChapter, markPassageUsed, setPassageStatus } = useProject();
   const [activeChapterId, setActiveChapterId] = useState<string>(project.chapters[0]?.id || '');
   const [showPassagePanel, setShowPassagePanel] = useState(false);
   const [chapterSidebarOpen, setChapterSidebarOpen] = useState(true);
@@ -21,7 +21,8 @@ export default function ManuscritPage() {
   const highlightRef = useRef<HTMLDivElement>(null);
   const [panelTab, setPanelTab] = useState<'entretiens' | 'themes'>('entretiens');
   const [selectedInterviewId, setSelectedInterviewId] = useState<string | null>(null);
-
+  const [draggedChapterIdx, setDraggedChapterIdx] = useState<number | null>(null);
+  const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
 
   useEffect(() => {
     if (dialogInterviewId && dialogPassageId && highlightRef.current) {
@@ -85,8 +86,25 @@ export default function ManuscritPage() {
           </div>
           <div className="flex-1 overflow-y-auto p-3 space-y-0.5">
             {project.chapters.map((chapter, chapterIdx) => (
-              <div key={chapter.id}>
-                <div className="group relative flex items-center">
+              <div
+                key={chapter.id}
+                draggable
+                onDragStart={() => setDraggedChapterIdx(chapterIdx)}
+                onDragEnd={() => { 
+                  if (draggedChapterIdx !== null && dragOverIdx !== null) {
+                    moveChapter(draggedChapterIdx, dragOverIdx);
+                  }
+                  setDraggedChapterIdx(null); 
+                  setDragOverIdx(null); 
+                }}
+                onDragOver={(e) => { e.preventDefault(); setDragOverIdx(chapterIdx); }}
+                onDragLeave={() => setDragOverIdx(null)}
+                className={`group transition-opacity ${draggedChapterIdx === chapterIdx ? 'opacity-40' : ''}`}
+              >
+                <div className={`relative flex items-center rounded-md transition-colors ${dragOverIdx === chapterIdx && draggedChapterIdx !== chapterIdx ? 'ring-2 ring-primary/40' : ''}`}>
+                  <div className="absolute left-0.5 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 cursor-grab text-muted-foreground hover:text-foreground">
+                    <GripVertical className="w-3.5 h-3.5" />
+                  </div>
                   <button
                     onClick={() => setActiveChapterId(chapter.id)}
                     className={`w-full text-left px-3 py-2.5 rounded-md font-sans text-sm transition-colors ${
@@ -97,24 +115,6 @@ export default function ManuscritPage() {
                   >
                     {chapter.title}
                   </button>
-                  <div className="absolute right-1 top-1/2 -translate-y-1/2 hidden group-hover:flex flex-col">
-                    {chapterIdx > 0 && (
-                      <button
-                        onClick={(e) => { e.stopPropagation(); reorderChapter(chapter.id, 'up'); }}
-                        className="p-0.5 text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        <ChevronUp className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-                    {chapterIdx < project.chapters.length - 1 && (
-                      <button
-                        onClick={(e) => { e.stopPropagation(); reorderChapter(chapter.id, 'down'); }}
-                        className="p-0.5 text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        <ChevronDown className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-                  </div>
                 </div>
                 {/* Sub-headings (H2) from chapter content */}
                 {(chapterHeadings[chapter.id] || []).map((h, idx) => (

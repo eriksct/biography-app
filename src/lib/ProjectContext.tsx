@@ -9,6 +9,7 @@ interface ProjectContextType {
   addChapter: (title: string) => void;
   updateChapter: (id: string, updates: Partial<Chapter>) => void;
   reorderChapter: (chapterId: string, direction: 'up' | 'down') => void;
+  moveChapter: (fromIndex: number, toIndex: number) => void;
   addBlockToChapter: (chapterId: string, block: ManuscriptBlock) => void;
   updateBlock: (chapterId: string, blockId: string, updates: Partial<ManuscriptBlock>) => void;
   removeBlock: (chapterId: string, blockId: string) => void;
@@ -74,6 +75,16 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       if (newIdx < 0 || newIdx >= prev.chapters.length) return prev;
       const chapters = [...prev.chapters];
       [chapters[idx], chapters[newIdx]] = [chapters[newIdx], chapters[idx]];
+      return { ...prev, chapters };
+    });
+  }, []);
+
+  const moveChapter = useCallback((fromIndex: number, toIndex: number) => {
+    setProject(prev => {
+      if (fromIndex < 0 || toIndex < 0 || fromIndex >= prev.chapters.length || toIndex >= prev.chapters.length || fromIndex === toIndex) return prev;
+      const chapters = [...prev.chapters];
+      const [moved] = chapters.splice(fromIndex, 1);
+      chapters.splice(toIndex, 0, moved);
       return { ...prev, chapters };
     });
   }, []);
@@ -200,6 +211,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       addChapter,
       updateChapter,
       reorderChapter,
+      moveChapter,
       addBlockToChapter,
       updateBlock,
       removeBlock,

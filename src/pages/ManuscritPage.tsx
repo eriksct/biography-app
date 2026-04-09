@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useProject } from '@/lib/ProjectContext';
 import { AppLayout } from '@/components/AppLayout';
-import { Plus, FileText, Download, X, BookOpen, PanelLeftOpen, GripVertical, ArrowLeft, Play } from 'lucide-react';
+import { Plus, FileText, Download, X, Search, PanelLeftOpen, GripVertical, ArrowLeft, Play } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { getTagColor, AnnotatedPassageText } from '@/components/AnnotatedPassageText';
 import { ChapterEditor, extractHeadings } from '@/components/ChapterEditor';

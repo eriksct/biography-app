@@ -529,7 +529,7 @@ export default function ManuscritPage() {
                     </div>
                   </div>
                   <div>
-                    <span className="text-[10px] font-sans text-muted-foreground uppercase tracking-wider">Entretien</span>
+                    <span className="text-[10px] font-sans text-muted-foreground uppercase tracking-wider">Entretiens</span>
                     <div className="flex flex-wrap gap-1 mt-1">
                       {project.interviews.map(i => {
                         const active = passageFilterInterviews.includes(i.id);

@@ -99,7 +99,7 @@ export default function ManuscritPage() {
                 }}
                 onDragOver={(e) => { e.preventDefault(); setDragOverIdx(chapterIdx); }}
                 onDragLeave={() => setDragOverIdx(null)}
-                className={`transition-opacity ${draggedChapterIdx === chapterIdx ? 'opacity-40' : ''}`}
+                className={`group transition-opacity ${draggedChapterIdx === chapterIdx ? 'opacity-40' : ''}`}
               >
                 <div className={`relative flex items-center rounded-md transition-colors ${dragOverIdx === chapterIdx && draggedChapterIdx !== chapterIdx ? 'ring-2 ring-primary/40' : ''}`}>
                   <div className="absolute left-0.5 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 cursor-grab text-muted-foreground hover:text-foreground">

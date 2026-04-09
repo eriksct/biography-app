@@ -651,7 +651,7 @@ export default function ManuscritPage() {
                       className="fixed z-[100] bg-popover border rounded-lg shadow-lg p-3 min-w-[220px]"
                       style={{ top: dialogSelectionInfo.rect.top + 8, left: dialogSelectionInfo.rect.left, transform: 'translateX(-50%)' }}
                     >
-                      <p className="text-xs text-muted-foreground mb-2 truncate max-w-[200px]">« {dialogSelectionInfo.selectedText.slice(0, 40)}{dialogSelectionInfo.selectedText.length > 40 ? '…' : ''} »</p>
+                      
                       <div className="flex flex-wrap gap-1.5 mb-2">
                         {project.allThemes.map(theme => (
                           <button

@@ -108,7 +108,7 @@ export default function InterviewsPage() {
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Rechercher par thème ou mot-clé dans les passages…"
+            placeholder="Rechercher par étiquette ou mot-clé dans les passages…"
             className="pl-10 pr-10 font-sans"
           />
           {isSearching && (

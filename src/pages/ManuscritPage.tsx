@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useProject } from '@/lib/ProjectContext';
 import { AppLayout } from '@/components/AppLayout';
 import { Plus, FileText, Download, X, BookOpen, PanelLeftOpen, GripVertical, ArrowLeft, Play } from 'lucide-react';

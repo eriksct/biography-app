@@ -204,11 +204,13 @@ function TranscriptTab({
   handleAddTheme,
   selectionInfo,
   handleAssignThemeToSelection,
-  
+  updatePassage,
   removeThemeAnnotation,
   updateInterviewNotes,
   passagesContainerRef,
 }: any) {
+  const [editingPassageId, setEditingPassageId] = useState<string | null>(null);
+  const [editText, setEditText] = useState('');
   return (
     <div className="flex-1 flex overflow-hidden">
       {/* Left: Transcript */}

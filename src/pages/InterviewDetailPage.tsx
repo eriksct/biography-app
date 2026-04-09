@@ -236,7 +236,7 @@ function TranscriptTab({
         {/* Hint */}
         <div className="px-8 py-2 bg-muted/50 border-b border-border">
           <p className="text-xs font-sans text-muted-foreground italic">
-            Sélectionnez du texte pour y associer un thème
+            Sélectionnez du texte pour y associer une étiquette
           </p>
         </div>
 
@@ -312,7 +312,7 @@ function TranscriptTab({
               }}
             >
               <div className="px-3 py-1.5 border-b border-border mb-1">
-                <p className="text-xs font-sans text-muted-foreground">Associer un thème :</p>
+                <p className="text-xs font-sans text-muted-foreground">Associer une étiquette :</p>
               </div>
               {project.allThemes.map((theme: string) => (
                 <button
@@ -330,10 +330,10 @@ function TranscriptTab({
 
       {/* Right: Themes, filters, notes */}
       <div className="w-[40%] overflow-y-auto px-6 py-6 space-y-8">
-        {/* Thèmes (filters) */}
+        {/* Étiquettes (filters) */}
         <section>
           <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-            Thèmes
+            Étiquettes
           </h3>
           <div className="flex flex-wrap gap-2">
             {project.allThemes.map((theme: string) => {
@@ -370,7 +370,7 @@ function TranscriptTab({
               value={newTheme}
               onChange={(e: any) => setNewTheme(e.target.value)}
               onKeyDown={(e: any) => e.key === 'Enter' && handleAddTheme()}
-              placeholder="Nouveau thème…"
+              placeholder="Nouvelle étiquette…"
               className="flex-1 px-3 py-2 text-sm font-sans bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
             />
             <button onClick={handleAddTheme} className="p-2 text-primary hover:bg-secondary rounded-md transition-colors">

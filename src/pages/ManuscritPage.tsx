@@ -231,7 +231,7 @@ export default function ManuscritPage() {
                   onClick={() => setPanelTab('themes')}
                   className={`px-3 py-1.5 text-xs font-sans font-medium rounded transition-colors ${panelTab === 'themes' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
                 >
-                  Thèmes
+                  Étiquettes
                 </button>
               </div>
               <button onClick={() => setShowPassagePanel(false)} className="text-muted-foreground hover:text-foreground">
@@ -317,13 +317,13 @@ export default function ManuscritPage() {
               </div>
             )}
 
-            {/* Tab: Thèmes */}
+            {/* Tab: Étiquettes */}
             {panelTab === 'themes' && (
               <>
                 {/* Filters */}
                 <div className="px-4 py-3 border-b border-border space-y-2">
                   <div>
-                    <span className="text-[10px] font-sans text-muted-foreground uppercase tracking-wider">Thème</span>
+                    <span className="text-[10px] font-sans text-muted-foreground uppercase tracking-wider">Étiquette</span>
                     <div className="flex flex-wrap gap-1 mt-1">
                       {project.allThemes.map(t => {
                         const active = passageFilterThemes.includes(t);

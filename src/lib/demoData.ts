@@ -3,7 +3,7 @@ import { Project } from './types';
 export const demoProject: Project = {
   id: 'project-1',
   name: 'Mémoires de Jeanne Moreau',
-  allThemes: ['Enfance', 'Études', 'Carrière', 'Famille', 'Guerre', 'Voyages'],
+  allThemes: ['Enfance', 'Carrière', 'Famille', '1939', 'Détails manquants'],
   interviews: [
     {
       id: 'interview-1',

@@ -86,8 +86,25 @@ export default function ManuscritPage() {
           </div>
           <div className="flex-1 overflow-y-auto p-3 space-y-0.5">
             {project.chapters.map((chapter, chapterIdx) => (
-              <div key={chapter.id}>
-                <div className="group relative flex items-center">
+              <div
+                key={chapter.id}
+                draggable
+                onDragStart={() => setDraggedChapterIdx(chapterIdx)}
+                onDragEnd={() => { 
+                  if (draggedChapterIdx !== null && dragOverIdx !== null) {
+                    moveChapter(draggedChapterIdx, dragOverIdx);
+                  }
+                  setDraggedChapterIdx(null); 
+                  setDragOverIdx(null); 
+                }}
+                onDragOver={(e) => { e.preventDefault(); setDragOverIdx(chapterIdx); }}
+                onDragLeave={() => setDragOverIdx(null)}
+                className={`transition-opacity ${draggedChapterIdx === chapterIdx ? 'opacity-40' : ''}`}
+              >
+                <div className={`relative flex items-center rounded-md transition-colors ${dragOverIdx === chapterIdx && draggedChapterIdx !== chapterIdx ? 'ring-2 ring-primary/40' : ''}`}>
+                  <div className="absolute left-0.5 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 cursor-grab text-muted-foreground hover:text-foreground">
+                    <GripVertical className="w-3.5 h-3.5" />
+                  </div>
                   <button
                     onClick={() => setActiveChapterId(chapter.id)}
                     className={`w-full text-left px-3 py-2.5 rounded-md font-sans text-sm transition-colors ${
@@ -98,24 +115,6 @@ export default function ManuscritPage() {
                   >
                     {chapter.title}
                   </button>
-                  <div className="absolute right-1 top-1/2 -translate-y-1/2 hidden group-hover:flex flex-col">
-                    {chapterIdx > 0 && (
-                      <button
-                        onClick={(e) => { e.stopPropagation(); reorderChapter(chapter.id, 'up'); }}
-                        className="p-0.5 text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        <ChevronUp className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-                    {chapterIdx < project.chapters.length - 1 && (
-                      <button
-                        onClick={(e) => { e.stopPropagation(); reorderChapter(chapter.id, 'down'); }}
-                        className="p-0.5 text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        <ChevronDown className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-                  </div>
                 </div>
                 {/* Sub-headings (H2) from chapter content */}
                 {(chapterHeadings[chapter.id] || []).map((h, idx) => (

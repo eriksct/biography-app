@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { getTagColor, AnnotatedPassageText } from '@/components/AnnotatedPassageText';
 import { ChapterEditor, extractHeadings } from '@/components/ChapterEditor';
 export default function ManuscritPage() {
-  const { project, addChapter, updateChapter, reorderChapter, moveChapter, markPassageUsed } = useProject();
+  const { project, addChapter, updateChapter, reorderChapter, moveChapter, markPassageUsed, addTheme, addThemeAnnotation, removeThemeAnnotation } = useProject();
   const [activeChapterId, setActiveChapterId] = useState<string>(project.chapters[0]?.id || '');
   const [showPassagePanel, setShowPassagePanel] = useState(false);
   const [chapterSidebarOpen, setChapterSidebarOpen] = useState(true);

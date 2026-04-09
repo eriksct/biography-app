@@ -21,7 +21,8 @@ export default function ManuscritPage() {
   const highlightRef = useRef<HTMLDivElement>(null);
   const [panelTab, setPanelTab] = useState<'entretiens' | 'themes'>('entretiens');
   const [selectedInterviewId, setSelectedInterviewId] = useState<string | null>(null);
-
+  const [draggedChapterIdx, setDraggedChapterIdx] = useState<number | null>(null);
+  const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
 
   useEffect(() => {
     if (dialogInterviewId && dialogPassageId && highlightRef.current) {

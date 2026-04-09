@@ -179,6 +179,11 @@ export default function InterviewDetailPage() {
             removeThemeAnnotation={removeThemeAnnotation}
             updateInterviewNotes={updateInterviewNotes}
             passagesContainerRef={passagesContainerRef}
+            editingPassageId={editingPassageId}
+            setEditingPassageId={setEditingPassageId}
+            editingText={editingText}
+            setEditingText={setEditingText}
+            updatePassage={updatePassage}
           />
         ) : (
           <SummaryTab

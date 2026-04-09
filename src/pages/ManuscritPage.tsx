@@ -606,7 +606,7 @@ export default function ManuscritPage() {
       </div>
 
       {/* Interview transcript dialog */}
-      <Dialog open={!!dialogInterviewId} onOpenChange={(open) => { if (!open) { setDialogInterviewId(null); setDialogPassageId(null); } }}>
+      <Dialog open={!!dialogInterviewId} onOpenChange={(open) => { if (!open) { setDialogInterviewId(null); setDialogPassageId(null); setDialogSelectionInfo(null); } }}>
         <DialogContent className="max-w-3xl max-h-[80vh] overflow-hidden flex flex-col">
           {(() => {
             const interview = project.interviews.find(i => i.id === dialogInterviewId);
@@ -621,7 +621,7 @@ export default function ManuscritPage() {
                     {new Date(interview.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })} · {interview.duration}
                   </p>
                 </DialogHeader>
-                <div className="flex-1 overflow-y-auto space-y-6 py-4">
+                <div className="flex-1 overflow-y-auto space-y-6 py-4 relative">
                   {interview.passages.map(passage => {
                     const isHighlighted = passage.id === dialogPassageId;
                     return (
@@ -640,12 +640,64 @@ export default function ManuscritPage() {
                             </span>
                           ))}
                         </div>
-                        <p className="font-serif text-content leading-relaxed text-foreground">
-                          <AnnotatedPassageText text={passage.text} annotations={passage.themeAnnotations} allThemes={project.allThemes} />
+                        <p className="font-serif text-content leading-relaxed text-foreground" data-dialog-passage-id={passage.id}>
+                          <AnnotatedPassageText
+                            text={passage.text}
+                            annotations={passage.themeAnnotations}
+                            allThemes={project.allThemes}
+                            onRemoveAnnotation={(annotationId) => removeThemeAnnotation(interview.id, passage.id, annotationId)}
+                          />
                         </p>
                       </div>
                     );
                   })}
+                  {/* Theme annotation popup in dialog */}
+                  {dialogSelectionInfo && dialogInterviewId && (
+                    <div
+                      data-dialog-theme-popup
+                      className="fixed z-[100] bg-popover border rounded-lg shadow-lg p-3 min-w-[220px]"
+                      style={{ top: dialogSelectionInfo.rect.top + 8, left: dialogSelectionInfo.rect.left, transform: 'translateX(-50%)' }}
+                    >
+                      <p className="text-xs text-muted-foreground mb-2 truncate max-w-[200px]">« {dialogSelectionInfo.selectedText.slice(0, 40)}{dialogSelectionInfo.selectedText.length > 40 ? '…' : ''} »</p>
+                      <div className="flex flex-wrap gap-1.5 mb-2">
+                        {project.allThemes.map(theme => (
+                          <button
+                            key={theme}
+                            className={`px-2 py-0.5 rounded-full text-xs font-sans font-medium transition-colors ${getTagColor(theme, project.allThemes)} hover:opacity-80`}
+                            onClick={() => {
+                              addThemeAnnotation(dialogInterviewId, dialogSelectionInfo.passageId, dialogSelectionInfo.start, dialogSelectionInfo.end, theme);
+                              setDialogSelectionInfo(null);
+                              window.getSelection()?.removeAllRanges();
+                            }}
+                          >
+                            {theme}
+                          </button>
+                        ))}
+                      </div>
+                      <form
+                        className="flex gap-1.5"
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          const t = dialogNewTheme.trim();
+                          if (!t) return;
+                          addTheme(t);
+                          addThemeAnnotation(dialogInterviewId, dialogSelectionInfo.passageId, dialogSelectionInfo.start, dialogSelectionInfo.end, t);
+                          setDialogNewTheme('');
+                          setDialogSelectionInfo(null);
+                          window.getSelection()?.removeAllRanges();
+                        }}
+                      >
+                        <input
+                          className="flex-1 px-2 py-1 text-xs border rounded bg-background text-foreground placeholder:text-muted-foreground"
+                          placeholder="Créer une étiquette..."
+                          value={dialogNewTheme}
+                          onChange={(e) => setDialogNewTheme(e.target.value)}
+                          autoFocus
+                        />
+                        <button type="submit" className="px-2 py-1 text-xs bg-primary text-primary-foreground rounded hover:bg-primary/90">+</button>
+                      </form>
+                    </div>
+                  )}
                 </div>
               </>
             );

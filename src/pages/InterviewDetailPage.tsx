@@ -173,7 +173,7 @@ export default function InterviewDetailPage() {
             handleAddTheme={handleAddTheme}
             selectionInfo={selectionInfo}
             handleAssignThemeToSelection={handleAssignThemeToSelection}
-            
+            updatePassage={updatePassage}
             removeThemeAnnotation={removeThemeAnnotation}
             updateInterviewNotes={updateInterviewNotes}
             passagesContainerRef={passagesContainerRef}

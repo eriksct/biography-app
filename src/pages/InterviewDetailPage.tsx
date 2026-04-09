@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useProject } from '@/lib/ProjectContext';
 import { AppLayout } from '@/components/AppLayout';
-import { ArrowLeft, Play, Pause, CheckCircle, Plus, AlertCircle, Circle, MapPin, User, CalendarDays } from 'lucide-react';
+import { ArrowLeft, Play, Pause, Plus, MapPin, User } from 'lucide-react';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { AnnotatedPassageText, getTagColor } from '@/components/AnnotatedPassageText';
 
@@ -10,7 +10,7 @@ type Tab = 'transcript' | 'summary';
 export default function InterviewDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { project, addPersonToInterview, addPlaceDateToInterview, updateInterviewNotes, addTheme, setPassageStatus, addThemeAnnotation, removeThemeAnnotation } = useProject();
+  const { project, addPersonToInterview, addPlaceDateToInterview, updateInterviewNotes, addTheme, addThemeAnnotation, removeThemeAnnotation } = useProject();
   const interview = project.interviews.find(i => i.id === id);
   const [activeTab, setActiveTab] = useState<Tab>('transcript');
   const [activeThemeFilter, setActiveThemeFilter] = useState<string | null>(null);
@@ -173,7 +173,7 @@ export default function InterviewDetailPage() {
             handleAddTheme={handleAddTheme}
             selectionInfo={selectionInfo}
             handleAssignThemeToSelection={handleAssignThemeToSelection}
-            setPassageStatus={setPassageStatus}
+            
             removeThemeAnnotation={removeThemeAnnotation}
             updateInterviewNotes={updateInterviewNotes}
             passagesContainerRef={passagesContainerRef}
@@ -204,7 +204,7 @@ function TranscriptTab({
   handleAddTheme,
   selectionInfo,
   handleAssignThemeToSelection,
-  setPassageStatus,
+  
   removeThemeAnnotation,
   updateInterviewNotes,
   passagesContainerRef,
@@ -266,24 +266,13 @@ function TranscriptTab({
             </div>
           )}
           {filteredPassages.map((passage: any) => {
-            const statusLabel = passage.status === 'integre' ? 'Intégré' : passage.status === 'details-manquants' ? 'Détails manquants' : '';
-            const StatusIcon = passage.status === 'integre' ? CheckCircle : passage.status === 'details-manquants' ? AlertCircle : Circle;
-            const statusColor = passage.status === 'integre' ? 'text-accent' : passage.status === 'details-manquants' ? 'text-amber-500' : 'text-muted-foreground';
             return (
               <div
                 key={passage.id}
-                className={`group group/passage relative rounded-lg p-5 transition-all ${
-                  passage.status === 'integre' ? 'opacity-50' : 'hover:bg-card'
-                }`}
+                className="group group/passage relative rounded-lg p-5 transition-all hover:bg-card"
               >
                 <div className="flex items-center gap-3 mb-3">
                   <span className="text-xs font-sans text-muted-foreground font-mono">{passage.timestamp}</span>
-                  {passage.status !== 'non-integre' && (
-                    <>
-                      <StatusIcon className={`w-4 h-4 ${statusColor}`} />
-                      <span className={`text-xs font-sans ${statusColor}`}>{statusLabel}</span>
-                    </>
-                  )}
                 </div>
                 <div className="flex gap-4">
                   <p className="font-serif text-base leading-relaxed text-foreground flex-1" data-passage-id={passage.id}>
@@ -306,18 +295,6 @@ function TranscriptTab({
                       ))}
                     </div>
                   )}
-                </div>
-
-                <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-                  <select
-                    value={passage.status}
-                    onChange={(e: any) => setPassageStatus(interview.id, passage.id, e.target.value)}
-                    className="px-2 py-1.5 text-xs font-sans bg-secondary text-secondary-foreground rounded-md border-none cursor-pointer hover:bg-border transition-colors"
-                  >
-                    <option value="non-integre">Non intégré</option>
-                    <option value="details-manquants">Détails manquants</option>
-                    <option value="integre">Intégré</option>
-                  </select>
                 </div>
               </div>
             );

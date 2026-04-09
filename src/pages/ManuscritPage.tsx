@@ -1,19 +1,18 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useProject } from '@/lib/ProjectContext';
 import { AppLayout } from '@/components/AppLayout';
-import { PassageStatus } from '@/lib/types';
-import { Plus, FileText, Download, X, BookOpen, CheckCircle, AlertCircle, Circle, PanelLeftOpen, GripVertical, ArrowLeft } from 'lucide-react';
+import { Plus, FileText, Download, X, BookOpen, PanelLeftOpen, GripVertical, ArrowLeft } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { getTagColor } from '@/components/AnnotatedPassageText';
 import { ChapterEditor, extractHeadings } from '@/components/ChapterEditor';
 export default function ManuscritPage() {
-  const { project, addChapter, updateChapter, reorderChapter, moveChapter, markPassageUsed, setPassageStatus } = useProject();
+  const { project, addChapter, updateChapter, reorderChapter, moveChapter, markPassageUsed } = useProject();
   const [activeChapterId, setActiveChapterId] = useState<string>(project.chapters[0]?.id || '');
   const [showPassagePanel, setShowPassagePanel] = useState(false);
   const [chapterSidebarOpen, setChapterSidebarOpen] = useState(true);
   const [passageFilterThemes, setPassageFilterThemes] = useState<string[]>([]);
   const [passageFilterInterviews, setPassageFilterInterviews] = useState<string[]>([]);
-  const [passageFilterStatuses, setPassageFilterStatuses] = useState<PassageStatus[]>([]);
+  
   const [newChapterTitle, setNewChapterTitle] = useState('');
   const [showNewChapter, setShowNewChapter] = useState(false);
   const [dialogInterviewId, setDialogInterviewId] = useState<string | null>(null);
@@ -46,7 +45,7 @@ export default function ManuscritPage() {
     interview.passages
       .map(p => ({ ...p, interviewId: interview.id, interviewNumber: interview.number }))
   ).filter(p => {
-    if (passageFilterStatuses.length > 0 && !passageFilterStatuses.includes(p.status)) return false;
+
     if (passageFilterThemes.length > 0 && !p.themes.some(t => passageFilterThemes.includes(t))) return false;
     if (passageFilterInterviews.length > 0 && !passageFilterInterviews.includes(p.interviewId)) return false;
     return true;
@@ -269,15 +268,12 @@ export default function ManuscritPage() {
                       </div>
                       <div className="flex-1 overflow-y-auto p-4 space-y-4">
                         {interview.passages.map(passage => {
-                          const StatusIcon = passage.status === 'integre' ? CheckCircle : passage.status === 'details-manquants' ? AlertCircle : Circle;
-                          const statusColor = passage.status === 'integre' ? 'text-accent' : passage.status === 'details-manquants' ? 'text-amber-500' : 'text-muted-foreground';
                           return (
                             <div
                               key={passage.id}
-                              className={`p-3 rounded-lg border border-border transition-colors ${passage.status === 'integre' ? 'opacity-50' : ''}`}
+                              className="p-3 rounded-lg border border-border transition-colors"
                             >
                               <div className="flex items-center gap-2 mb-2">
-                                <StatusIcon className={`w-3.5 h-3.5 ${statusColor}`} />
                                 <span className="text-xs font-mono text-muted-foreground">{passage.timestamp}</span>
                               </div>
                               <p className="font-serif text-sm leading-relaxed mb-2">{passage.text}</p>
@@ -288,7 +284,7 @@ export default function ManuscritPage() {
                                   </span>
                                 ))}
                               </div>
-                              {passage.status !== 'integre' && activeChapter && (
+                              {activeChapter && (
                                 <button
                                   onClick={() => handleInsertPassage({ ...passage, interviewId: interview.id, interviewNumber: interview.number })}
                                   className="text-xs font-sans text-primary hover:underline"
@@ -327,27 +323,6 @@ export default function ManuscritPage() {
                 {/* Filters */}
                 <div className="px-4 py-3 border-b border-border space-y-2">
                   <div>
-                    <span className="text-[10px] font-sans text-muted-foreground uppercase tracking-wider">Statut</span>
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {([
-                        { value: 'non-integre' as PassageStatus, label: 'Non intégré' },
-                        { value: 'details-manquants' as PassageStatus, label: 'Détails manquants' },
-                        { value: 'integre' as PassageStatus, label: 'Intégré' },
-                      ]).map(s => {
-                        const active = passageFilterStatuses.includes(s.value);
-                        return (
-                          <button
-                            key={s.value}
-                            onClick={() => setPassageFilterStatuses(prev => active ? prev.filter(v => v !== s.value) : [...prev, s.value])}
-                            className={`px-2 py-0.5 text-xs font-sans rounded-full transition-colors ${active ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground hover:bg-border'}`}
-                          >
-                            {s.label}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                  <div>
                     <span className="text-[10px] font-sans text-muted-foreground uppercase tracking-wider">Thème</span>
                     <div className="flex flex-wrap gap-1 mt-1">
                       {project.allThemes.map(t => {
@@ -381,9 +356,9 @@ export default function ManuscritPage() {
                       })}
                     </div>
                   </div>
-                  {(passageFilterStatuses.length > 0 || passageFilterThemes.length > 0 || passageFilterInterviews.length > 0) && (
+                  {(passageFilterThemes.length > 0 || passageFilterInterviews.length > 0) && (
                     <button
-                      onClick={() => { setPassageFilterStatuses([]); setPassageFilterThemes([]); setPassageFilterInterviews([]); }}
+                      onClick={() => { setPassageFilterThemes([]); setPassageFilterInterviews([]); }}
                       className="px-2 py-0.5 text-xs font-sans text-muted-foreground hover:text-foreground transition-colors"
                     >
                       ✕ Réinitialiser
@@ -399,15 +374,12 @@ export default function ManuscritPage() {
                     </p>
                   ) : (
                     filteredPassages.map(passage => {
-                      const StatusIcon = passage.status === 'integre' ? CheckCircle : passage.status === 'details-manquants' ? AlertCircle : Circle;
-                      const statusColor = passage.status === 'integre' ? 'text-accent' : passage.status === 'details-manquants' ? 'text-amber-500' : 'text-muted-foreground';
                       return (
                         <div
                           key={`${passage.interviewId}-${passage.id}`}
-                          className={`p-4 rounded-lg border border-border transition-colors ${passage.status === 'integre' ? 'opacity-50' : ''}`}
+                          className="p-4 rounded-lg border border-border transition-colors"
                         >
                           <div className="flex items-center gap-2 mb-2">
-                            <StatusIcon className={`w-3.5 h-3.5 ${statusColor}`} />
                             <span className="text-xs font-sans text-muted-foreground">
                               Entretien n°{passage.interviewNumber}
                             </span>
@@ -423,20 +395,6 @@ export default function ManuscritPage() {
                                 {t}
                               </span>
                             ))}
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <select
-                              value={passage.status}
-                              onChange={e => {
-                                e.stopPropagation();
-                                setPassageStatus(passage.interviewId, passage.id, e.target.value as PassageStatus);
-                              }}
-                              className="flex-1 px-2 py-1.5 text-xs font-sans bg-secondary text-secondary-foreground rounded-md border-none cursor-pointer"
-                            >
-                              <option value="non-integre">Non intégré</option>
-                              <option value="details-manquants">Détails manquants</option>
-                              <option value="integre">Intégré</option>
-                            </select>
                           </div>
                         </div>
                       );
@@ -468,17 +426,12 @@ export default function ManuscritPage() {
                 <div className="flex-1 overflow-y-auto space-y-6 py-4">
                   {interview.passages.map(passage => {
                     const isHighlighted = passage.id === dialogPassageId;
-                    const StatusIcon = passage.status === 'integre' ? CheckCircle : passage.status === 'details-manquants' ? AlertCircle : Circle;
-                    const statusColor = passage.status === 'integre' ? 'text-accent' : passage.status === 'details-manquants' ? 'text-amber-500' : 'text-muted-foreground';
-                    const statusLabel = passage.status === 'integre' ? 'Intégré' : passage.status === 'details-manquants' ? 'Détails manquants' : '';
                     return (
                       <div
                         key={passage.id}
                         ref={isHighlighted ? highlightRef : undefined}
                         className={`rounded-lg p-5 transition-all ${
-                          isHighlighted
-                            ? 'bg-primary/10 ring-2 ring-primary/30'
-                            : passage.status === 'integre' ? 'opacity-50' : ''
+                          isHighlighted ? 'bg-primary/10 ring-2 ring-primary/30' : ''
                         }`}
                       >
                         <div className="flex items-center gap-3 mb-3">
@@ -488,12 +441,6 @@ export default function ManuscritPage() {
                               {t}
                             </span>
                           ))}
-                          {passage.status !== 'non-integre' && (
-                            <>
-                              <StatusIcon className={`w-4 h-4 ${statusColor}`} />
-                              <span className={`text-xs font-sans ${statusColor}`}>{statusLabel}</span>
-                            </>
-                          )}
                         </div>
                         <p className="font-serif text-content leading-relaxed text-foreground">{passage.text}</p>
                       </div>

@@ -211,6 +211,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       addChapter,
       updateChapter,
       reorderChapter,
+      moveChapter,
       addBlockToChapter,
       updateBlock,
       removeBlock,

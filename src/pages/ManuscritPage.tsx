@@ -22,6 +22,57 @@ export default function ManuscritPage() {
   const [selectedInterviewId, setSelectedInterviewId] = useState<string | null>(null);
   const [draggedChapterIdx, setDraggedChapterIdx] = useState<number | null>(null);
   const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
+  const [newThemeManuscrit, setNewThemeManuscrit] = useState('');
+  const [selectionInfo, setSelectionInfo] = useState<{
+    passageId: string;
+    start: number;
+    end: number;
+    selectedText: string;
+    rect: { top: number; left: number };
+  } | null>(null);
+
+  const handleTextSelectManuscrit = useCallback(() => {
+    if (!selectedInterviewId) return;
+    const selection = window.getSelection();
+    if (!selection || selection.isCollapsed || !selection.rangeCount) return;
+    const range = selection.getRangeAt(0);
+    const selectedText = selection.toString().trim();
+    if (!selectedText) return;
+    let node: Node | null = range.startContainer;
+    let passageEl: HTMLElement | null = null;
+    while (node) {
+      if (node instanceof HTMLElement && node.dataset.passageId) { passageEl = node; break; }
+      node = node.parentNode;
+    }
+    if (!passageEl) return;
+    const passageId = passageEl.dataset.passageId!;
+    const interview = project.interviews.find(i => i.id === selectedInterviewId);
+    const passage = interview?.passages.find(p => p.id === passageId);
+    if (!passage) return;
+    const selText = selection.toString();
+    const startIdx = passage.text.indexOf(selText);
+    if (startIdx === -1) return;
+    const rect = range.getBoundingClientRect();
+    setSelectionInfo({
+      passageId, start: startIdx, end: startIdx + selText.length, selectedText: selText,
+      rect: { top: rect.bottom + window.scrollY, left: rect.left + rect.width / 2 },
+    });
+  }, [selectedInterviewId, project.interviews]);
+
+  useEffect(() => {
+    document.addEventListener('mouseup', handleTextSelectManuscrit);
+    return () => document.removeEventListener('mouseup', handleTextSelectManuscrit);
+  }, [handleTextSelectManuscrit]);
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (selectionInfo && !(e.target as HTMLElement).closest('[data-theme-popup-manuscrit]')) {
+        setSelectionInfo(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [selectionInfo]);
 
   useEffect(() => {
     if (dialogInterviewId && dialogPassageId && highlightRef.current) {

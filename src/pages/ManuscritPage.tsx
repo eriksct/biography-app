@@ -259,11 +259,17 @@ export default function ManuscritPage() {
                         <p className="text-xs font-sans text-muted-foreground">
                           {new Date(interview.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })} · {interview.duration}
                         </p>
-                        {/* Audio player placeholder */}
-                        <div className="mt-3">
-                          <audio controls className="w-full h-8" style={{ minHeight: '32px' }}>
-                            <source src="" type="audio/mpeg" />
-                          </audio>
+                        {/* Audio player */}
+                        <div className="mt-3 flex items-center gap-3">
+                          <button
+                            className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:opacity-90 transition-opacity flex-shrink-0"
+                          >
+                            <Play className="w-3.5 h-3.5 ml-0.5" />
+                          </button>
+                          <div className="flex-1 h-1.5 bg-secondary rounded-full overflow-hidden">
+                            <div className="h-full w-0 bg-primary rounded-full" />
+                          </div>
+                          <span className="text-[10px] font-sans text-muted-foreground whitespace-nowrap">{interview.duration}</span>
                         </div>
                       </div>
                       <div className="flex-1 overflow-y-auto p-4 space-y-4">

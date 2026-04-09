@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useProject } from '@/lib/ProjectContext';
 import { AppLayout } from '@/components/AppLayout';
-import { ArrowLeft, Play, Pause, Plus, MapPin, User } from 'lucide-react';
+import { ArrowLeft, Play, Pause, Plus, MapPin, User, Pencil, Check } from 'lucide-react';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { AnnotatedPassageText, getTagColor } from '@/components/AnnotatedPassageText';
 

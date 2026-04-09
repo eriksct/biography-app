@@ -10,7 +10,7 @@ type Tab = 'transcript' | 'summary';
 export default function InterviewDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { project, addPersonToInterview, addPlaceDateToInterview, updateInterviewNotes, addTheme, addThemeAnnotation, removeThemeAnnotation } = useProject();
+  const { project, updatePassage, addPersonToInterview, addPlaceDateToInterview, updateInterviewNotes, addTheme, addThemeAnnotation, removeThemeAnnotation } = useProject();
   const interview = project.interviews.find(i => i.id === id);
   const [activeTab, setActiveTab] = useState<Tab>('transcript');
   const [activeThemeFilter, setActiveThemeFilter] = useState<string | null>(null);

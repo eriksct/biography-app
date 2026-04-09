@@ -215,6 +215,11 @@ function TranscriptTab({
   removeThemeAnnotation,
   updateInterviewNotes,
   passagesContainerRef,
+  editingPassageId,
+  setEditingPassageId,
+  editingText,
+  setEditingText,
+  updatePassage,
 }: any) {
   return (
     <div className="flex-1 flex overflow-hidden">

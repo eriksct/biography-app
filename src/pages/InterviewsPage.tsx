@@ -235,10 +235,7 @@ export default function InterviewsPage() {
                     </div>
                     {interview.status === 'recording' && (
                       <div className="flex items-center gap-2 text-primary">
-                        <span className="relative flex h-2.5 w-2.5">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
-                        </span>
+                        <Loader2 className="w-4 h-4 animate-spin text-primary" />
                         <span className="font-sans text-sm animate-pulse">Transcription en cours…</span>
                       </div>
                     )}

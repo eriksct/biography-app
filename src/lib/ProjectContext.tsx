@@ -9,6 +9,7 @@ interface ProjectContextType {
   addChapter: (title: string) => void;
   updateChapter: (id: string, updates: Partial<Chapter>) => void;
   reorderChapter: (chapterId: string, direction: 'up' | 'down') => void;
+  moveChapter: (fromIndex: number, toIndex: number) => void;
   addBlockToChapter: (chapterId: string, block: ManuscriptBlock) => void;
   updateBlock: (chapterId: string, blockId: string, updates: Partial<ManuscriptBlock>) => void;
   removeBlock: (chapterId: string, blockId: string) => void;

@@ -292,7 +292,7 @@ export default function ManuscritPage() {
               className="flex items-center gap-2 px-4 py-2 text-sm font-sans rounded-md transition-colors bg-primary text-primary-foreground"
             >
               <BookOpen className="w-4 h-4" />
-              Passages d'entretiens
+              Entretiens & Étiquettes
             </button>
           </div>
 

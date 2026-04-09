@@ -16,6 +16,8 @@ export default function InterviewDetailPage() {
   const [activeThemeFilter, setActiveThemeFilter] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [newTheme, setNewTheme] = useState('');
+  const [editingPassageId, setEditingPassageId] = useState<string | null>(null);
+  const [editingText, setEditingText] = useState('');
 
   // Text selection state
   const [selectionInfo, setSelectionInfo] = useState<{

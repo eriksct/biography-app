@@ -17,6 +17,14 @@ export default function ManuscritPage() {
   const [showNewChapter, setShowNewChapter] = useState(false);
   const [dialogInterviewId, setDialogInterviewId] = useState<string | null>(null);
   const [dialogPassageId, setDialogPassageId] = useState<string | null>(null);
+  const [dialogSelectionInfo, setDialogSelectionInfo] = useState<{
+    passageId: string;
+    start: number;
+    end: number;
+    selectedText: string;
+    rect: { top: number; left: number };
+  } | null>(null);
+  const [dialogNewTheme, setDialogNewTheme] = useState('');
   const highlightRef = useRef<HTMLDivElement>(null);
   const [panelTab, setPanelTab] = useState<'entretiens' | 'themes'>('entretiens');
   const [selectedInterviewId, setSelectedInterviewId] = useState<string | null>(null);
@@ -73,6 +81,50 @@ export default function ManuscritPage() {
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
   }, [selectionInfo]);
+
+  const handleDialogTextSelect = useCallback(() => {
+    if (!dialogInterviewId) return;
+    const selection = window.getSelection();
+    if (!selection || selection.isCollapsed || !selection.rangeCount) return;
+    const range = selection.getRangeAt(0);
+    const selectedText = selection.toString().trim();
+    if (!selectedText) return;
+    let node: Node | null = range.startContainer;
+    let passageEl: HTMLElement | null = null;
+    while (node) {
+      if (node instanceof HTMLElement && node.dataset.dialogPassageId) { passageEl = node; break; }
+      node = node.parentNode;
+    }
+    if (!passageEl) return;
+    const passageId = passageEl.dataset.dialogPassageId!;
+    const interview = project.interviews.find(i => i.id === dialogInterviewId);
+    const passage = interview?.passages.find(p => p.id === passageId);
+    if (!passage) return;
+    const selText = selection.toString();
+    const startIdx = passage.text.indexOf(selText);
+    if (startIdx === -1) return;
+    const rect = range.getBoundingClientRect();
+    setDialogSelectionInfo({
+      passageId, start: startIdx, end: startIdx + selText.length, selectedText: selText,
+      rect: { top: rect.bottom, left: rect.left + rect.width / 2 },
+    });
+  }, [dialogInterviewId, project.interviews]);
+
+  useEffect(() => {
+    if (!dialogInterviewId) return;
+    document.addEventListener('mouseup', handleDialogTextSelect);
+    return () => document.removeEventListener('mouseup', handleDialogTextSelect);
+  }, [handleDialogTextSelect, dialogInterviewId]);
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (dialogSelectionInfo && !(e.target as HTMLElement).closest('[data-dialog-theme-popup]')) {
+        setDialogSelectionInfo(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [dialogSelectionInfo]);
 
   useEffect(() => {
     if (dialogInterviewId && dialogPassageId && highlightRef.current) {
@@ -554,7 +606,7 @@ export default function ManuscritPage() {
       </div>
 
       {/* Interview transcript dialog */}
-      <Dialog open={!!dialogInterviewId} onOpenChange={(open) => { if (!open) { setDialogInterviewId(null); setDialogPassageId(null); } }}>
+      <Dialog open={!!dialogInterviewId} onOpenChange={(open) => { if (!open) { setDialogInterviewId(null); setDialogPassageId(null); setDialogSelectionInfo(null); } }}>
         <DialogContent className="max-w-3xl max-h-[80vh] overflow-hidden flex flex-col">
           {(() => {
             const interview = project.interviews.find(i => i.id === dialogInterviewId);
@@ -569,7 +621,7 @@ export default function ManuscritPage() {
                     {new Date(interview.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })} · {interview.duration}
                   </p>
                 </DialogHeader>
-                <div className="flex-1 overflow-y-auto space-y-6 py-4">
+                <div className="flex-1 overflow-y-auto space-y-6 py-4 relative">
                   {interview.passages.map(passage => {
                     const isHighlighted = passage.id === dialogPassageId;
                     return (
@@ -588,12 +640,64 @@ export default function ManuscritPage() {
                             </span>
                           ))}
                         </div>
-                        <p className="font-serif text-content leading-relaxed text-foreground">
-                          <AnnotatedPassageText text={passage.text} annotations={passage.themeAnnotations} allThemes={project.allThemes} />
+                        <p className="font-serif text-content leading-relaxed text-foreground" data-dialog-passage-id={passage.id}>
+                          <AnnotatedPassageText
+                            text={passage.text}
+                            annotations={passage.themeAnnotations}
+                            allThemes={project.allThemes}
+                            onRemoveAnnotation={(annotationId) => removeThemeAnnotation(interview.id, passage.id, annotationId)}
+                          />
                         </p>
                       </div>
                     );
                   })}
+                  {/* Theme annotation popup in dialog */}
+                  {dialogSelectionInfo && dialogInterviewId && (
+                    <div
+                      data-dialog-theme-popup
+                      className="fixed z-[100] bg-popover border rounded-lg shadow-lg p-3 min-w-[220px]"
+                      style={{ top: dialogSelectionInfo.rect.top + 8, left: dialogSelectionInfo.rect.left, transform: 'translateX(-50%)' }}
+                    >
+                      <p className="text-xs text-muted-foreground mb-2 truncate max-w-[200px]">« {dialogSelectionInfo.selectedText.slice(0, 40)}{dialogSelectionInfo.selectedText.length > 40 ? '…' : ''} »</p>
+                      <div className="flex flex-wrap gap-1.5 mb-2">
+                        {project.allThemes.map(theme => (
+                          <button
+                            key={theme}
+                            className={`px-2 py-0.5 rounded-full text-xs font-sans font-medium transition-colors ${getTagColor(theme, project.allThemes)} hover:opacity-80`}
+                            onClick={() => {
+                              addThemeAnnotation(dialogInterviewId, dialogSelectionInfo.passageId, dialogSelectionInfo.start, dialogSelectionInfo.end, theme);
+                              setDialogSelectionInfo(null);
+                              window.getSelection()?.removeAllRanges();
+                            }}
+                          >
+                            {theme}
+                          </button>
+                        ))}
+                      </div>
+                      <form
+                        className="flex gap-1.5"
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          const t = dialogNewTheme.trim();
+                          if (!t) return;
+                          addTheme(t);
+                          addThemeAnnotation(dialogInterviewId, dialogSelectionInfo.passageId, dialogSelectionInfo.start, dialogSelectionInfo.end, t);
+                          setDialogNewTheme('');
+                          setDialogSelectionInfo(null);
+                          window.getSelection()?.removeAllRanges();
+                        }}
+                      >
+                        <input
+                          className="flex-1 px-2 py-1 text-xs border rounded bg-background text-foreground placeholder:text-muted-foreground"
+                          placeholder="Créer une étiquette..."
+                          value={dialogNewTheme}
+                          onChange={(e) => setDialogNewTheme(e.target.value)}
+                          autoFocus
+                        />
+                        <button type="submit" className="px-2 py-1 text-xs bg-primary text-primary-foreground rounded hover:bg-primary/90">+</button>
+                      </form>
+                    </div>
+                  )}
                 </div>
               </>
             );

@@ -15,7 +15,6 @@ export interface Passage {
   timestamp: string; // e.g. "00:03:21"
   themes: string[];
   themeAnnotations: ThemeAnnotation[];
-  status: PassageStatus;
   usedInChapter?: string;
 }
 

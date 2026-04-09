@@ -2,12 +2,12 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { useProject } from '@/lib/ProjectContext';
 import { AppLayout } from '@/components/AppLayout';
 import { PassageStatus } from '@/lib/types';
-import { Plus, FileText, Download, X, BookOpen, CheckCircle, AlertCircle, Circle, PanelLeftOpen, ChevronUp, ChevronDown, ArrowLeft } from 'lucide-react';
+import { Plus, FileText, Download, X, BookOpen, CheckCircle, AlertCircle, Circle, PanelLeftOpen, GripVertical, ArrowLeft } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { getTagColor } from '@/components/AnnotatedPassageText';
 import { ChapterEditor, extractHeadings } from '@/components/ChapterEditor';
 export default function ManuscritPage() {
-  const { project, addChapter, updateChapter, reorderChapter, markPassageUsed, setPassageStatus } = useProject();
+  const { project, addChapter, updateChapter, reorderChapter, moveChapter, markPassageUsed, setPassageStatus } = useProject();
   const [activeChapterId, setActiveChapterId] = useState<string>(project.chapters[0]?.id || '');
   const [showPassagePanel, setShowPassagePanel] = useState(false);
   const [chapterSidebarOpen, setChapterSidebarOpen] = useState(true);

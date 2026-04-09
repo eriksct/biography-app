@@ -219,135 +219,232 @@ export default function ManuscritPage() {
         {/* Passage insertion panel */}
         {showPassagePanel && (
           <div className="w-96 border-l border-border bg-card flex flex-col flex-shrink-0 overflow-hidden">
+            {/* Header with tabs */}
             <div className="p-4 border-b border-border flex items-center justify-between">
-              <h3 className="font-sans font-semibold text-sm">Passages disponibles</h3>
+              <div className="flex gap-1 bg-secondary rounded-md p-0.5">
+                <button
+                  onClick={() => { setPanelTab('entretiens'); setSelectedInterviewId(null); }}
+                  className={`px-3 py-1.5 text-xs font-sans font-medium rounded transition-colors ${panelTab === 'entretiens' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                >
+                  Entretiens
+                </button>
+                <button
+                  onClick={() => setPanelTab('themes')}
+                  className={`px-3 py-1.5 text-xs font-sans font-medium rounded transition-colors ${panelTab === 'themes' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                >
+                  Thèmes
+                </button>
+              </div>
               <button onClick={() => setShowPassagePanel(false)} className="text-muted-foreground hover:text-foreground">
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Filters */}
-            <div className="px-4 py-3 border-b border-border space-y-2">
-              {/* Statut */}
-              <div>
-                <span className="text-[10px] font-sans text-muted-foreground uppercase tracking-wider">Statut</span>
-                <div className="flex flex-wrap gap-1 mt-1">
-                  {([
-                    { value: 'non-integre' as PassageStatus, label: 'Non intégré' },
-                    { value: 'details-manquants' as PassageStatus, label: 'Détails manquants' },
-                    { value: 'integre' as PassageStatus, label: 'Intégré' },
-                  ]).map(s => {
-                    const active = passageFilterStatuses.includes(s.value);
-                    return (
-                      <button
-                        key={s.value}
-                        onClick={() => setPassageFilterStatuses(prev => active ? prev.filter(v => v !== s.value) : [...prev, s.value])}
-                        className={`px-2 py-0.5 text-xs font-sans rounded-full transition-colors ${active ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground hover:bg-border'}`}
-                      >
-                        {s.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-              {/* Thème */}
-              <div>
-                <span className="text-[10px] font-sans text-muted-foreground uppercase tracking-wider">Thème</span>
-                <div className="flex flex-wrap gap-1 mt-1">
-                  {project.allThemes.map(t => {
-                    const active = passageFilterThemes.includes(t);
-                    return (
-                      <button
-                        key={t}
-                        onClick={() => setPassageFilterThemes(prev => active ? prev.filter(v => v !== t) : [...prev, t])}
-                        className={`px-2 py-0.5 text-xs font-sans rounded-full transition-colors ${active ? getTagColor(t, project.allThemes) + ' ring-2 ring-primary/50' : getTagColor(t, project.allThemes)}`}
-                      >
-                        {t}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-              {/* Entretien */}
-              <div>
-                <span className="text-[10px] font-sans text-muted-foreground uppercase tracking-wider">Entretien</span>
-                <div className="flex flex-wrap gap-1 mt-1">
-                  {project.interviews.map(i => {
-                    const active = passageFilterInterviews.includes(i.id);
-                    return (
-                      <button
-                        key={i.id}
-                        onClick={() => setPassageFilterInterviews(prev => active ? prev.filter(v => v !== i.id) : [...prev, i.id])}
-                        className={`px-2 py-0.5 text-xs font-sans rounded-full transition-colors ${active ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground hover:bg-border'}`}
-                      >
-                        Entretien n°{i.number}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-              {(passageFilterStatuses.length > 0 || passageFilterThemes.length > 0 || passageFilterInterviews.length > 0) && (
-                <button
-                  onClick={() => { setPassageFilterStatuses([]); setPassageFilterThemes([]); setPassageFilterInterviews([]); }}
-                  className="px-2 py-0.5 text-xs font-sans text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  ✕ Réinitialiser
-                </button>
-              )}
-            </div>
-
-            {/* Passage list */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {filteredPassages.length === 0 ? (
-                <p className="text-sm font-sans text-muted-foreground text-center py-8">
-                  Aucun passage disponible.
-                </p>
-              ) : (
-                filteredPassages.map(passage => {
-                  const StatusIcon = passage.status === 'integre' ? CheckCircle : passage.status === 'details-manquants' ? AlertCircle : Circle;
-                  const statusColor = passage.status === 'integre' ? 'text-accent' : passage.status === 'details-manquants' ? 'text-amber-500' : 'text-muted-foreground';
+            {/* Tab: Entretiens */}
+            {panelTab === 'entretiens' && (
+              <div className="flex-1 overflow-y-auto">
+                {selectedInterviewId ? (() => {
+                  const interview = project.interviews.find(i => i.id === selectedInterviewId);
+                  if (!interview) return null;
                   return (
-                    <div
-                      key={`${passage.interviewId}-${passage.id}`}
-                      className={`p-4 rounded-lg border border-border transition-colors ${passage.status === 'integre' ? 'opacity-50' : ''}`}
-                    >
-                      <div className="flex items-center gap-2 mb-2">
-                        <StatusIcon className={`w-3.5 h-3.5 ${statusColor}`} />
-                        <span className="text-xs font-sans text-muted-foreground">
-                          Entretien n°{passage.interviewNumber}
-                        </span>
-                        <span className="text-xs font-mono text-muted-foreground">{passage.timestamp}</span>
-                      </div>
-                      <p
-                        onClick={() => { setDialogInterviewId(passage.interviewId); setDialogPassageId(passage.id); }}
-                        className="font-serif text-sm leading-relaxed line-clamp-4 mb-3 cursor-pointer hover:text-primary transition-colors"
-                      >{passage.text}</p>
-                      <div className="flex gap-1 mb-3">
-                        {passage.themes.map(t => (
-                          <span key={t} className={`px-2 py-0.5 rounded-full text-xs font-sans ${getTagColor(t, project.allThemes)}`}>
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <select
-                          value={passage.status}
-                          onChange={e => {
-                            e.stopPropagation();
-                            setPassageStatus(passage.interviewId, passage.id, e.target.value as PassageStatus);
-                          }}
-                          className="flex-1 px-2 py-1.5 text-xs font-sans bg-secondary text-secondary-foreground rounded-md border-none cursor-pointer"
+                    <div className="flex flex-col h-full">
+                      <div className="px-4 py-3 border-b border-border">
+                        <button
+                          onClick={() => setSelectedInterviewId(null)}
+                          className="flex items-center gap-1.5 text-xs font-sans text-muted-foreground hover:text-foreground transition-colors mb-2"
                         >
-                          <option value="non-integre">Non intégré</option>
-                          <option value="details-manquants">Détails manquants</option>
-                          <option value="integre">Intégré</option>
-                        </select>
+                          <ArrowLeft className="w-3.5 h-3.5" />
+                          Retour
+                        </button>
+                        <h4 className="font-sans font-semibold text-sm">Entretien n°{interview.number}</h4>
+                        <p className="text-xs font-sans text-muted-foreground">
+                          {new Date(interview.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })} · {interview.duration}
+                        </p>
+                        {/* Audio player placeholder */}
+                        <div className="mt-3">
+                          <audio controls className="w-full h-8" style={{ minHeight: '32px' }}>
+                            <source src="" type="audio/mpeg" />
+                          </audio>
+                        </div>
+                      </div>
+                      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                        {interview.passages.map(passage => {
+                          const StatusIcon = passage.status === 'integre' ? CheckCircle : passage.status === 'details-manquants' ? AlertCircle : Circle;
+                          const statusColor = passage.status === 'integre' ? 'text-accent' : passage.status === 'details-manquants' ? 'text-amber-500' : 'text-muted-foreground';
+                          return (
+                            <div
+                              key={passage.id}
+                              className={`p-3 rounded-lg border border-border transition-colors ${passage.status === 'integre' ? 'opacity-50' : ''}`}
+                            >
+                              <div className="flex items-center gap-2 mb-2">
+                                <StatusIcon className={`w-3.5 h-3.5 ${statusColor}`} />
+                                <span className="text-xs font-mono text-muted-foreground">{passage.timestamp}</span>
+                              </div>
+                              <p className="font-serif text-sm leading-relaxed mb-2">{passage.text}</p>
+                              <div className="flex flex-wrap gap-1 mb-2">
+                                {passage.themes.map(t => (
+                                  <span key={t} className={`px-2 py-0.5 rounded-full text-xs font-sans ${getTagColor(t, project.allThemes)}`}>
+                                    {t}
+                                  </span>
+                                ))}
+                              </div>
+                              {passage.status !== 'integre' && activeChapter && (
+                                <button
+                                  onClick={() => handleInsertPassage({ ...passage, interviewId: interview.id, interviewNumber: interview.number })}
+                                  className="text-xs font-sans text-primary hover:underline"
+                                >
+                                  + Insérer dans le chapitre
+                                </button>
+                              )}
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   );
-                })
-              )}
-            </div>
+                })() : (
+                  <div className="p-4 space-y-2">
+                    {project.interviews.map(interview => (
+                      <button
+                        key={interview.id}
+                        onClick={() => setSelectedInterviewId(interview.id)}
+                        className="w-full text-left p-3 rounded-lg border border-border hover:bg-secondary/50 transition-colors"
+                      >
+                        <div className="font-sans font-medium text-sm">Entretien n°{interview.number}</div>
+                        <p className="text-xs font-sans text-muted-foreground mt-0.5">
+                          {new Date(interview.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })} · {interview.duration} · {interview.passages.length} passages
+                        </p>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Tab: Thèmes */}
+            {panelTab === 'themes' && (
+              <>
+                {/* Filters */}
+                <div className="px-4 py-3 border-b border-border space-y-2">
+                  <div>
+                    <span className="text-[10px] font-sans text-muted-foreground uppercase tracking-wider">Statut</span>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {([
+                        { value: 'non-integre' as PassageStatus, label: 'Non intégré' },
+                        { value: 'details-manquants' as PassageStatus, label: 'Détails manquants' },
+                        { value: 'integre' as PassageStatus, label: 'Intégré' },
+                      ]).map(s => {
+                        const active = passageFilterStatuses.includes(s.value);
+                        return (
+                          <button
+                            key={s.value}
+                            onClick={() => setPassageFilterStatuses(prev => active ? prev.filter(v => v !== s.value) : [...prev, s.value])}
+                            className={`px-2 py-0.5 text-xs font-sans rounded-full transition-colors ${active ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground hover:bg-border'}`}
+                          >
+                            {s.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-sans text-muted-foreground uppercase tracking-wider">Thème</span>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {project.allThemes.map(t => {
+                        const active = passageFilterThemes.includes(t);
+                        return (
+                          <button
+                            key={t}
+                            onClick={() => setPassageFilterThemes(prev => active ? prev.filter(v => v !== t) : [...prev, t])}
+                            className={`px-2 py-0.5 text-xs font-sans rounded-full transition-colors ${active ? getTagColor(t, project.allThemes) + ' ring-2 ring-primary/50' : getTagColor(t, project.allThemes)}`}
+                          >
+                            {t}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-sans text-muted-foreground uppercase tracking-wider">Entretien</span>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {project.interviews.map(i => {
+                        const active = passageFilterInterviews.includes(i.id);
+                        return (
+                          <button
+                            key={i.id}
+                            onClick={() => setPassageFilterInterviews(prev => active ? prev.filter(v => v !== i.id) : [...prev, i.id])}
+                            className={`px-2 py-0.5 text-xs font-sans rounded-full transition-colors ${active ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground hover:bg-border'}`}
+                          >
+                            Entretien n°{i.number}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  {(passageFilterStatuses.length > 0 || passageFilterThemes.length > 0 || passageFilterInterviews.length > 0) && (
+                    <button
+                      onClick={() => { setPassageFilterStatuses([]); setPassageFilterThemes([]); setPassageFilterInterviews([]); }}
+                      className="px-2 py-0.5 text-xs font-sans text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      ✕ Réinitialiser
+                    </button>
+                  )}
+                </div>
+
+                {/* Passage list */}
+                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                  {filteredPassages.length === 0 ? (
+                    <p className="text-sm font-sans text-muted-foreground text-center py-8">
+                      Aucun passage disponible.
+                    </p>
+                  ) : (
+                    filteredPassages.map(passage => {
+                      const StatusIcon = passage.status === 'integre' ? CheckCircle : passage.status === 'details-manquants' ? AlertCircle : Circle;
+                      const statusColor = passage.status === 'integre' ? 'text-accent' : passage.status === 'details-manquants' ? 'text-amber-500' : 'text-muted-foreground';
+                      return (
+                        <div
+                          key={`${passage.interviewId}-${passage.id}`}
+                          className={`p-4 rounded-lg border border-border transition-colors ${passage.status === 'integre' ? 'opacity-50' : ''}`}
+                        >
+                          <div className="flex items-center gap-2 mb-2">
+                            <StatusIcon className={`w-3.5 h-3.5 ${statusColor}`} />
+                            <span className="text-xs font-sans text-muted-foreground">
+                              Entretien n°{passage.interviewNumber}
+                            </span>
+                            <span className="text-xs font-mono text-muted-foreground">{passage.timestamp}</span>
+                          </div>
+                          <p
+                            onClick={() => { setDialogInterviewId(passage.interviewId); setDialogPassageId(passage.id); }}
+                            className="font-serif text-sm leading-relaxed line-clamp-4 mb-3 cursor-pointer hover:text-primary transition-colors"
+                          >{passage.text}</p>
+                          <div className="flex gap-1 mb-3">
+                            {passage.themes.map(t => (
+                              <span key={t} className={`px-2 py-0.5 rounded-full text-xs font-sans ${getTagColor(t, project.allThemes)}`}>
+                                {t}
+                              </span>
+                            ))}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <select
+                              value={passage.status}
+                              onChange={e => {
+                                e.stopPropagation();
+                                setPassageStatus(passage.interviewId, passage.id, e.target.value as PassageStatus);
+                              }}
+                              className="flex-1 px-2 py-1.5 text-xs font-sans bg-secondary text-secondary-foreground rounded-md border-none cursor-pointer"
+                            >
+                              <option value="non-integre">Non intégré</option>
+                              <option value="details-manquants">Détails manquants</option>
+                              <option value="integre">Intégré</option>
+                            </select>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>

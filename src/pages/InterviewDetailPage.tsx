@@ -10,7 +10,7 @@ type Tab = 'transcript' | 'summary';
 export default function InterviewDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { project, addPersonToInterview, addPlaceDateToInterview, updateInterviewNotes, addTheme, addThemeAnnotation, removeThemeAnnotation } = useProject();
+  const { project, updatePassage, addPersonToInterview, addPlaceDateToInterview, updateInterviewNotes, addTheme, addThemeAnnotation, removeThemeAnnotation } = useProject();
   const interview = project.interviews.find(i => i.id === id);
   const [activeTab, setActiveTab] = useState<Tab>('transcript');
   const [activeThemeFilter, setActiveThemeFilter] = useState<string | null>(null);
@@ -173,7 +173,7 @@ export default function InterviewDetailPage() {
             handleAddTheme={handleAddTheme}
             selectionInfo={selectionInfo}
             handleAssignThemeToSelection={handleAssignThemeToSelection}
-            
+            updatePassage={updatePassage}
             removeThemeAnnotation={removeThemeAnnotation}
             updateInterviewNotes={updateInterviewNotes}
             passagesContainerRef={passagesContainerRef}
@@ -204,11 +204,13 @@ function TranscriptTab({
   handleAddTheme,
   selectionInfo,
   handleAssignThemeToSelection,
-  
+  updatePassage,
   removeThemeAnnotation,
   updateInterviewNotes,
   passagesContainerRef,
 }: any) {
+  const [editingPassageId, setEditingPassageId] = useState<string | null>(null);
+  const [editText, setEditText] = useState('');
   return (
     <div className="flex-1 flex overflow-hidden">
       {/* Left: Transcript */}
@@ -274,15 +276,42 @@ function TranscriptTab({
                 <div className="flex items-center gap-3 mb-3">
                   <span className="text-xs font-sans text-muted-foreground font-mono">{passage.timestamp}</span>
                 </div>
-                <div className="flex gap-4">
-                  <p className="font-serif text-base leading-relaxed text-foreground flex-1" data-passage-id={passage.id}>
-                    <AnnotatedPassageText
-                      text={passage.text}
-                      annotations={passage.themeAnnotations}
-                      allThemes={project.allThemes}
-                      onRemoveAnnotation={(annId: string) => removeThemeAnnotation(interview.id, passage.id, annId)}
+                 <div className="flex gap-4">
+                  {editingPassageId === passage.id ? (
+                    <textarea
+                      autoFocus
+                      value={editText}
+                      onChange={(e: any) => setEditText(e.target.value)}
+                      onBlur={() => {
+                        if (editText.trim() !== passage.text) {
+                          updatePassage(interview.id, passage.id, { text: editText.trim() });
+                        }
+                        setEditingPassageId(null);
+                      }}
+                      onKeyDown={(e: any) => {
+                        if (e.key === 'Escape') {
+                          setEditingPassageId(null);
+                        }
+                      }}
+                      className="font-serif text-base leading-relaxed text-foreground flex-1 bg-card border border-input rounded-md px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-ring min-h-[80px]"
                     />
-                  </p>
+                  ) : (
+                    <p
+                      className="font-serif text-base leading-relaxed text-foreground flex-1 cursor-text"
+                      data-passage-id={passage.id}
+                      onDoubleClick={() => {
+                        setEditingPassageId(passage.id);
+                        setEditText(passage.text);
+                      }}
+                    >
+                      <AnnotatedPassageText
+                        text={passage.text}
+                        annotations={passage.themeAnnotations}
+                        allThemes={project.allThemes}
+                        onRemoveAnnotation={(annId: string) => removeThemeAnnotation(interview.id, passage.id, annId)}
+                      />
+                    </p>
+                  )}
                   {passage.themeAnnotations && passage.themeAnnotations.length > 0 && (
                     <div className="flex flex-col gap-1 flex-shrink-0 pt-0.5">
                       {[...new Set(passage.themeAnnotations.map((a: any) => a.theme))].map((theme: string) => (

@@ -79,6 +79,16 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     });
   }, []);
 
+  const moveChapter = useCallback((fromIndex: number, toIndex: number) => {
+    setProject(prev => {
+      if (fromIndex < 0 || toIndex < 0 || fromIndex >= prev.chapters.length || toIndex >= prev.chapters.length || fromIndex === toIndex) return prev;
+      const chapters = [...prev.chapters];
+      const [moved] = chapters.splice(fromIndex, 1);
+      chapters.splice(toIndex, 0, moved);
+      return { ...prev, chapters };
+    });
+  }, []);
+
   const addBlockToChapter = useCallback((chapterId: string, block: ManuscriptBlock) => {
     setProject(prev => ({
       ...prev,

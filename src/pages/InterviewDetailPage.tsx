@@ -275,16 +275,48 @@ function TranscriptTab({
               >
                 <div className="flex items-center gap-3 mb-3">
                   <span className="text-xs font-sans text-muted-foreground font-mono">{passage.timestamp}</span>
+                  <button
+                    onClick={() => { setEditingPassageId(passage.id); setEditingText(passage.text); }}
+                    className="opacity-0 group-hover/passage:opacity-100 transition-opacity ml-auto p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground"
+                    title="Modifier le texte"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                  </button>
                 </div>
                 <div className="flex gap-4">
-                  <p className="font-serif text-base leading-relaxed text-foreground flex-1" data-passage-id={passage.id}>
-                    <AnnotatedPassageText
-                      text={passage.text}
-                      annotations={passage.themeAnnotations}
-                      allThemes={project.allThemes}
-                      onRemoveAnnotation={(annId: string) => removeThemeAnnotation(interview.id, passage.id, annId)}
-                    />
-                  </p>
+                  {editingPassageId === passage.id ? (
+                    <div className="flex-1 flex flex-col gap-2">
+                      <textarea
+                        className="w-full font-serif text-base leading-relaxed text-foreground bg-background border border-input rounded-md p-3 resize-y min-h-[80px] focus:outline-none focus:ring-2 focus:ring-ring"
+                        value={editingText}
+                        onChange={e => setEditingText(e.target.value)}
+                        autoFocus
+                      />
+                      <div className="flex gap-2 justify-end">
+                        <button
+                          onClick={() => setEditingPassageId(null)}
+                          className="px-3 py-1 text-xs rounded-md text-muted-foreground hover:bg-muted transition-colors"
+                        >
+                          Annuler
+                        </button>
+                        <button
+                          onClick={() => { updatePassage(interview!.id, passage.id, { text: editingText }); setEditingPassageId(null); }}
+                          className="px-3 py-1 text-xs rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors flex items-center gap-1"
+                        >
+                          <Check className="w-3 h-3" /> Valider
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="font-serif text-base leading-relaxed text-foreground flex-1" data-passage-id={passage.id}>
+                      <AnnotatedPassageText
+                        text={passage.text}
+                        annotations={passage.themeAnnotations}
+                        allThemes={project.allThemes}
+                        onRemoveAnnotation={(annId: string) => removeThemeAnnotation(interview!.id, passage.id, annId)}
+                      />
+                    </p>
+                  )}
                   {passage.themeAnnotations && passage.themeAnnotations.length > 0 && (
                     <div className="flex flex-col gap-1 flex-shrink-0 pt-0.5">
                       {[...new Set(passage.themeAnnotations.map((a: any) => a.theme))].map((theme: string) => (

@@ -132,7 +132,7 @@ export default function ManuscritPage() {
         {chapterSidebarOpen ? (
         <div className="w-64 border-r border-border bg-card flex flex-col flex-shrink-0">
           <div className="p-4 border-b border-border">
-            <h2 className="font-serif text-lg font-semibold">Chapitres</h2>
+            <h2 className="font-serif text-lg font-semibold">Sommaire</h2>
           </div>
           <div className="flex-1 overflow-y-auto p-3 space-y-0.5">
             {project.chapters.map((chapter, chapterIdx) => (

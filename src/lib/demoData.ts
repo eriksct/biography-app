@@ -10,6 +10,7 @@ export const demoProject: Project = {
       number: 1,
       date: '2024-09-12',
       duration: '1h 23min',
+      status: 'processed',
       themes: ['Enfance', 'Famille'],
       notes: 'Premier entretien très riche. Jeanne était très émue en parlant de son enfance. Revenir sur l\'épisode du jardin lors du prochain entretien.',
       issues: [
@@ -88,6 +89,7 @@ export const demoProject: Project = {
       number: 2,
       date: '2024-09-26',
       duration: '1h 05min',
+      status: 'transcribed',
       themes: ['Études', 'Carrière'],
       notes: 'Jeanne parle avec beaucoup de fierté de ses années d\'études. Le passage sur l\'arrivée à Paris est très fort visuellement.',
       issues: [
@@ -153,6 +155,7 @@ export const demoProject: Project = {
       number: 3,
       date: '2024-10-10',
       duration: '58min',
+      status: 'recording',
       themes: ['Carrière', 'Famille'],
       notes: 'Entretien plus court, Jeanne était fatiguée. Mais le passage sur sa première classe est magnifique. Prévoir un entretien sur la retraite.',
       issues: [

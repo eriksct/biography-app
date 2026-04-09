@@ -332,9 +332,12 @@ function TranscriptTab({
       <div className="w-[40%] overflow-y-auto px-6 py-6 space-y-8">
         {/* Étiquettes (filters) */}
         <section>
-          <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+          <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-1">
             Étiquettes
           </h3>
+          <p className="font-sans text-xs text-muted-foreground mb-3">
+            Ajouter une étiquette (un thème, une date, un détail...) à des passages du texte
+          </p>
           <div className="flex flex-wrap gap-2">
             {project.allThemes.map((theme: string) => {
               const isActive = activeThemeFilter === theme;

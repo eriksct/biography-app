@@ -370,7 +370,7 @@ function TranscriptTab({
               value={newTheme}
               onChange={(e: any) => setNewTheme(e.target.value)}
               onKeyDown={(e: any) => e.key === 'Enter' && handleAddTheme()}
-              placeholder="Un thème, une date, un détail…"
+              placeholder="Créer une étiquette..."
               className="flex-1 px-3 py-2 text-sm font-sans bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
             />
             <button onClick={handleAddTheme} className="p-2 text-primary hover:bg-secondary rounded-md transition-colors">

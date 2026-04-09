@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { useProject } from '@/lib/ProjectContext';
 import { AppLayout } from '@/components/AppLayout';
 import { PassageStatus } from '@/lib/types';
-import { Plus, FileText, Download, X, BookOpen, CheckCircle, AlertCircle, Circle, PanelLeftOpen, ChevronUp, ChevronDown } from 'lucide-react';
+import { Plus, FileText, Download, X, BookOpen, CheckCircle, AlertCircle, Circle, PanelLeftOpen, ChevronUp, ChevronDown, ArrowLeft } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { getTagColor } from '@/components/AnnotatedPassageText';
 import { ChapterEditor, extractHeadings } from '@/components/ChapterEditor';
@@ -19,6 +19,8 @@ export default function ManuscritPage() {
   const [dialogInterviewId, setDialogInterviewId] = useState<string | null>(null);
   const [dialogPassageId, setDialogPassageId] = useState<string | null>(null);
   const highlightRef = useRef<HTMLDivElement>(null);
+  const [panelTab, setPanelTab] = useState<'entretiens' | 'themes'>('entretiens');
+  const [selectedInterviewId, setSelectedInterviewId] = useState<string | null>(null);
 
 
   useEffect(() => {

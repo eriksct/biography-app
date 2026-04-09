@@ -3,7 +3,7 @@ import { useProject } from '@/lib/ProjectContext';
 import { AppLayout } from '@/components/AppLayout';
 import { Plus, FileText, Download, X, BookOpen, PanelLeftOpen, GripVertical, ArrowLeft } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { getTagColor } from '@/components/AnnotatedPassageText';
+import { getTagColor, AnnotatedPassageText } from '@/components/AnnotatedPassageText';
 import { ChapterEditor, extractHeadings } from '@/components/ChapterEditor';
 export default function ManuscritPage() {
   const { project, addChapter, updateChapter, reorderChapter, moveChapter, markPassageUsed } = useProject();
@@ -276,7 +276,9 @@ export default function ManuscritPage() {
                               <div className="flex items-center gap-2 mb-2">
                                 <span className="text-xs font-mono text-muted-foreground">{passage.timestamp}</span>
                               </div>
-                              <p className="font-serif text-sm leading-relaxed mb-2">{passage.text}</p>
+                              <p className="font-serif text-sm leading-relaxed mb-2">
+                                <AnnotatedPassageText text={passage.text} annotations={passage.themeAnnotations} allThemes={project.allThemes} />
+                              </p>
                               <div className="flex flex-wrap gap-1 mb-2">
                                 {passage.themes.map(t => (
                                   <span key={t} className={`px-2 py-0.5 rounded-full text-xs font-sans ${getTagColor(t, project.allThemes)}`}>
@@ -388,7 +390,9 @@ export default function ManuscritPage() {
                           <p
                             onClick={() => { setDialogInterviewId(passage.interviewId); setDialogPassageId(passage.id); }}
                             className="font-serif text-sm leading-relaxed line-clamp-4 mb-3 cursor-pointer hover:text-primary transition-colors"
-                          >{passage.text}</p>
+                          >
+                            <AnnotatedPassageText text={passage.text} annotations={passage.themeAnnotations} allThemes={project.allThemes} />
+                          </p>
                           <div className="flex gap-1 mb-3">
                             {passage.themes.map(t => (
                               <span key={t} className={`px-2 py-0.5 rounded-full text-xs font-sans ${getTagColor(t, project.allThemes)}`}>
@@ -442,7 +446,9 @@ export default function ManuscritPage() {
                             </span>
                           ))}
                         </div>
-                        <p className="font-serif text-content leading-relaxed text-foreground">{passage.text}</p>
+                        <p className="font-serif text-content leading-relaxed text-foreground">
+                          <AnnotatedPassageText text={passage.text} annotations={passage.themeAnnotations} allThemes={project.allThemes} />
+                        </p>
                       </div>
                     );
                   })}

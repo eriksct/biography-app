@@ -4,14 +4,14 @@ import { X } from 'lucide-react';
 // Theme color map using HSL-based backgrounds
 const THEME_COLORS: Record<string, { bg: string; hover: string }> = {};
 const PALETTE = [
-  { bg: 'bg-blue-50', hover: '' },
-  { bg: 'bg-amber-50', hover: '' },
-  { bg: 'bg-emerald-50', hover: '' },
-  { bg: 'bg-purple-50', hover: '' },
-  { bg: 'bg-rose-50', hover: '' },
-  { bg: 'bg-cyan-50', hover: '' },
-  { bg: 'bg-orange-50', hover: '' },
-  { bg: 'bg-lime-50', hover: '' },
+  { bg: 'bg-blue-100/80', hover: '' },
+  { bg: 'bg-amber-100/80', hover: '' },
+  { bg: 'bg-emerald-100/80', hover: '' },
+  { bg: 'bg-purple-100/80', hover: '' },
+  { bg: 'bg-rose-100/80', hover: '' },
+  { bg: 'bg-cyan-100/80', hover: '' },
+  { bg: 'bg-orange-100/80', hover: '' },
+  { bg: 'bg-lime-100/80', hover: '' },
 ];
 
 const TAG_COLORS = [
@@ -92,7 +92,7 @@ export function AnnotatedPassageText({ text, annotations, allThemes, onRemoveAnn
         return (
           <span
             key={i}
-            className={`${colors.bg} rounded-sm px-0.5 relative group/ann inline transition-colors duration-200`}
+            className={`${colors.bg} rounded px-0.5 py-0.5 relative group/ann inline border-b-2 border-current/10 transition-colors duration-200`}
             title={seg.annotations.map(a => a.theme).join(', ')}
           >
             {seg.text}

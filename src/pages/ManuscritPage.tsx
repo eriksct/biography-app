@@ -322,10 +322,6 @@ export default function ManuscritPage() {
                           </div>
                           <span className="text-[10px] font-sans text-muted-foreground whitespace-nowrap">{interview.duration}</span>
                         </div>
-                        {/* Hint */}
-                        <p className="px-4 py-1.5 text-[11px] font-sans text-muted-foreground italic border-b border-border">
-                          Sélectionnez du texte pour y associer une étiquette
-                        </p>
                       </div>
                       <div className="flex-1 overflow-y-auto p-4 space-y-4 relative">
                         {interview.passages.map(passage => {

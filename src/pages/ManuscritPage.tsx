@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useProject } from '@/lib/ProjectContext';
 import { AppLayout } from '@/components/AppLayout';
-import { Plus, FileText, Download, X, BookOpen, PanelLeftOpen, GripVertical, ArrowLeft, Play } from 'lucide-react';
+import { Plus, FileText, Download, X, Search, PanelLeftOpen, GripVertical, ArrowLeft, Play } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { getTagColor, AnnotatedPassageText } from '@/components/AnnotatedPassageText';
 import { ChapterEditor, extractHeadings } from '@/components/ChapterEditor';
@@ -291,7 +291,7 @@ export default function ManuscritPage() {
               onClick={() => setShowPassagePanel(!showPassagePanel)}
               className="flex items-center gap-2 px-4 py-2 text-sm font-sans rounded-md transition-colors bg-primary text-primary-foreground"
             >
-              <BookOpen className="w-4 h-4" />
+              <Search className="w-4 h-4" />
               Entretiens & Étiquettes
             </button>
           </div>

@@ -169,7 +169,7 @@ export default function InterviewsPage() {
                           {String(interview.number).padStart(2, '0')}
                         </span>
                         <span className="font-sans text-content font-medium text-foreground">
-                          Entretien n°{interview.number}
+                          {interview.title || `Entretien n°${interview.number}`}
                         </span>
                       </div>
                       {matchingThemes.length > 0 && (

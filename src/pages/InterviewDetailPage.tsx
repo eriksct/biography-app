@@ -716,8 +716,19 @@ function SummaryTab({
                   {ed.label}
                 </div>
               ))}
-            </div>
-          </section>
+              <div className="flex gap-2 mt-2">
+                <input
+                  type="text"
+                  value={newEvent}
+                  onChange={(e) => setNewEvent(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleAddEvent()}
+                  placeholder="Ajouter un évènement…"
+                  className="flex-1 px-3 py-2 text-sm font-sans bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+                <button onClick={handleAddEvent} className="p-2 text-primary hover:bg-secondary rounded-md transition-colors">
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
 
           {/* Évènements historiques */}
           <section>
@@ -731,8 +742,19 @@ function SummaryTab({
                   {he.label}
                 </div>
               ))}
-            </div>
-          </section>
+              <div className="flex gap-2 mt-2">
+                <input
+                  type="text"
+                  value={newHistorical}
+                  onChange={(e) => setNewHistorical(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleAddHistorical()}
+                  placeholder="Ajouter un évènement historique…"
+                  className="flex-1 px-3 py-2 text-sm font-sans bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+                <button onClick={handleAddHistorical} className="p-2 text-primary hover:bg-secondary rounded-md transition-colors">
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
         </div>
 
         {/* Enjeux */}

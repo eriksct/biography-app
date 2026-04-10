@@ -247,7 +247,7 @@ export default function InterviewDetailPage() {
                   : 'border-transparent text-muted-foreground hover:text-foreground'
               }`}
             >
-              Résumé
+              Analyse
             </button>
           </div>
         </div>

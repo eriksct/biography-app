@@ -762,7 +762,6 @@ function SummaryTab({
         </div>
 
         {/* Enjeux */}
-        {interview.issues && interview.issues.length > 0 && (
         <section>
           <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
             <Target className="w-4 h-4" />

@@ -357,7 +357,14 @@ function TranscriptTab({
                 className="group group/passage relative rounded-lg p-5 transition-all hover:bg-card"
               >
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="text-xs font-sans text-muted-foreground font-mono">{passage.timestamp}</span>
+                  <button
+                    onClick={() => seekToPassage(passage.timestamp)}
+                    className="flex items-center gap-1.5 text-xs font-sans text-muted-foreground font-mono hover:text-primary transition-colors group/ts"
+                    title="Écouter à partir d'ici"
+                  >
+                    <Play className="w-3 h-3 opacity-0 group-hover/ts:opacity-100 transition-opacity" />
+                    {passage.timestamp}
+                  </button>
                   <button
                     onClick={() => { setEditingPassageId(passage.id); setEditingText(passage.text); }}
                     className="opacity-0 group-hover/passage:opacity-100 transition-opacity ml-auto p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground"

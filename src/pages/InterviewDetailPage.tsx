@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useProject } from '@/lib/ProjectContext';
 import { AppLayout } from '@/components/AppLayout';
-import { ArrowLeft, Play, Pause, Plus, MapPin, User, Pencil, Check, Download, FileText, Music } from 'lucide-react';
+import { ArrowLeft, Play, Pause, Plus, MapPin, User, Pencil, Check, Download, FileText, Music, Calendar, Landmark, Target, BookOpen } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { useState, useRef, useEffect, useCallback } from 'react';
@@ -642,11 +642,11 @@ function SummaryTab({
             </div>
           </section>
 
-          {/* Lieux et dates */}
+          {/* Lieux */}
           <section>
             <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
               <MapPin className="w-4 h-4" />
-              Lieux et dates
+              Lieux
             </h3>
             <div className="space-y-2">
               {interview.placesDates.map((pd: any) => (
@@ -660,7 +660,7 @@ function SummaryTab({
                   value={newPlace}
                   onChange={(e) => setNewPlace(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleAddPlace()}
-                  placeholder="Ajouter un lieu ou une date…"
+                  placeholder="Ajouter un lieu…"
                   className="flex-1 px-3 py-2 text-sm font-sans bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
                 />
                 <button onClick={handleAddPlace} className="p-2 text-primary hover:bg-secondary rounded-md transition-colors">
@@ -671,10 +671,44 @@ function SummaryTab({
           </section>
         </div>
 
+        {/* Évènements & Dates + Évènements historiques side by side */}
+        <div className="grid grid-cols-2 gap-8">
+          {/* Évènements & Dates */}
+          <section>
+            <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+              <Calendar className="w-4 h-4" />
+              Évènements & Dates
+            </h3>
+            <div className="space-y-2">
+              {interview.eventsDates?.map((ed: any) => (
+                <div key={ed.id} className="py-2 px-3 rounded-md bg-card font-sans text-sm">
+                  {ed.label}
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Évènements historiques */}
+          <section>
+            <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+              <Landmark className="w-4 h-4" />
+              Évènements historiques
+            </h3>
+            <div className="space-y-2">
+              {interview.historicalEvents?.map((he: any) => (
+                <div key={he.id} className="py-2 px-3 rounded-md bg-card font-sans text-sm">
+                  {he.label}
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+
         {/* Enjeux */}
         {interview.issues && interview.issues.length > 0 && (
           <section>
-            <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+            <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+              <Target className="w-4 h-4" />
               Enjeux
             </h3>
             <ul className="space-y-2">
@@ -688,11 +722,12 @@ function SummaryTab({
           </section>
         )}
 
-        {/* Résumé de l'entretien */}
+        {/* Résumé */}
         {interview.summarySections && interview.summarySections.length > 0 && (
           <section>
-            <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-              Analyse de l'entretien
+            <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+              <BookOpen className="w-4 h-4" />
+              Résumé
             </h3>
             <div className="space-y-6">
               {interview.summarySections.map((section: any, i: number) => (

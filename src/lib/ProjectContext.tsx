@@ -148,6 +148,39 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }));
   }, []);
 
+  const addEventDateToInterview = useCallback((interviewId: string, label: string) => {
+    setProject(prev => ({
+      ...prev,
+      interviews: prev.interviews.map(i =>
+        i.id === interviewId
+          ? { ...i, eventsDates: [...(i.eventsDates || []), { id: `ed-${Date.now()}`, label }] }
+          : i
+      ),
+    }));
+  }, []);
+
+  const addHistoricalEventToInterview = useCallback((interviewId: string, label: string) => {
+    setProject(prev => ({
+      ...prev,
+      interviews: prev.interviews.map(i =>
+        i.id === interviewId
+          ? { ...i, historicalEvents: [...(i.historicalEvents || []), { id: `he-${Date.now()}`, label }] }
+          : i
+      ),
+    }));
+  }, []);
+
+  const addIssueToInterview = useCallback((interviewId: string, issue: string) => {
+    setProject(prev => ({
+      ...prev,
+      interviews: prev.interviews.map(i =>
+        i.id === interviewId
+          ? { ...i, issues: [...i.issues, issue] }
+          : i
+      ),
+    }));
+  }, []);
+
   const updateInterviewNotes = useCallback((interviewId: string, notes: string) => {
     updateInterview(interviewId, { notes });
   }, [updateInterview]);
@@ -216,6 +249,9 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       markPassageUsed,
       addPersonToInterview,
       addPlaceDateToInterview,
+      addEventDateToInterview,
+      addHistoricalEventToInterview,
+      addIssueToInterview,
       updateInterviewNotes,
       addTheme,
       addThemeAnnotation,

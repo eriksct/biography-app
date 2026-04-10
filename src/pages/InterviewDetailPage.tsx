@@ -289,6 +289,22 @@ export default function InterviewDetailPage() {
   );
 }
 
+/* ─── Helpers ─── */
+function parseTimestamp(ts: string): number {
+  const parts = ts.split(':').map(Number);
+  if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  if (parts.length === 2) return parts[0] * 60 + parts[1];
+  return 0;
+}
+
+function formatSeconds(totalSec: number): string {
+  const h = Math.floor(totalSec / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
+  if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+
 /* ─── Transcript Tab ─── */
 function TranscriptTab({
   interview,
@@ -313,6 +329,26 @@ function TranscriptTab({
   setEditingText,
   updatePassage,
 }: any) {
+  const [currentTime, setCurrentTime] = useState(0);
+  const totalDuration = parseTimestamp(interview.duration);
+  const progress = totalDuration > 0 ? (currentTime / totalDuration) * 100 : 0;
+
+  // Find which passage is "active" based on currentTime
+  const activePassageId = (() => {
+    let active: string | null = null;
+    for (const p of interview.passages) {
+      if (parseTimestamp(p.timestamp) <= currentTime) active = p.id;
+      else break;
+    }
+    return active;
+  })();
+
+  const seekToPassage = (timestamp: string) => {
+    const secs = parseTimestamp(timestamp);
+    setCurrentTime(secs);
+    setIsPlaying(true);
+  };
+
   return (
     <div className="flex-1 flex overflow-hidden">
       {/* Left: Transcript */}
@@ -325,10 +361,17 @@ function TranscriptTab({
           >
             {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
           </button>
-          <div className="flex-1 h-2 bg-secondary rounded-full overflow-hidden">
-            <div className="h-full w-1/3 bg-primary rounded-full" />
+          <div
+            className="flex-1 h-2 bg-secondary rounded-full overflow-hidden cursor-pointer"
+            onClick={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+              setCurrentTime(Math.round(ratio * totalDuration));
+            }}
+          >
+            <div className="h-full bg-primary rounded-full transition-all duration-150" style={{ width: `${progress}%` }} />
           </div>
-          <span className="text-xs font-sans text-muted-foreground whitespace-nowrap">0:27:15 / {interview.duration}</span>
+          <span className="text-xs font-sans text-muted-foreground whitespace-nowrap">{formatSeconds(currentTime)} / {interview.duration}</span>
           <select className="text-xs font-sans text-muted-foreground bg-transparent border border-border rounded px-2 py-1">
             <option>1x</option>
             <option>0.75x</option>
@@ -373,10 +416,17 @@ function TranscriptTab({
             return (
               <div
                 key={passage.id}
-                className="group group/passage relative rounded-lg p-5 transition-all hover:bg-card"
+                className={`group group/passage relative rounded-lg p-5 transition-all hover:bg-card ${activePassageId === passage.id ? 'bg-card border-l-2 border-l-primary' : ''}`}
               >
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="text-xs font-sans text-muted-foreground font-mono">{passage.timestamp}</span>
+                  <button
+                    onClick={() => seekToPassage(passage.timestamp)}
+                    className="flex items-center gap-1.5 text-xs font-sans text-muted-foreground font-mono hover:text-primary transition-colors group/ts"
+                    title="Écouter à partir d'ici"
+                  >
+                    <Play className="w-3 h-3 opacity-0 group-hover/ts:opacity-100 transition-opacity" />
+                    {passage.timestamp}
+                  </button>
                   <button
                     onClick={() => { setEditingPassageId(passage.id); setEditingText(passage.text); }}
                     className="opacity-0 group-hover/passage:opacity-100 transition-opacity ml-auto p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground"

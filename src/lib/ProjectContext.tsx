@@ -16,6 +16,9 @@ interface ProjectContextType {
   markPassageUsed: (interviewId: string, passageId: string, chapterId: string) => void;
   addPersonToInterview: (interviewId: string, name: string, relation?: string) => void;
   addPlaceDateToInterview: (interviewId: string, label: string) => void;
+  addEventDateToInterview: (interviewId: string, label: string) => void;
+  addHistoricalEventToInterview: (interviewId: string, label: string) => void;
+  addIssueToInterview: (interviewId: string, issue: string) => void;
   updateInterviewNotes: (interviewId: string, notes: string) => void;
   addTheme: (theme: string) => void;
   addThemeAnnotation: (interviewId: string, passageId: string, start: number, end: number, theme: string) => void;

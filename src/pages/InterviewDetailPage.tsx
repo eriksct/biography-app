@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useProject } from '@/lib/ProjectContext';
 import { AppLayout } from '@/components/AppLayout';
-import { ArrowLeft, Play, Pause, Plus, MapPin, User, Pencil, Check, Download, FileText, Music } from 'lucide-react';
+import { ArrowLeft, Play, Pause, Plus, MapPin, User, Pencil, Check, Download, FileText, Music, Calendar, Landmark, Target, BookOpen } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { useState, useRef, useEffect, useCallback } from 'react';

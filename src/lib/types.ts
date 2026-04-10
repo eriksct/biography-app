@@ -32,6 +32,16 @@ export interface SummarySection {
   content: string;
 }
 
+export interface EventDate {
+  id: string;
+  label: string;
+}
+
+export interface HistoricalEvent {
+  id: string;
+  label: string;
+}
+
 export interface Interview {
   id: string;
   number: number;
@@ -42,6 +52,8 @@ export interface Interview {
   passages: Passage[];
   persons: Person[];
   placesDates: PlaceDate[];
+  eventsDates: EventDate[];
+  historicalEvents: HistoricalEvent[];
   themes: string[];
   notes: string;
   issues: string[];

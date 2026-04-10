@@ -239,7 +239,7 @@ export default function InterviewsPage() {
               return (
                 <button
                   key={interview.id}
-                  onClick={() => navigate(`/entretien/${interview.id}`)}
+                  onClick={() => editingId !== interview.id && navigate(`/entretien/${interview.id}`)}
                   className="w-full text-left bg-card hover:bg-secondary/50 border border-border rounded-lg p-6 transition-colors group"
                 >
                   <div className="flex items-center justify-between">
@@ -248,9 +248,28 @@ export default function InterviewsPage() {
                         {String(interview.number).padStart(2, '0')}
                       </span>
                       <div>
-                        <p className="font-sans text-content font-medium text-foreground">
-                          Entretien n°{interview.number}
-                        </p>
+                        {editingId === interview.id ? (
+                          <input
+                            ref={editInputRef}
+                            value={editingTitle}
+                            onChange={(e) => setEditingTitle(e.target.value)}
+                            onClick={(e) => e.stopPropagation()}
+                            onBlur={commitRename}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') { e.currentTarget.blur(); }
+                              if (e.key === 'Escape') { setEditingId(null); }
+                            }}
+                            className="font-sans text-content font-medium bg-transparent border-b border-border focus:border-foreground outline-none"
+                          />
+                        ) : (
+                          <p className="font-sans text-content font-medium text-foreground flex items-center gap-2">
+                            {interview.title || `Entretien n°${interview.number}`}
+                            <Pencil
+                              className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={(e) => startRename(e, interview)}
+                            />
+                          </p>
+                        )}
                         <p className="font-sans text-sm text-muted-foreground mt-1">
                           {dateFormatted} · {interview.duration}
                         </p>

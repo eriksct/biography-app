@@ -354,7 +354,7 @@ function TranscriptTab({
             return (
               <div
                 key={passage.id}
-                className="group group/passage relative rounded-lg p-5 transition-all hover:bg-card"
+                className={`group group/passage relative rounded-lg p-5 transition-all hover:bg-card ${activePassageId === passage.id ? 'bg-card border-l-2 border-l-primary' : ''}`}
               >
                 <div className="flex items-center gap-3 mb-3">
                   <button

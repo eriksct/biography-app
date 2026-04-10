@@ -763,21 +763,33 @@ function SummaryTab({
 
         {/* Enjeux */}
         {interview.issues && interview.issues.length > 0 && (
-          <section>
-            <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-              <Target className="w-4 h-4" />
-              Enjeux
-            </h3>
-            <ul className="space-y-2">
-              {interview.issues.map((issue: string, i: number) => (
-                <li key={i} className="flex items-start gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2.5 flex-shrink-0" />
-                  <span className="font-sans text-sm leading-relaxed text-foreground">{issue}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
+        <section>
+          <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+            <Target className="w-4 h-4" />
+            Enjeux
+          </h3>
+          <ul className="space-y-2">
+            {interview.issues.map((issue: string, i: number) => (
+              <li key={i} className="flex items-start gap-3">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2.5 flex-shrink-0" />
+                <span className="font-sans text-sm leading-relaxed text-foreground">{issue}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="flex gap-2 mt-2">
+            <input
+              type="text"
+              value={newIssue}
+              onChange={(e) => setNewIssue(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleAddIssue()}
+              placeholder="Ajouter un enjeu…"
+              className="flex-1 px-3 py-2 text-sm font-sans bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+            />
+            <button onClick={handleAddIssue} className="p-2 text-primary hover:bg-secondary rounded-md transition-colors">
+              <Plus className="w-4 h-4" />
+            </button>
+          </div>
+        </section>
 
         {/* Résumé */}
         {interview.summarySections && interview.summarySections.length > 0 && (

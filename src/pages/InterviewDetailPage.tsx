@@ -286,6 +286,7 @@ export default function InterviewDetailPage() {
             addEventDateToInterview={addEventDateToInterview}
             addHistoricalEventToInterview={addHistoricalEventToInterview}
             addIssueToInterview={addIssueToInterview}
+            updateInterview={updateInterview}
           />
         )}
       </div>

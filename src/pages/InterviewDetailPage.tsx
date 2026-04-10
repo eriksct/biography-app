@@ -594,9 +594,15 @@ function SummaryTab({
   interview,
   addPersonToInterview,
   addPlaceDateToInterview,
+  addEventDateToInterview,
+  addHistoricalEventToInterview,
+  addIssueToInterview,
 }: any) {
   const [newPerson, setNewPerson] = useState('');
   const [newPlace, setNewPlace] = useState('');
+  const [newEvent, setNewEvent] = useState('');
+  const [newHistorical, setNewHistorical] = useState('');
+  const [newIssue, setNewIssue] = useState('');
 
   const handleAddPerson = () => {
     if (newPerson.trim()) {
@@ -609,6 +615,27 @@ function SummaryTab({
     if (newPlace.trim()) {
       addPlaceDateToInterview(interview.id, newPlace.trim());
       setNewPlace('');
+    }
+  };
+
+  const handleAddEvent = () => {
+    if (newEvent.trim()) {
+      addEventDateToInterview(interview.id, newEvent.trim());
+      setNewEvent('');
+    }
+  };
+
+  const handleAddHistorical = () => {
+    if (newHistorical.trim()) {
+      addHistoricalEventToInterview(interview.id, newHistorical.trim());
+      setNewHistorical('');
+    }
+  };
+
+  const handleAddIssue = () => {
+    if (newIssue.trim()) {
+      addIssueToInterview(interview.id, newIssue.trim());
+      setNewIssue('');
     }
   };
 

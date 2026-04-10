@@ -16,6 +16,9 @@ interface ProjectContextType {
   markPassageUsed: (interviewId: string, passageId: string, chapterId: string) => void;
   addPersonToInterview: (interviewId: string, name: string, relation?: string) => void;
   addPlaceDateToInterview: (interviewId: string, label: string) => void;
+  addEventDateToInterview: (interviewId: string, label: string) => void;
+  addHistoricalEventToInterview: (interviewId: string, label: string) => void;
+  addIssueToInterview: (interviewId: string, issue: string) => void;
   updateInterviewNotes: (interviewId: string, notes: string) => void;
   addTheme: (theme: string) => void;
   addThemeAnnotation: (interviewId: string, passageId: string, start: number, end: number, theme: string) => void;
@@ -145,6 +148,39 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }));
   }, []);
 
+  const addEventDateToInterview = useCallback((interviewId: string, label: string) => {
+    setProject(prev => ({
+      ...prev,
+      interviews: prev.interviews.map(i =>
+        i.id === interviewId
+          ? { ...i, eventsDates: [...(i.eventsDates || []), { id: `ed-${Date.now()}`, label }] }
+          : i
+      ),
+    }));
+  }, []);
+
+  const addHistoricalEventToInterview = useCallback((interviewId: string, label: string) => {
+    setProject(prev => ({
+      ...prev,
+      interviews: prev.interviews.map(i =>
+        i.id === interviewId
+          ? { ...i, historicalEvents: [...(i.historicalEvents || []), { id: `he-${Date.now()}`, label }] }
+          : i
+      ),
+    }));
+  }, []);
+
+  const addIssueToInterview = useCallback((interviewId: string, issue: string) => {
+    setProject(prev => ({
+      ...prev,
+      interviews: prev.interviews.map(i =>
+        i.id === interviewId
+          ? { ...i, issues: [...i.issues, issue] }
+          : i
+      ),
+    }));
+  }, []);
+
   const updateInterviewNotes = useCallback((interviewId: string, notes: string) => {
     updateInterview(interviewId, { notes });
   }, [updateInterview]);
@@ -213,6 +249,9 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       markPassageUsed,
       addPersonToInterview,
       addPlaceDateToInterview,
+      addEventDateToInterview,
+      addHistoricalEventToInterview,
+      addIssueToInterview,
       updateInterviewNotes,
       addTheme,
       addThemeAnnotation,

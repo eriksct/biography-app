@@ -589,6 +589,60 @@ function TranscriptTab({
   );
 }
 
+/* ─── Editable Item ─── */
+function EditableItem({ value, onSave, onDelete, subtitle }: { value: string; onSave: (v: string) => void; onDelete: () => void; subtitle?: string }) {
+  const [editing, setEditing] = useState(false);
+  const [editValue, setEditValue] = useState(value);
+
+  const handleSave = () => {
+    if (editValue.trim()) {
+      onSave(editValue.trim());
+      setEditing(false);
+    }
+  };
+
+  if (editing) {
+    return (
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={editValue}
+          onChange={(e) => setEditValue(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') handleSave();
+            if (e.key === 'Escape') { setEditValue(value); setEditing(false); }
+          }}
+          autoFocus
+          className="flex-1 px-3 py-2 text-sm font-sans bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+        />
+        <button onClick={handleSave} className="p-2 text-primary hover:bg-secondary rounded-md transition-colors">
+          <Check className="w-4 h-4" />
+        </button>
+        <button onClick={() => { setEditValue(value); setEditing(false); }} className="p-2 text-muted-foreground hover:bg-secondary rounded-md transition-colors">
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="group flex items-center justify-between py-2 px-3 rounded-md bg-card">
+      <div className="flex-1 min-w-0">
+        <span className="font-sans text-sm font-medium">{value}</span>
+        {subtitle && <span className="text-xs font-sans text-muted-foreground ml-2">{subtitle}</span>}
+      </div>
+      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <button onClick={() => setEditing(true)} className="p-1 text-muted-foreground hover:text-foreground rounded transition-colors">
+          <Pencil className="w-3.5 h-3.5" />
+        </button>
+        <button onClick={onDelete} className="p-1 text-muted-foreground hover:text-destructive rounded transition-colors">
+          <X className="w-3.5 h-3.5" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
 /* ─── Summary Tab ─── */
 function SummaryTab({
   interview,
@@ -597,6 +651,7 @@ function SummaryTab({
   addEventDateToInterview,
   addHistoricalEventToInterview,
   addIssueToInterview,
+  updateInterview,
 }: any) {
   const [newPerson, setNewPerson] = useState('');
   const [newPlace, setNewPlace] = useState('');
@@ -605,157 +660,133 @@ function SummaryTab({
   const [newIssue, setNewIssue] = useState('');
 
   const handleAddPerson = () => {
-    if (newPerson.trim()) {
-      addPersonToInterview(interview.id, newPerson.trim());
-      setNewPerson('');
-    }
+    if (newPerson.trim()) { addPersonToInterview(interview.id, newPerson.trim()); setNewPerson(''); }
   };
-
   const handleAddPlace = () => {
-    if (newPlace.trim()) {
-      addPlaceDateToInterview(interview.id, newPlace.trim());
-      setNewPlace('');
-    }
+    if (newPlace.trim()) { addPlaceDateToInterview(interview.id, newPlace.trim()); setNewPlace(''); }
   };
-
   const handleAddEvent = () => {
-    if (newEvent.trim()) {
-      addEventDateToInterview(interview.id, newEvent.trim());
-      setNewEvent('');
-    }
+    if (newEvent.trim()) { addEventDateToInterview(interview.id, newEvent.trim()); setNewEvent(''); }
   };
-
   const handleAddHistorical = () => {
-    if (newHistorical.trim()) {
-      addHistoricalEventToInterview(interview.id, newHistorical.trim());
-      setNewHistorical('');
-    }
+    if (newHistorical.trim()) { addHistoricalEventToInterview(interview.id, newHistorical.trim()); setNewHistorical(''); }
+  };
+  const handleAddIssue = () => {
+    if (newIssue.trim()) { addIssueToInterview(interview.id, newIssue.trim()); setNewIssue(''); }
   };
 
-  const handleAddIssue = () => {
-    if (newIssue.trim()) {
-      addIssueToInterview(interview.id, newIssue.trim());
-      setNewIssue('');
-    }
+  // Generic helpers for edit/delete via updateInterview
+  const editPerson = (idx: number, name: string) => {
+    const persons = [...interview.persons];
+    persons[idx] = { ...persons[idx], name };
+    updateInterview(interview.id, { persons });
   };
+  const deletePerson = (idx: number) => {
+    updateInterview(interview.id, { persons: interview.persons.filter((_: any, i: number) => i !== idx) });
+  };
+  const editPlace = (idx: number, label: string) => {
+    const placesDates = [...interview.placesDates];
+    placesDates[idx] = { ...placesDates[idx], label };
+    updateInterview(interview.id, { placesDates });
+  };
+  const deletePlace = (idx: number) => {
+    updateInterview(interview.id, { placesDates: interview.placesDates.filter((_: any, i: number) => i !== idx) });
+  };
+  const editEvent = (idx: number, label: string) => {
+    const eventsDates = [...(interview.eventsDates || [])];
+    eventsDates[idx] = { ...eventsDates[idx], label };
+    updateInterview(interview.id, { eventsDates });
+  };
+  const deleteEvent = (idx: number) => {
+    updateInterview(interview.id, { eventsDates: (interview.eventsDates || []).filter((_: any, i: number) => i !== idx) });
+  };
+  const editHistorical = (idx: number, label: string) => {
+    const historicalEvents = [...(interview.historicalEvents || [])];
+    historicalEvents[idx] = { ...historicalEvents[idx], label };
+    updateInterview(interview.id, { historicalEvents });
+  };
+  const deleteHistorical = (idx: number) => {
+    updateInterview(interview.id, { historicalEvents: (interview.historicalEvents || []).filter((_: any, i: number) => i !== idx) });
+  };
+  const editIssue = (idx: number, value: string) => {
+    const issues = [...interview.issues];
+    issues[idx] = value;
+    updateInterview(interview.id, { issues });
+  };
+  const deleteIssue = (idx: number) => {
+    updateInterview(interview.id, { issues: interview.issues.filter((_: any, i: number) => i !== idx) });
+  };
+
+  const inputClass = "flex-1 px-3 py-2 text-sm font-sans bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring";
 
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="max-w-3xl mx-auto px-8 py-10 space-y-10">
         {/* Personnes et Lieux side by side */}
         <div className="grid grid-cols-2 gap-8">
-          {/* Personnes */}
           <section>
             <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
               <User className="w-4 h-4" />
               Personnes mentionnées
             </h3>
             <div className="space-y-2">
-              {interview.persons.map((p: any) => (
-                <div key={p.id} className="flex items-center justify-between py-2 px-3 rounded-md bg-card">
-                  <span className="font-sans text-sm font-medium">{p.name}</span>
-                  {p.relation && <span className="text-xs font-sans text-muted-foreground">{p.relation}</span>}
-                </div>
+              {interview.persons.map((p: any, i: number) => (
+                <EditableItem key={p.id} value={p.name} subtitle={p.relation} onSave={(v) => editPerson(i, v)} onDelete={() => deletePerson(i)} />
               ))}
               <div className="flex gap-2 mt-2">
-                <input
-                  type="text"
-                  value={newPerson}
-                  onChange={(e) => setNewPerson(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleAddPerson()}
-                  placeholder="Ajouter une personne…"
-                  className="flex-1 px-3 py-2 text-sm font-sans bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-                />
-                <button onClick={handleAddPerson} className="p-2 text-primary hover:bg-secondary rounded-md transition-colors">
-                  <Plus className="w-4 h-4" />
-                </button>
+                <input type="text" value={newPerson} onChange={(e) => setNewPerson(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleAddPerson()} placeholder="Ajouter une personne…" className={inputClass} />
+                <button onClick={handleAddPerson} className="p-2 text-primary hover:bg-secondary rounded-md transition-colors"><Plus className="w-4 h-4" /></button>
               </div>
             </div>
           </section>
 
-          {/* Lieux */}
           <section>
             <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
               <MapPin className="w-4 h-4" />
               Lieux
             </h3>
             <div className="space-y-2">
-              {interview.placesDates.map((pd: any) => (
-                <div key={pd.id} className="py-2 px-3 rounded-md bg-card font-sans text-sm">
-                  {pd.label}
-                </div>
+              {interview.placesDates.map((pd: any, i: number) => (
+                <EditableItem key={pd.id} value={pd.label} onSave={(v) => editPlace(i, v)} onDelete={() => deletePlace(i)} />
               ))}
               <div className="flex gap-2 mt-2">
-                <input
-                  type="text"
-                  value={newPlace}
-                  onChange={(e) => setNewPlace(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleAddPlace()}
-                  placeholder="Ajouter un lieu…"
-                  className="flex-1 px-3 py-2 text-sm font-sans bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-                />
-                <button onClick={handleAddPlace} className="p-2 text-primary hover:bg-secondary rounded-md transition-colors">
-                  <Plus className="w-4 h-4" />
-                </button>
+                <input type="text" value={newPlace} onChange={(e) => setNewPlace(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleAddPlace()} placeholder="Ajouter un lieu…" className={inputClass} />
+                <button onClick={handleAddPlace} className="p-2 text-primary hover:bg-secondary rounded-md transition-colors"><Plus className="w-4 h-4" /></button>
               </div>
             </div>
           </section>
         </div>
 
-        {/* Évènements & Dates + Évènements historiques side by side */}
+        {/* Évènements & Dates + Évènements historiques */}
         <div className="grid grid-cols-2 gap-8">
-          {/* Évènements & Dates */}
           <section>
             <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
               <Calendar className="w-4 h-4" />
               Évènements & Dates
             </h3>
             <div className="space-y-2">
-              {interview.eventsDates?.map((ed: any) => (
-                <div key={ed.id} className="py-2 px-3 rounded-md bg-card font-sans text-sm">
-                  {ed.label}
-                </div>
+              {interview.eventsDates?.map((ed: any, i: number) => (
+                <EditableItem key={ed.id} value={ed.label} onSave={(v) => editEvent(i, v)} onDelete={() => deleteEvent(i)} />
               ))}
               <div className="flex gap-2 mt-2">
-                <input
-                  type="text"
-                  value={newEvent}
-                  onChange={(e) => setNewEvent(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleAddEvent()}
-                  placeholder="Ajouter un évènement…"
-                  className="flex-1 px-3 py-2 text-sm font-sans bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-                />
-                <button onClick={handleAddEvent} className="p-2 text-primary hover:bg-secondary rounded-md transition-colors">
-                  <Plus className="w-4 h-4" />
-                </button>
+                <input type="text" value={newEvent} onChange={(e) => setNewEvent(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleAddEvent()} placeholder="Ajouter un évènement…" className={inputClass} />
+                <button onClick={handleAddEvent} className="p-2 text-primary hover:bg-secondary rounded-md transition-colors"><Plus className="w-4 h-4" /></button>
               </div>
             </div>
           </section>
 
-          {/* Évènements historiques */}
           <section>
             <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
               <ScrollText className="w-4 h-4" />
               Évènements historiques
             </h3>
             <div className="space-y-2">
-              {interview.historicalEvents?.map((he: any) => (
-                <div key={he.id} className="py-2 px-3 rounded-md bg-card font-sans text-sm">
-                  {he.label}
-                </div>
+              {interview.historicalEvents?.map((he: any, i: number) => (
+                <EditableItem key={he.id} value={he.label} onSave={(v) => editHistorical(i, v)} onDelete={() => deleteHistorical(i)} />
               ))}
               <div className="flex gap-2 mt-2">
-                <input
-                  type="text"
-                  value={newHistorical}
-                  onChange={(e) => setNewHistorical(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleAddHistorical()}
-                  placeholder="Ajouter un évènement historique…"
-                  className="flex-1 px-3 py-2 text-sm font-sans bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-                />
-                <button onClick={handleAddHistorical} className="p-2 text-primary hover:bg-secondary rounded-md transition-colors">
-                  <Plus className="w-4 h-4" />
-                </button>
+                <input type="text" value={newHistorical} onChange={(e) => setNewHistorical(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleAddHistorical()} placeholder="Ajouter un évènement historique…" className={inputClass} />
+                <button onClick={handleAddHistorical} className="p-2 text-primary hover:bg-secondary rounded-md transition-colors"><Plus className="w-4 h-4" /></button>
               </div>
             </div>
           </section>
@@ -767,26 +798,14 @@ function SummaryTab({
             <Target className="w-4 h-4" />
             Enjeux
           </h3>
-          <ul className="space-y-2">
+          <div className="space-y-2">
             {interview.issues.map((issue: string, i: number) => (
-              <li key={i} className="flex items-start gap-3">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2.5 flex-shrink-0" />
-                <span className="font-sans text-sm leading-relaxed text-foreground">{issue}</span>
-              </li>
+              <EditableItem key={i} value={issue} onSave={(v) => editIssue(i, v)} onDelete={() => deleteIssue(i)} />
             ))}
-          </ul>
-          <div className="flex gap-2 mt-2">
-            <input
-              type="text"
-              value={newIssue}
-              onChange={(e) => setNewIssue(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleAddIssue()}
-              placeholder="Ajouter un enjeu…"
-              className="flex-1 px-3 py-2 text-sm font-sans bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-            />
-            <button onClick={handleAddIssue} className="p-2 text-primary hover:bg-secondary rounded-md transition-colors">
-              <Plus className="w-4 h-4" />
-            </button>
+            <div className="flex gap-2 mt-2">
+              <input type="text" value={newIssue} onChange={(e) => setNewIssue(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleAddIssue()} placeholder="Ajouter un enjeu…" className={inputClass} />
+              <button onClick={handleAddIssue} className="p-2 text-primary hover:bg-secondary rounded-md transition-colors"><Plus className="w-4 h-4" /></button>
+            </div>
           </div>
         </section>
 

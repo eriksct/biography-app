@@ -10,7 +10,7 @@ type Tab = 'transcript' | 'summary';
 export default function InterviewDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { project, addPersonToInterview, addPlaceDateToInterview, updateInterviewNotes, addTheme, addThemeAnnotation, removeThemeAnnotation, updatePassage } = useProject();
+  const { project, addPersonToInterview, addPlaceDateToInterview, updateInterviewNotes, addTheme, addThemeAnnotation, removeThemeAnnotation, updatePassage, updateInterview } = useProject();
   const interview = project.interviews.find(i => i.id === id);
   const [activeTab, setActiveTab] = useState<Tab>('transcript');
   const [activeThemeFilter, setActiveThemeFilter] = useState<string | null>(null);
@@ -18,6 +18,9 @@ export default function InterviewDetailPage() {
   const [newTheme, setNewTheme] = useState('');
   const [editingPassageId, setEditingPassageId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState('');
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [titleValue, setTitleValue] = useState('');
+  const titleInputRef = useRef<HTMLInputElement>(null);
 
   // Text selection state
   const [selectionInfo, setSelectionInfo] = useState<{
@@ -128,8 +131,35 @@ export default function InterviewDetailPage() {
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <div>
-            <h1 className="text-2xl font-serif font-semibold">Entretien n°{interview.number}</h1>
+          <div className="flex-1 min-w-0">
+            {editingTitle ? (
+              <input
+                ref={titleInputRef}
+                value={titleValue}
+                onChange={(e) => setTitleValue(e.target.value)}
+                onBlur={() => {
+                  if (titleValue.trim()) updateInterview(interview.id, { title: titleValue.trim() });
+                  setEditingTitle(false);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') { e.currentTarget.blur(); }
+                  if (e.key === 'Escape') { setEditingTitle(false); }
+                }}
+                className="text-2xl font-serif font-semibold bg-transparent border-b border-border focus:border-foreground outline-none w-full py-0"
+              />
+            ) : (
+              <h1
+                className="text-2xl font-serif font-semibold group cursor-text flex items-center gap-2"
+                onClick={() => {
+                  setTitleValue(interview.title || `Entretien n°${interview.number}`);
+                  setEditingTitle(true);
+                  setTimeout(() => titleInputRef.current?.focus(), 0);
+                }}
+              >
+                {interview.title || `Entretien n°${interview.number}`}
+                <Pencil className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+              </h1>
+            )}
             <p className="text-sm font-sans text-muted-foreground">{dateFormatted} · {interview.duration}</p>
           </div>
         </div>

@@ -35,6 +35,7 @@ export interface SummarySection {
 export interface Interview {
   id: string;
   number: number;
+  title?: string;
   date: string;
   duration: string;
   status: InterviewStatus;

@@ -1,7 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { useProject } from '@/lib/ProjectContext';
 import { useNavigate } from 'react-router-dom';
-import { Mic, FileText, CheckCircle, Plus, Search, X, Loader2 } from 'lucide-react';
+import { Mic, FileText, CheckCircle, Plus, Search, X, Loader2, Pencil } from 'lucide-react';
 import { InterviewStatus, Interview, Passage } from '@/lib/types';
 import { AppLayout } from '@/components/AppLayout';
 import { Input } from '@/components/ui/input';
@@ -37,10 +37,33 @@ function highlightText(text: string, query: string) {
 }
 
 export default function InterviewsPage() {
-  const { project } = useProject();
+  const { project, updateInterview } = useProject();
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [recordingOpen, setRecordingOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState('');
+  const editInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (editingId && editInputRef.current) {
+      editInputRef.current.focus();
+      editInputRef.current.select();
+    }
+  }, [editingId]);
+
+  const startRename = (e: React.MouseEvent, interview: Interview) => {
+    e.stopPropagation();
+    setEditingId(interview.id);
+    setEditingTitle(interview.title || `Entretien n°${interview.number}`);
+  };
+
+  const commitRename = () => {
+    if (editingId && editingTitle.trim()) {
+      updateInterview(editingId, { title: editingTitle.trim() });
+    }
+    setEditingId(null);
+  };
 
   const handleRecordingComplete = (duration: string, title: string) => {
     console.log('Recording completed:', title, duration);
@@ -146,7 +169,7 @@ export default function InterviewsPage() {
                           {String(interview.number).padStart(2, '0')}
                         </span>
                         <span className="font-sans text-content font-medium text-foreground">
-                          Entretien n°{interview.number}
+                          {interview.title || `Entretien n°${interview.number}`}
                         </span>
                       </div>
                       {matchingThemes.length > 0 && (
@@ -216,7 +239,7 @@ export default function InterviewsPage() {
               return (
                 <button
                   key={interview.id}
-                  onClick={() => navigate(`/entretien/${interview.id}`)}
+                  onClick={() => editingId !== interview.id && navigate(`/entretien/${interview.id}`)}
                   className="w-full text-left bg-card hover:bg-secondary/50 border border-border rounded-lg p-6 transition-colors group"
                 >
                   <div className="flex items-center justify-between">
@@ -225,9 +248,28 @@ export default function InterviewsPage() {
                         {String(interview.number).padStart(2, '0')}
                       </span>
                       <div>
-                        <p className="font-sans text-content font-medium text-foreground">
-                          Entretien n°{interview.number}
-                        </p>
+                        {editingId === interview.id ? (
+                          <input
+                            ref={editInputRef}
+                            value={editingTitle}
+                            onChange={(e) => setEditingTitle(e.target.value)}
+                            onClick={(e) => e.stopPropagation()}
+                            onBlur={commitRename}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') { e.currentTarget.blur(); }
+                              if (e.key === 'Escape') { setEditingId(null); }
+                            }}
+                            className="font-sans text-content font-medium bg-transparent border-b border-border focus:border-foreground outline-none"
+                          />
+                        ) : (
+                          <p className="font-sans text-content font-medium text-foreground flex items-center gap-2">
+                            {interview.title || `Entretien n°${interview.number}`}
+                            <Pencil
+                              className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={(e) => startRename(e, interview)}
+                            />
+                          </p>
+                        )}
                         <p className="font-sans text-sm text-muted-foreground mt-1">
                           {dateFormatted} · {interview.duration}
                         </p>

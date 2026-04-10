@@ -37,10 +37,33 @@ function highlightText(text: string, query: string) {
 }
 
 export default function InterviewsPage() {
-  const { project } = useProject();
+  const { project, updateInterview } = useProject();
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [recordingOpen, setRecordingOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState('');
+  const editInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (editingId && editInputRef.current) {
+      editInputRef.current.focus();
+      editInputRef.current.select();
+    }
+  }, [editingId]);
+
+  const startRename = (e: React.MouseEvent, interview: Interview) => {
+    e.stopPropagation();
+    setEditingId(interview.id);
+    setEditingTitle(interview.title || `Entretien n°${interview.number}`);
+  };
+
+  const commitRename = () => {
+    if (editingId && editingTitle.trim()) {
+      updateInterview(editingId, { title: editingTitle.trim() });
+    }
+    setEditingId(null);
+  };
 
   const handleRecordingComplete = (duration: string, title: string) => {
     console.log('Recording completed:', title, duration);

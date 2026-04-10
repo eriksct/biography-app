@@ -10,7 +10,7 @@ type Tab = 'transcript' | 'summary';
 export default function InterviewDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { project, addPersonToInterview, addPlaceDateToInterview, updateInterviewNotes, addTheme, addThemeAnnotation, removeThemeAnnotation, updatePassage } = useProject();
+  const { project, addPersonToInterview, addPlaceDateToInterview, updateInterviewNotes, addTheme, addThemeAnnotation, removeThemeAnnotation, updatePassage, updateInterview } = useProject();
   const interview = project.interviews.find(i => i.id === id);
   const [activeTab, setActiveTab] = useState<Tab>('transcript');
   const [activeThemeFilter, setActiveThemeFilter] = useState<string | null>(null);
@@ -18,6 +18,9 @@ export default function InterviewDetailPage() {
   const [newTheme, setNewTheme] = useState('');
   const [editingPassageId, setEditingPassageId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState('');
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [titleValue, setTitleValue] = useState('');
+  const titleInputRef = useRef<HTMLInputElement>(null);
 
   // Text selection state
   const [selectionInfo, setSelectionInfo] = useState<{

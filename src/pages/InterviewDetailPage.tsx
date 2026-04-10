@@ -209,8 +209,9 @@ export default function InterviewDetailPage() {
           {/* Download menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground shrink-0">
+              <Button variant="secondary" size="sm" className="gap-2 shrink-0">
                 <Download className="w-4 h-4" />
+                Télécharger
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="min-w-[180px]">

@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Mic, Square, Pause, Play, Check, Upload } from 'lucide-react';
+import { Mic, Square, Pause, Play, Check, Upload, FileText } from 'lucide-react';
 
 interface RecordingDialogProps {
   open: boolean;
@@ -31,6 +31,7 @@ export function RecordingDialog({ open, onOpenChange, onRecordingComplete }: Rec
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const textFileInputRef = useRef<HTMLInputElement | null>(null);
 
   const cleanup = useCallback(() => {
     if (intervalRef.current) clearInterval(intervalRef.current);
@@ -122,6 +123,16 @@ export function RecordingDialog({ open, onOpenChange, onRecordingComplete }: Rec
       URL.revokeObjectURL(url);
       setState('stopped');
     });
+  }, []);
+
+  const handleTextFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const name = file.name.replace(/\.[^/.]+$/, '');
+    setUploadedFileName(name);
+    setTitle(name);
+    setFinalDuration('--:--');
+    setState('stopped');
   }, []);
 
   const confirmRecording = useCallback(() => {
@@ -246,15 +257,33 @@ export function RecordingDialog({ open, onOpenChange, onRecordingComplete }: Rec
                     className="hidden"
                     onChange={handleFileUpload}
                   />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="gap-2"
-                  >
-                    <Upload className="w-4 h-4" />
-                    Importer un fichier audio
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="gap-2"
+                    >
+                      <Upload className="w-4 h-4" />
+                      Fichier audio
+                    </Button>
+                    <input
+                      ref={textFileInputRef}
+                      type="file"
+                      accept=".txt,.md,.doc,.docx,.rtf"
+                      className="hidden"
+                      onChange={handleTextFileUpload}
+                    />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => textFileInputRef.current?.click()}
+                      className="gap-2"
+                    >
+                      <FileText className="w-4 h-4" />
+                      Fichier texte
+                    </Button>
+                  </div>
                 </div>
               )}
             </>

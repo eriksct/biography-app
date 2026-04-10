@@ -122,6 +122,47 @@ export default function InterviewDetailPage() {
     window.getSelection()?.removeAllRanges();
   };
 
+  const downloadTranscriptAsDocx = async () => {
+    const { Document, Packer, Paragraph, TextRun } = await import('docx');
+    const title = interview.title || `Entretien n°${interview.number}`;
+    const doc = new Document({
+      sections: [{
+        children: [
+          new Paragraph({
+            children: [new TextRun({ text: title, bold: true, size: 32, font: 'Arial' })],
+            spacing: { after: 200 },
+          }),
+          new Paragraph({
+            children: [new TextRun({ text: `${dateFormatted} · ${interview.duration}`, size: 20, color: '888888', font: 'Arial' })],
+            spacing: { after: 400 },
+          }),
+          ...interview.passages.map(p =>
+            new Paragraph({
+              children: [
+                new TextRun({ text: `[${p.timestamp}] `, color: '999999', size: 20, font: 'Arial' }),
+                new TextRun({ text: p.text, size: 22, font: 'Arial' }),
+              ],
+              spacing: { after: 200 },
+            })
+          ),
+        ],
+      }],
+    });
+    const buffer = await Packer.toBlob(doc);
+    const url = URL.createObjectURL(buffer);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${title.replace(/[^a-zA-Z0-9àâäéèêëïîôùûüÿçœæ\s-]/g, '')}.docx`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const downloadAudioMp3 = () => {
+    // Placeholder — in a real app this would download the actual audio file
+    const title = interview.title || `Entretien n°${interview.number}`;
+    console.log(`Download audio for: ${title}`);
+  };
+
   return (
     <AppLayout>
       <div className="h-screen flex flex-col overflow-hidden">
@@ -164,6 +205,25 @@ export default function InterviewDetailPage() {
             )}
             <p className="text-sm font-sans text-muted-foreground">{dateFormatted} · {interview.duration}</p>
           </div>
+
+          {/* Download menu */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground shrink-0">
+                <Download className="w-4 h-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="min-w-[180px]">
+              <DropdownMenuItem onClick={downloadTranscriptAsDocx} className="gap-2 cursor-pointer">
+                <FileText className="w-4 h-4" />
+                <span className="font-sans text-sm">Transcript (.docx)</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={downloadAudioMp3} className="gap-2 cursor-pointer">
+                <Music className="w-4 h-4" />
+                <span className="font-sans text-sm">Audio (.mp3)</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         {/* Tabs */}

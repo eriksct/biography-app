@@ -590,6 +590,48 @@ function TranscriptTab({
   );
 }
 
+/* ─── Collapsible Add Input ─── */
+function AddInput({ placeholder, onAdd }: { placeholder: string; onAdd: (v: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState('');
+
+  const handleAdd = () => {
+    if (value.trim()) { onAdd(value.trim()); setValue(''); setOpen(false); }
+  };
+
+  if (!open) {
+    return (
+      <button onClick={() => setOpen(true)} className="flex items-center gap-1.5 mt-2 text-xs font-sans text-muted-foreground hover:text-foreground transition-colors">
+        <Plus className="w-3.5 h-3.5" />
+        Ajouter
+      </button>
+    );
+  }
+
+  return (
+    <div className="flex gap-2 mt-2">
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') handleAdd();
+          if (e.key === 'Escape') { setValue(''); setOpen(false); }
+        }}
+        autoFocus
+        placeholder={placeholder}
+        className="flex-1 px-3 py-1.5 text-sm font-sans bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+      />
+      <button onClick={handleAdd} className="p-1.5 text-primary hover:bg-secondary rounded-md transition-colors">
+        <Check className="w-3.5 h-3.5" />
+      </button>
+      <button onClick={() => { setValue(''); setOpen(false); }} className="p-1.5 text-muted-foreground hover:bg-secondary rounded-md transition-colors">
+        <X className="w-3.5 h-3.5" />
+      </button>
+    </div>
+  );
+}
+
 /* ─── Editable Item ─── */
 function EditableItem({ value, onSave, onDelete, subtitle }: { value: string; onSave: (v: string) => void; onDelete: () => void; subtitle?: string }) {
   const [editing, setEditing] = useState(false);
@@ -654,159 +696,88 @@ function SummaryTab({
   addIssueToInterview,
   updateInterview,
 }: any) {
-  const [newPerson, setNewPerson] = useState('');
-  const [newPlace, setNewPlace] = useState('');
-  const [newEvent, setNewEvent] = useState('');
-  const [newHistorical, setNewHistorical] = useState('');
-  const [newIssue, setNewIssue] = useState('');
+  const handleAddPerson = (v: string) => addPersonToInterview(interview.id, v);
+  const handleAddPlace = (v: string) => addPlaceDateToInterview(interview.id, v);
+  const handleAddEvent = (v: string) => addEventDateToInterview(interview.id, v);
+  const handleAddHistorical = (v: string) => addHistoricalEventToInterview(interview.id, v);
+  const handleAddIssue = (v: string) => addIssueToInterview(interview.id, v);
 
-  const handleAddPerson = () => {
-    if (newPerson.trim()) { addPersonToInterview(interview.id, newPerson.trim()); setNewPerson(''); }
-  };
-  const handleAddPlace = () => {
-    if (newPlace.trim()) { addPlaceDateToInterview(interview.id, newPlace.trim()); setNewPlace(''); }
-  };
-  const handleAddEvent = () => {
-    if (newEvent.trim()) { addEventDateToInterview(interview.id, newEvent.trim()); setNewEvent(''); }
-  };
-  const handleAddHistorical = () => {
-    if (newHistorical.trim()) { addHistoricalEventToInterview(interview.id, newHistorical.trim()); setNewHistorical(''); }
-  };
-  const handleAddIssue = () => {
-    if (newIssue.trim()) { addIssueToInterview(interview.id, newIssue.trim()); setNewIssue(''); }
-  };
-
-  // Generic helpers for edit/delete via updateInterview
-  const editPerson = (idx: number, name: string) => {
-    const persons = [...interview.persons];
-    persons[idx] = { ...persons[idx], name };
-    updateInterview(interview.id, { persons });
-  };
-  const deletePerson = (idx: number) => {
-    updateInterview(interview.id, { persons: interview.persons.filter((_: any, i: number) => i !== idx) });
-  };
-  const editPlace = (idx: number, label: string) => {
-    const placesDates = [...interview.placesDates];
-    placesDates[idx] = { ...placesDates[idx], label };
-    updateInterview(interview.id, { placesDates });
-  };
-  const deletePlace = (idx: number) => {
-    updateInterview(interview.id, { placesDates: interview.placesDates.filter((_: any, i: number) => i !== idx) });
-  };
-  const editEvent = (idx: number, label: string) => {
-    const eventsDates = [...(interview.eventsDates || [])];
-    eventsDates[idx] = { ...eventsDates[idx], label };
-    updateInterview(interview.id, { eventsDates });
-  };
-  const deleteEvent = (idx: number) => {
-    updateInterview(interview.id, { eventsDates: (interview.eventsDates || []).filter((_: any, i: number) => i !== idx) });
-  };
-  const editHistorical = (idx: number, label: string) => {
-    const historicalEvents = [...(interview.historicalEvents || [])];
-    historicalEvents[idx] = { ...historicalEvents[idx], label };
-    updateInterview(interview.id, { historicalEvents });
-  };
-  const deleteHistorical = (idx: number) => {
-    updateInterview(interview.id, { historicalEvents: (interview.historicalEvents || []).filter((_: any, i: number) => i !== idx) });
-  };
-  const editIssue = (idx: number, value: string) => {
-    const issues = [...interview.issues];
-    issues[idx] = value;
-    updateInterview(interview.id, { issues });
-  };
-  const deleteIssue = (idx: number) => {
-    updateInterview(interview.id, { issues: interview.issues.filter((_: any, i: number) => i !== idx) });
-  };
-
-  const inputClass = "flex-1 px-3 py-2 text-sm font-sans bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring";
+  // Edit/delete helpers
+  const editPerson = (idx: number, name: string) => { const persons = [...interview.persons]; persons[idx] = { ...persons[idx], name }; updateInterview(interview.id, { persons }); };
+  const deletePerson = (idx: number) => updateInterview(interview.id, { persons: interview.persons.filter((_: any, i: number) => i !== idx) });
+  const editPlace = (idx: number, label: string) => { const placesDates = [...interview.placesDates]; placesDates[idx] = { ...placesDates[idx], label }; updateInterview(interview.id, { placesDates }); };
+  const deletePlace = (idx: number) => updateInterview(interview.id, { placesDates: interview.placesDates.filter((_: any, i: number) => i !== idx) });
+  const editEvent = (idx: number, label: string) => { const eventsDates = [...(interview.eventsDates || [])]; eventsDates[idx] = { ...eventsDates[idx], label }; updateInterview(interview.id, { eventsDates }); };
+  const deleteEvent = (idx: number) => updateInterview(interview.id, { eventsDates: (interview.eventsDates || []).filter((_: any, i: number) => i !== idx) });
+  const editHistorical = (idx: number, label: string) => { const historicalEvents = [...(interview.historicalEvents || [])]; historicalEvents[idx] = { ...historicalEvents[idx], label }; updateInterview(interview.id, { historicalEvents }); };
+  const deleteHistorical = (idx: number) => updateInterview(interview.id, { historicalEvents: (interview.historicalEvents || []).filter((_: any, i: number) => i !== idx) });
+  const editIssue = (idx: number, value: string) => { const issues = [...interview.issues]; issues[idx] = value; updateInterview(interview.id, { issues }); };
+  const deleteIssue = (idx: number) => updateInterview(interview.id, { issues: interview.issues.filter((_: any, i: number) => i !== idx) });
 
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="max-w-3xl mx-auto px-8 py-10 space-y-10">
-        {/* Personnes et Lieux side by side */}
         <div className="grid grid-cols-2 gap-8">
           <section>
             <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-              <User className="w-4 h-4" />
-              Personnes mentionnées
+              <User className="w-4 h-4" /> Personnes mentionnées
             </h3>
             <div className="space-y-2">
               {interview.persons.map((p: any, i: number) => (
                 <EditableItem key={p.id} value={p.name} subtitle={p.relation} onSave={(v) => editPerson(i, v)} onDelete={() => deletePerson(i)} />
               ))}
-              <div className="flex gap-2 mt-2">
-                <input type="text" value={newPerson} onChange={(e) => setNewPerson(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleAddPerson()} placeholder="Ajouter une personne…" className={inputClass} />
-                <button onClick={handleAddPerson} className="p-2 text-primary hover:bg-secondary rounded-md transition-colors"><Plus className="w-4 h-4" /></button>
-              </div>
+              <AddInput placeholder="Nom de la personne…" onAdd={handleAddPerson} />
             </div>
           </section>
 
           <section>
             <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-              <MapPin className="w-4 h-4" />
-              Lieux
+              <MapPin className="w-4 h-4" /> Lieux
             </h3>
             <div className="space-y-2">
               {interview.placesDates.map((pd: any, i: number) => (
                 <EditableItem key={pd.id} value={pd.label} onSave={(v) => editPlace(i, v)} onDelete={() => deletePlace(i)} />
               ))}
-              <div className="flex gap-2 mt-2">
-                <input type="text" value={newPlace} onChange={(e) => setNewPlace(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleAddPlace()} placeholder="Ajouter un lieu…" className={inputClass} />
-                <button onClick={handleAddPlace} className="p-2 text-primary hover:bg-secondary rounded-md transition-colors"><Plus className="w-4 h-4" /></button>
-              </div>
+              <AddInput placeholder="Nom du lieu…" onAdd={handleAddPlace} />
             </div>
           </section>
         </div>
 
-        {/* Évènements & Dates + Évènements historiques */}
         <div className="grid grid-cols-2 gap-8">
           <section>
             <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-              <Calendar className="w-4 h-4" />
-              Évènements & Dates
+              <Calendar className="w-4 h-4" /> Évènements & Dates
             </h3>
             <div className="space-y-2">
               {interview.eventsDates?.map((ed: any, i: number) => (
                 <EditableItem key={ed.id} value={ed.label} onSave={(v) => editEvent(i, v)} onDelete={() => deleteEvent(i)} />
               ))}
-              <div className="flex gap-2 mt-2">
-                <input type="text" value={newEvent} onChange={(e) => setNewEvent(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleAddEvent()} placeholder="Ajouter un évènement…" className={inputClass} />
-                <button onClick={handleAddEvent} className="p-2 text-primary hover:bg-secondary rounded-md transition-colors"><Plus className="w-4 h-4" /></button>
-              </div>
+              <AddInput placeholder="Évènement ou date…" onAdd={handleAddEvent} />
             </div>
           </section>
 
           <section>
             <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-              <ScrollText className="w-4 h-4" />
-              Évènements historiques
+              <ScrollText className="w-4 h-4" /> Évènements historiques
             </h3>
             <div className="space-y-2">
               {interview.historicalEvents?.map((he: any, i: number) => (
                 <EditableItem key={he.id} value={he.label} onSave={(v) => editHistorical(i, v)} onDelete={() => deleteHistorical(i)} />
               ))}
-              <div className="flex gap-2 mt-2">
-                <input type="text" value={newHistorical} onChange={(e) => setNewHistorical(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleAddHistorical()} placeholder="Ajouter un évènement historique…" className={inputClass} />
-                <button onClick={handleAddHistorical} className="p-2 text-primary hover:bg-secondary rounded-md transition-colors"><Plus className="w-4 h-4" /></button>
-              </div>
+              <AddInput placeholder="Évènement historique…" onAdd={handleAddHistorical} />
             </div>
           </section>
         </div>
 
-        {/* Enjeux */}
         <section>
           <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-            <Target className="w-4 h-4" />
-            Enjeux
+            <Target className="w-4 h-4" /> Enjeux
           </h3>
           <div className="space-y-2">
             {interview.issues.map((issue: string, i: number) => (
               <EditableItem key={i} value={issue} onSave={(v) => editIssue(i, v)} onDelete={() => deleteIssue(i)} />
             ))}
-            <div className="flex gap-2 mt-2">
-              <input type="text" value={newIssue} onChange={(e) => setNewIssue(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleAddIssue()} placeholder="Ajouter un enjeu…" className={inputClass} />
-              <button onClick={handleAddIssue} className="p-2 text-primary hover:bg-secondary rounded-md transition-colors"><Plus className="w-4 h-4" /></button>
-            </div>
+            <AddInput placeholder="Nouvel enjeu…" onAdd={handleAddIssue} />
           </div>
         </section>
 

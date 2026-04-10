@@ -600,7 +600,7 @@ export default function ManuscritPage() {
 
       {/* Interview transcript dialog */}
       <Dialog open={!!dialogInterviewId} onOpenChange={(open) => { if (!open) { setDialogInterviewId(null); setDialogPassageId(null); setDialogSelectionInfo(null); } }}>
-        <DialogContent className="max-w-3xl max-h-[80vh] overflow-hidden flex flex-col">
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-hidden flex flex-col select-text" onPointerDownOutside={(e) => e.preventDefault()}>
           {(() => {
             const interview = project.interviews.find(i => i.id === dialogInterviewId);
             if (!interview) return null;
@@ -633,7 +633,7 @@ export default function ManuscritPage() {
                             </span>
                           ))}
                         </div>
-                        <p className="font-serif text-content leading-relaxed text-foreground" data-dialog-passage-id={passage.id}>
+                        <p className="font-serif text-content leading-relaxed text-foreground select-text" data-dialog-passage-id={passage.id}>
                           <AnnotatedPassageText
                             text={passage.text}
                             annotations={passage.themeAnnotations}

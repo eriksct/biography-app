@@ -247,7 +247,7 @@ export default function InterviewDetailPage() {
                   : 'border-transparent text-muted-foreground hover:text-foreground'
               }`}
             >
-              Résumé
+              Analyse
             </button>
           </div>
         </div>
@@ -692,7 +692,7 @@ function SummaryTab({
         {interview.summarySections && interview.summarySections.length > 0 && (
           <section>
             <h3 className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-              Résumé de l'entretien
+              Analyse de l'entretien
             </h3>
             <div className="space-y-6">
               {interview.summarySections.map((section: any, i: number) => (

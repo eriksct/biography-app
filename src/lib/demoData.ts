@@ -49,6 +49,16 @@ export const demoProject: Project = {
         { id: 'pd2', label: 'Ferme des Tilleuls — maison familiale' },
         { id: 'pd3', label: 'École communale d\'Honfleur — 1944-1950' },
       ],
+      eventsDates: [
+        { id: 'ed1', label: 'Novembre 1938 — Naissance de Jeanne' },
+        { id: 'ed2', label: '1944 — Entrée à l\'école communale' },
+        { id: 'ed3', label: '1945 — Fin de la guerre, retour du père' },
+      ],
+      historicalEvents: [
+        { id: 'he1', label: 'Occupation allemande de la Normandie (1940-1944)' },
+        { id: 'he2', label: 'Rationnement alimentaire pendant la Seconde Guerre mondiale' },
+        { id: 'he3', label: 'Libération de Honfleur (août 1944)' },
+      ],
       passages: [
         {
           id: 'pass-1-1',
@@ -123,6 +133,15 @@ export const demoProject: Project = {
         { id: 'pd5', label: 'Sorbonne — Licence de lettres' },
         { id: 'pd6', label: 'Chambre de bonne, rue Mouffetard' },
       ],
+      eventsDates: [
+        { id: 'ed4', label: 'Septembre 1956 — Arrivée à Paris' },
+        { id: 'ed5', label: '1957 — Rencontre avec Françoise Delorme' },
+        { id: 'ed6', label: '1960 — Obtention de la licence de lettres' },
+      ],
+      historicalEvents: [
+        { id: 'he4', label: 'Guerre d\'Algérie et manifestations étudiantes (1954-1962)' },
+        { id: 'he5', label: 'Essor de l\'existentialisme à Saint-Germain-des-Prés' },
+      ],
       passages: [
         {
           id: 'pass-2-1',
@@ -182,6 +201,16 @@ export const demoProject: Project = {
       placesDates: [
         { id: 'pd7', label: 'Lycée Victor Hugo, Rouen — 1962-1995' },
         { id: 'pd8', label: 'Rouen — installation en 1962' },
+      ],
+      eventsDates: [
+        { id: 'ed7', label: 'Septembre 1962 — Premier jour de classe' },
+        { id: 'ed8', label: 'Juin 1963 — Mariage avec Robert' },
+        { id: 'ed9', label: '1965 — Naissance de Catherine' },
+        { id: 'ed10', label: '1968 — Naissance de Marc' },
+      ],
+      historicalEvents: [
+        { id: 'he6', label: 'Mai 1968 — Grèves et réformes de l\'éducation' },
+        { id: 'he7', label: 'Réforme Haby (1975) — collège unique' },
       ],
       passages: [
         {

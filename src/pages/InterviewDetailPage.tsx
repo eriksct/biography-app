@@ -729,6 +729,8 @@ function SummaryTab({
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
+            </div>
+          </section>
 
           {/* Évènements historiques */}
           <section>
@@ -755,6 +757,8 @@ function SummaryTab({
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
+            </div>
+          </section>
         </div>
 
         {/* Enjeux */}

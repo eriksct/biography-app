@@ -696,71 +696,11 @@ function SummaryTab({
   addIssueToInterview,
   updateInterview,
 }: any) {
-  const [newPerson, setNewPerson] = useState('');
-  const [newPlace, setNewPlace] = useState('');
-  const [newEvent, setNewEvent] = useState('');
-  const [newHistorical, setNewHistorical] = useState('');
-  const [newIssue, setNewIssue] = useState('');
-
-  const handleAddPerson = () => {
-    if (newPerson.trim()) { addPersonToInterview(interview.id, newPerson.trim()); setNewPerson(''); }
-  };
-  const handleAddPlace = () => {
-    if (newPlace.trim()) { addPlaceDateToInterview(interview.id, newPlace.trim()); setNewPlace(''); }
-  };
-  const handleAddEvent = () => {
-    if (newEvent.trim()) { addEventDateToInterview(interview.id, newEvent.trim()); setNewEvent(''); }
-  };
-  const handleAddHistorical = () => {
-    if (newHistorical.trim()) { addHistoricalEventToInterview(interview.id, newHistorical.trim()); setNewHistorical(''); }
-  };
-  const handleAddIssue = () => {
-    if (newIssue.trim()) { addIssueToInterview(interview.id, newIssue.trim()); setNewIssue(''); }
-  };
-
-  // Generic helpers for edit/delete via updateInterview
-  const editPerson = (idx: number, name: string) => {
-    const persons = [...interview.persons];
-    persons[idx] = { ...persons[idx], name };
-    updateInterview(interview.id, { persons });
-  };
-  const deletePerson = (idx: number) => {
-    updateInterview(interview.id, { persons: interview.persons.filter((_: any, i: number) => i !== idx) });
-  };
-  const editPlace = (idx: number, label: string) => {
-    const placesDates = [...interview.placesDates];
-    placesDates[idx] = { ...placesDates[idx], label };
-    updateInterview(interview.id, { placesDates });
-  };
-  const deletePlace = (idx: number) => {
-    updateInterview(interview.id, { placesDates: interview.placesDates.filter((_: any, i: number) => i !== idx) });
-  };
-  const editEvent = (idx: number, label: string) => {
-    const eventsDates = [...(interview.eventsDates || [])];
-    eventsDates[idx] = { ...eventsDates[idx], label };
-    updateInterview(interview.id, { eventsDates });
-  };
-  const deleteEvent = (idx: number) => {
-    updateInterview(interview.id, { eventsDates: (interview.eventsDates || []).filter((_: any, i: number) => i !== idx) });
-  };
-  const editHistorical = (idx: number, label: string) => {
-    const historicalEvents = [...(interview.historicalEvents || [])];
-    historicalEvents[idx] = { ...historicalEvents[idx], label };
-    updateInterview(interview.id, { historicalEvents });
-  };
-  const deleteHistorical = (idx: number) => {
-    updateInterview(interview.id, { historicalEvents: (interview.historicalEvents || []).filter((_: any, i: number) => i !== idx) });
-  };
-  const editIssue = (idx: number, value: string) => {
-    const issues = [...interview.issues];
-    issues[idx] = value;
-    updateInterview(interview.id, { issues });
-  };
-  const deleteIssue = (idx: number) => {
-    updateInterview(interview.id, { issues: interview.issues.filter((_: any, i: number) => i !== idx) });
-  };
-
-  const inputClass = "flex-1 px-3 py-2 text-sm font-sans bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring";
+  const handleAddPerson = (v: string) => addPersonToInterview(interview.id, v);
+  const handleAddPlace = (v: string) => addPlaceDateToInterview(interview.id, v);
+  const handleAddEvent = (v: string) => addEventDateToInterview(interview.id, v);
+  const handleAddHistorical = (v: string) => addHistoricalEventToInterview(interview.id, v);
+  const handleAddIssue = (v: string) => addIssueToInterview(interview.id, v);
 
   return (
     <div className="flex-1 overflow-y-auto">

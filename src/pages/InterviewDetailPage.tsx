@@ -429,7 +429,7 @@ function TranscriptTab({
                     className="flex items-center gap-1.5 text-xs font-sans text-muted-foreground font-mono hover:text-primary transition-colors group/ts"
                     title="Écouter à partir d'ici"
                   >
-                    <Play className="w-3 h-3 opacity-0 group-hover/ts:opacity-100 transition-opacity" />
+                    <Play className="w-3 h-3 opacity-0 group-hover/passage:opacity-100 transition-opacity" />
                     {passage.timestamp}
                   </button>
                   <button

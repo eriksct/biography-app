@@ -590,6 +590,48 @@ function TranscriptTab({
   );
 }
 
+/* ─── Collapsible Add Input ─── */
+function AddInput({ placeholder, onAdd }: { placeholder: string; onAdd: (v: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState('');
+
+  const handleAdd = () => {
+    if (value.trim()) { onAdd(value.trim()); setValue(''); setOpen(false); }
+  };
+
+  if (!open) {
+    return (
+      <button onClick={() => setOpen(true)} className="flex items-center gap-1.5 mt-2 text-xs font-sans text-muted-foreground hover:text-foreground transition-colors">
+        <Plus className="w-3.5 h-3.5" />
+        Ajouter
+      </button>
+    );
+  }
+
+  return (
+    <div className="flex gap-2 mt-2">
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') handleAdd();
+          if (e.key === 'Escape') { setValue(''); setOpen(false); }
+        }}
+        autoFocus
+        placeholder={placeholder}
+        className="flex-1 px-3 py-1.5 text-sm font-sans bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+      />
+      <button onClick={handleAdd} className="p-1.5 text-primary hover:bg-secondary rounded-md transition-colors">
+        <Check className="w-3.5 h-3.5" />
+      </button>
+      <button onClick={() => { setValue(''); setOpen(false); }} className="p-1.5 text-muted-foreground hover:bg-secondary rounded-md transition-colors">
+        <X className="w-3.5 h-3.5" />
+      </button>
+    </div>
+  );
+}
+
 /* ─── Editable Item ─── */
 function EditableItem({ value, onSave, onDelete, subtitle }: { value: string; onSave: (v: string) => void; onDelete: () => void; subtitle?: string }) {
   const [editing, setEditing] = useState(false);

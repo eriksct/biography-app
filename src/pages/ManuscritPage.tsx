@@ -456,15 +456,15 @@ export default function ManuscritPage() {
                           return (
                             <div
                               key={passage.id}
-                              className="p-3 rounded-lg border border-border transition-colors"
+                              className="group/passage p-3 rounded-lg border border-border transition-colors"
                             >
                               <div className="flex items-center gap-2 mb-2">
                                 <button
-                                  className="group/ts flex items-center gap-1.5 text-xs font-mono text-muted-foreground hover:text-primary transition-colors"
+                                  className="flex items-center gap-1.5 text-xs font-mono text-muted-foreground hover:text-primary transition-colors"
                                   title="Écouter à partir d'ici"
                                 >
                                   {passage.timestamp}
-                                  <Play className="w-3 h-3 opacity-0 group-hover/ts:opacity-100 transition-opacity" />
+                                  <Play className="w-3 h-3 opacity-0 group-hover/passage:opacity-100 transition-opacity" />
                                 </button>
                               </div>
                               <p className="font-serif text-sm leading-relaxed mb-2" data-passage-id={passage.id}>

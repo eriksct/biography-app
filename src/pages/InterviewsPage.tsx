@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { useProject } from '@/lib/ProjectContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Mic, FileText, CheckCircle, Plus, Search, X, Loader2, Pencil } from 'lucide-react';
 import { InterviewStatus, Interview, Passage } from '@/lib/types';
 import { AppLayout } from '@/components/AppLayout';

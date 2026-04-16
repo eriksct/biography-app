@@ -1,42 +1,51 @@
-## Plan : Page d'accueil multi-biographies
 
-### Concept UX
 
-**Page d'accueil** (`/`) : liste des biographies sous forme de cartes. Chaque carte affiche le nom du projet, le nombre d'entretiens et de chapitres. Actions : créer, renommer (inline), supprimer (avec confirmation).
+## Plan : Authentification et profil utilisateur
 
-**Navigation retour** : dans la sidebar, le nom du projet (déjà affiché en haut) devient un lien cliquable vers `/`. On ajoute une petite icône `ChevronLeft` ou `Home` à côté. En mode replié, l'icône "B" en bas devient un bouton retour accueil.
+### Approche proposée
 
-### Routing
-
-```text
-/                    → Page d'accueil (liste des biographies)
-/projet/:projectId   → Entretiens (anciennement /)
-/projet/:projectId/entretien/:id → Détail entretien
-/projet/:projectId/manuscrit     → Rédaction
-```
-
-### Modifications techniques
-
-1. **Types** (`src/lib/types.ts`) : rien à changer, `Project` existe déjà.
-2. **Nouveau contexte global** (`src/lib/AppContext.tsx`) : gère une liste de `Project[]`, le projet sélectionné, et les actions CRUD (créer, renommer, supprimer, sélectionner). Le `ProjectProvider` existant reste pour le projet courant mais reçoit son `project` depuis `AppContext`.
-3. **Page d'accueil** (`src/pages/HomePage.tsx`) : grille de cartes pour chaque biographie + bouton "Nouvelle biographie". Menu contextuel (trois points) sur chaque carte pour renommer/supprimer. Dialog de confirmation pour la suppression.
-4. **Routing** (`src/App.tsx`) : nouvelle route `/` pour `HomePage`. Les routes existantes passent sous `/projet/:projectId/...`. Le `ProjectProvider` wrappera uniquement les routes projet et chargera le bon projet depuis `AppContext`.
-5. **Sidebar** (`src/components/AppSidebar.tsx`) : le nom du projet en haut devient un `Link` vers `/` avec une icône `Home` ou `ChevronLeft`. En mode replié, même chose avec juste l'icône.
-6. **Données démo** : la biographie existante "Mémoires de Jeanne Moreau" reste comme projet de démo dans la liste initiale.
+Utiliser **Lovable Cloud** (Supabase intégré) pour l'authentification. Cela fournit automatiquement une base Supabase avec `auth.users`, sans configuration externe.
 
 ### Ce que l'utilisateur verra
 
-- Au lancement : une page épurée avec la biographie existante en carte, et un bouton pour en créer une nouvelle.
-- Clic sur une carte → entre dans la biographie (entretiens).
-- Dans la sidebar : le nom du projet est cliquable pour revenir à l'accueil (discret, pas de place supplémentaire).  
+1. **Page de connexion** (`/login`) : formulaire email + mot de passe, avec options "Créer un compte" et "Mot de passe oublié". Design cohérent avec le style éditorial existant (Lora, tons chauds).
 
+2. **Page d'inscription** (`/signup`) : formulaire email + mot de passe + confirmation. Redirection vers la page d'accueil après validation.
 
-Il faut respecter le design system existant pour que cela s'intègre bien
+3. **Page de réinitialisation** (`/reset-password`) : formulaire pour définir un nouveau mot de passe après clic sur le lien reçu par email.
 
-&nbsp;
+4. **Menu profil** dans le header de la page d'accueil et dans le footer de la sidebar : un petit avatar (initiales de l'email) cliquable qui ouvre un dropdown avec :
+   - Email de l'utilisateur
+   - "Mon profil" (page minimale)
+   - "Se déconnecter"
 
-&nbsp;
+5. **Page profil** (`/profil`) : affichage de l'email, possibilité de changer le mot de passe. Rien de plus pour l'instant.
 
-&nbsp;
+6. **Routes protégées** : toutes les pages sauf `/login`, `/signup` et `/reset-password` nécessitent d'être connecté. Redirection automatique vers `/login` si non authentifié.
 
-&nbsp;
+### Modifications techniques
+
+1. **Activer Lovable Cloud** pour obtenir le client Supabase (`@supabase/supabase-js`).
+
+2. **Contexte d'auth** (`src/lib/AuthContext.tsx`) : provider React qui écoute `onAuthStateChange`, expose `user`, `loading`, `signIn`, `signUp`, `signOut`, `resetPassword`.
+
+3. **Client Supabase** (`src/integrations/supabase/client.ts`) : créé automatiquement par Lovable Cloud.
+
+4. **Pages auth** :
+   - `src/pages/LoginPage.tsx` : connexion email/mot de passe
+   - `src/pages/SignupPage.tsx` : inscription
+   - `src/pages/ResetPasswordPage.tsx` : nouveau mot de passe
+   - `src/pages/ProfilePage.tsx` : profil minimal
+
+5. **Composant `UserMenu`** (`src/components/UserMenu.tsx`) : avatar + dropdown (profil, déconnexion). Intégré dans `HomePage` (header) et `AppSidebar` (footer).
+
+6. **Route guard** (`src/components/ProtectedRoute.tsx`) : wrapper qui redirige vers `/login` si non authentifié.
+
+7. **Routing** (`src/App.tsx`) : ajout des routes publiques (`/login`, `/signup`, `/reset-password`) et wrapping des routes existantes dans `ProtectedRoute`.
+
+8. **Données** : les biographies restent en mémoire locale pour l'instant (pas de persistance en base). L'auth sert uniquement à identifier l'utilisateur.
+
+### Question ouverte
+
+Faut-il aussi proposer la connexion via Google, ou email/mot de passe suffit pour commencer ?
+

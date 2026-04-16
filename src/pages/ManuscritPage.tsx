@@ -494,7 +494,7 @@ export default function ManuscritPage() {
                           return (
                           <div
                             data-theme-popup-manuscrit
-                            className="fixed z-50 bg-popover border border-border rounded-lg shadow-xl py-2 min-w-[180px] max-h-[60vh] overflow-y-auto"
+                            className="fixed z-50 bg-popover border rounded-lg shadow-lg p-3 min-w-[220px] max-h-[60vh] overflow-y-auto"
                             style={{
                               ...(flipUp
                                 ? { bottom: window.innerHeight - selectionInfo.rect.top + 8 }
@@ -503,54 +503,42 @@ export default function ManuscritPage() {
                               transform: 'translateX(-50%)',
                             }}
                           >
-                            <div className="px-3 py-1.5 border-b border-border mb-1">
-                              <p className="text-xs font-sans text-muted-foreground">Associer une étiquette :</p>
+                            <div className="flex flex-wrap gap-1.5 mb-2">
+                              {project.allThemes.map((theme: string) => (
+                                <button
+                                  key={theme}
+                                  className={`px-2 py-0.5 rounded-full text-xs font-sans font-medium transition-colors ${getTagColor(theme, project.allThemes)} hover:opacity-80`}
+                                  onClick={() => {
+                                    addThemeAnnotation(interview.id, selectionInfo.passageId, selectionInfo.start, selectionInfo.end, theme);
+                                    setSelectionInfo(null);
+                                    window.getSelection()?.removeAllRanges();
+                                  }}
+                                >
+                                  {theme}
+                                </button>
+                              ))}
                             </div>
-                            {project.allThemes.map((theme: string) => (
-                              <button
-                                key={theme}
-                                onClick={() => {
-                                  addThemeAnnotation(interview.id, selectionInfo.passageId, selectionInfo.start, selectionInfo.end, theme);
-                                  setSelectionInfo(null);
-                                  window.getSelection()?.removeAllRanges();
-                                }}
-                                className="w-full text-left px-3 py-2 text-sm font-sans hover:bg-secondary transition-colors"
-                              >
-                                {theme}
-                              </button>
-                            ))}
-                            <div className="border-t border-border mt-1 px-3 pt-2 flex gap-1">
+                            <form
+                              className="flex gap-1.5"
+                              onSubmit={(e) => {
+                                e.preventDefault();
+                                const t = newThemeManuscrit.trim();
+                                if (!t) return;
+                                addTheme(t);
+                                addThemeAnnotation(interview.id, selectionInfo.passageId, selectionInfo.start, selectionInfo.end, t);
+                                setNewThemeManuscrit('');
+                                setSelectionInfo(null);
+                                window.getSelection()?.removeAllRanges();
+                              }}
+                            >
                               <input
-                                type="text"
+                                className="flex-1 px-2 py-1 text-xs border rounded bg-background text-foreground placeholder:text-muted-foreground"
+                                placeholder="Créer une étiquette..."
                                 value={newThemeManuscrit}
                                 onChange={(e) => setNewThemeManuscrit(e.target.value)}
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter' && newThemeManuscrit.trim()) {
-                                    addTheme(newThemeManuscrit.trim());
-                                    addThemeAnnotation(interview.id, selectionInfo.passageId, selectionInfo.start, selectionInfo.end, newThemeManuscrit.trim());
-                                    setNewThemeManuscrit('');
-                                    setSelectionInfo(null);
-                                    window.getSelection()?.removeAllRanges();
-                                  }
-                                }}
-                                placeholder="Créer une étiquette..."
-                                className="flex-1 px-2 py-1 text-xs font-sans bg-background border border-input rounded focus:outline-none focus:ring-1 focus:ring-ring"
                               />
-                              <button
-                                onClick={() => {
-                                  if (newThemeManuscrit.trim()) {
-                                    addTheme(newThemeManuscrit.trim());
-                                    addThemeAnnotation(interview.id, selectionInfo.passageId, selectionInfo.start, selectionInfo.end, newThemeManuscrit.trim());
-                                    setNewThemeManuscrit('');
-                                    setSelectionInfo(null);
-                                    window.getSelection()?.removeAllRanges();
-                                  }
-                                }}
-                                className="p-1 text-primary hover:bg-secondary rounded transition-colors"
-                              >
-                                <Plus className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
+                              <button type="submit" className="px-2 py-1 text-xs bg-primary text-primary-foreground rounded hover:bg-primary/90">+</button>
+                            </form>
                           </div>
                           );
                         })()}

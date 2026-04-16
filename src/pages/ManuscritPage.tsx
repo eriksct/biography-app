@@ -634,14 +634,9 @@ export default function ManuscritPage() {
                             <span className="text-xs font-sans text-muted-foreground">
                               Entretien n°{passage.interviewNumber}
                             </span>
-                            <button
-                              onClick={() => { setPanelTab('entretiens'); setSelectedInterviewId(passage.interviewId); }}
-                              className="flex items-center gap-1.5 text-xs font-mono text-muted-foreground hover:text-primary transition-colors"
-                              title="Écouter à partir d'ici"
-                            >
+                            <span className="text-xs font-mono text-muted-foreground">
                               {passage.timestamp}
-                              <Play className="w-3 h-3 opacity-0 group-hover/passage:opacity-100 transition-opacity" />
-                            </button>
+                            </span>
                           </div>
                           <p
                             onClick={() => { setDialogInterviewId(passage.interviewId); setDialogPassageId(passage.id); }}

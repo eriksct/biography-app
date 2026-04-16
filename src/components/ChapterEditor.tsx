@@ -72,28 +72,28 @@ export function ChapterEditor({ content, onUpdate, placeholder }: ChapterEditorP
       {/* Toolbar */}
       <div className="flex items-center gap-0.5 px-1 py-1.5 border-b border-border mb-6">
         <ToolbarButton
-          active={editor.isActive('bold')}
+          active={editor.isFocused && editor.isActive('bold')}
           onAction={() => editor.chain().focus().toggleBold().run()}
           title="Gras (Ctrl+B)"
         >
           <Bold className="w-4 h-4" />
         </ToolbarButton>
         <ToolbarButton
-          active={editor.isActive('italic')}
+          active={editor.isFocused && editor.isActive('italic')}
           onAction={() => editor.chain().focus().toggleItalic().run()}
           title="Italique (Ctrl+I)"
         >
           <Italic className="w-4 h-4" />
         </ToolbarButton>
         <ToolbarButton
-          active={editor.isActive('underline')}
+          active={editor.isFocused && editor.isActive('underline')}
           onAction={() => editor.chain().focus().toggleUnderline().run()}
           title="Souligné (Ctrl+U)"
         >
           <UnderlineIcon className="w-4 h-4" />
         </ToolbarButton>
         <ToolbarButton
-          active={editor.isActive('strike')}
+          active={editor.isFocused && editor.isActive('strike')}
           onAction={() => editor.chain().focus().toggleStrike().run()}
           title="Barré (Ctrl+Shift+S)"
         >
@@ -103,7 +103,7 @@ export function ChapterEditor({ content, onUpdate, placeholder }: ChapterEditorP
         <div className="w-px h-5 bg-border mx-1" />
 
         <ToolbarButton
-          active={editor.isActive('heading', { level: 2 })}
+          active={editor.isFocused && editor.isActive('heading', { level: 2 })}
           onAction={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
           title="Titre de paragraphe"
         >

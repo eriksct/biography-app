@@ -571,7 +571,7 @@ export default function ManuscritPage() {
               <>
                 {/* Filters */}
                 <div className="px-4 py-3 border-b border-border space-y-2">
-                  <p className="text-xs font-sans text-muted-foreground">Cliquez sur les étiquettes pour filtrer les passages</p>
+                  <p className="font-sans text-muted-foreground text-sm font-normal">Filtrez les passages en cliquant sur les étiquettes et entretiens</p>
                   <div>
                     <span className="text-[10px] font-sans text-muted-foreground uppercase tracking-wider">Étiquettes</span>
                     <div className="flex flex-wrap gap-1 mt-1">

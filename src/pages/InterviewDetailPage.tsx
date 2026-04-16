@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useProject } from '@/lib/ProjectContext';
 import { AppLayout } from '@/components/AppLayout';
-import { ArrowLeft, Play, Pause, Plus, MapPin, User, Pencil, Check, Download, FileText, Music, Calendar, ScrollText, Target, BookOpen, X } from 'lucide-react';
+import { ArrowLeft, Play, Pause, Plus, MapPin, User, Pencil, Check, Download, FileText, Music, Calendar, ScrollText, Target, BookOpen, X, Trash2, MoreVertical } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { useState, useRef, useEffect, useCallback } from 'react';
@@ -12,7 +12,7 @@ type Tab = 'transcript' | 'summary';
 export default function InterviewDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { project, addPersonToInterview, addPlaceDateToInterview, addEventDateToInterview, addHistoricalEventToInterview, addIssueToInterview, updateInterviewNotes, addTheme, addThemeAnnotation, removeThemeAnnotation, updatePassage, updateInterview } = useProject();
+  const { project, addPersonToInterview, addPlaceDateToInterview, addEventDateToInterview, addHistoricalEventToInterview, addIssueToInterview, updateInterviewNotes, addTheme, addThemeAnnotation, removeThemeAnnotation, updatePassage, updateInterview, removePassage } = useProject();
   const interview = project.interviews.find(i => i.id === id);
   const [activeTab, setActiveTab] = useState<Tab>('transcript');
   const [activeThemeFilter, setActiveThemeFilter] = useState<string | null>(null);
@@ -457,13 +457,29 @@ function TranscriptTab({
                     {passage.timestamp}
                     <Play className="w-3 h-3 opacity-0 group-hover/passage:opacity-100 transition-opacity" />
                   </button>
-                  <button
-                    onClick={() => { setEditingPassageId(passage.id); setEditingText(passage.text); }}
-                    className="opacity-0 group-hover/passage:opacity-100 transition-opacity ml-auto p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground"
-                    title="Modifier le texte"
-                  >
-                    <Pencil className="w-3.5 h-3.5" />
-                  </button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        className="opacity-0 group-hover/passage:opacity-100 transition-opacity ml-auto p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground"
+                        title="Options"
+                      >
+                        <MoreVertical className="w-3.5 h-3.5" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="min-w-[140px]">
+                      <DropdownMenuItem onClick={() => { setEditingPassageId(passage.id); setEditingText(passage.text); }}>
+                        <Pencil className="w-3.5 h-3.5 mr-2" />
+                        Modifier
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => { if (interview && window.confirm('Supprimer ce passage ?')) removePassage(interview.id, passage.id); }}
+                        className="text-destructive focus:text-destructive"
+                      >
+                        <Trash2 className="w-3.5 h-3.5 mr-2" />
+                        Supprimer
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
                 <div className="flex gap-4">
                   {editingPassageId === passage.id ? (

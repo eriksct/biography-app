@@ -23,6 +23,7 @@ interface ProjectContextType {
   addTheme: (theme: string) => void;
   addThemeAnnotation: (interviewId: string, passageId: string, start: number, end: number, theme: string) => void;
   removeThemeAnnotation: (interviewId: string, passageId: string, annotationId: string) => void;
+  removePassage: (interviewId: string, passageId: string) => void;
 }
 
 const ProjectContext = createContext<ProjectContextType | null>(null);
@@ -234,6 +235,17 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }));
   }, []);
 
+  const removePassage = useCallback((interviewId: string, passageId: string) => {
+    setProject(prev => ({
+      ...prev,
+      interviews: prev.interviews.map(i =>
+        i.id === interviewId
+          ? { ...i, passages: i.passages.filter(p => p.id !== passageId) }
+          : i
+      ),
+    }));
+  }, []);
+
   return (
     <ProjectContext.Provider value={{
       project,
@@ -256,6 +268,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       addTheme,
       addThemeAnnotation,
       removeThemeAnnotation,
+      removePassage,
     }}>
       {children}
     </ProjectContext.Provider>

@@ -61,17 +61,28 @@ function getBlendedBackground(annotations: ThemeAnnotation[], allThemes: string[
   return `linear-gradient(to right, ${stops.join(', ')})`;
 }
 
-// Build stacked underlines as box-shadow
-function getStackedUnderlines(annotations: ThemeAnnotation[], allThemes: string[]): string {
-  if (annotations.length <= 1) {
-    const color = getUnderlineColor(annotations[0].theme, allThemes);
-    return `inset 0 -2px 0 0 ${color}`;
-  }
-  return annotations.map((a, i) => {
+// Build stacked underlines as background gradients (avoids box-shadow blending)
+function getUnderlineStyles(annotations: ThemeAnnotation[], allThemes: string[]): React.CSSProperties {
+  const lineHeight = 2;
+  const gap = 1;
+  const images: string[] = [];
+  const sizes: string[] = [];
+  const positions: string[] = [];
+
+  annotations.forEach((a, i) => {
     const color = getUnderlineColor(a.theme, allThemes);
-    const offset = 2 + i * 3; // stack underlines 3px apart
-    return `inset 0 -${offset}px 0 0 ${color}`;
-  }).join(', ');
+    const yOffset = i * (lineHeight + gap);
+    images.push(`linear-gradient(${color}, ${color})`);
+    sizes.push(`100% ${lineHeight}px`);
+    positions.push(`0 calc(100% - ${yOffset}px)`);
+  });
+
+  return {
+    backgroundImage: images.join(', '),
+    backgroundSize: sizes.join(', '),
+    backgroundPosition: positions.join(', '),
+    backgroundRepeat: 'no-repeat',
+  };
 }
 
 // Merge overlapping annotations into segments
@@ -124,20 +135,19 @@ export function AnnotatedPassageText({ text, annotations, allThemes, onRemoveAnn
           return <span key={i}>{seg.text}</span>;
         }
 
-        const background = getBlendedBackground(seg.annotations, allThemes);
-        const boxShadow = getStackedUnderlines(seg.annotations, allThemes);
+        const underlineStyles = getUnderlineStyles(seg.annotations, allThemes);
         const isMulti = seg.annotations.length > 1;
-        const paddingBottom = isMulti ? `${seg.annotations.length * 3}px` : '2px';
+        const paddingBottom = isMulti ? `${seg.annotations.length * 3 + 2}px` : '4px';
 
         return (
           <span
             key={i}
             className="rounded px-0.5 relative group/ann inline transition-colors duration-200"
             style={{
-              background,
-              boxShadow,
+              background: getBlendedBackground(seg.annotations, allThemes),
               paddingTop: '2px',
               paddingBottom,
+              ...underlineStyles,
             }}
             title={seg.annotations.map(a => a.theme).join(', ')}
           >

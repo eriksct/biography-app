@@ -46,7 +46,14 @@ export function ChapterEditor({ content, onUpdate, placeholder }: ChapterEditorP
   const ToolbarButton = useCallback(({ active, onClick, children, title }: { active: boolean; onClick: () => void; children: React.ReactNode; title: string }) => (
     <button
       type="button"
-      onMouseDown={(e) => { e.preventDefault(); onClick(); }}
+      onMouseDown={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+      onClick={(e) => {
+        e.preventDefault();
+        onClick();
+      }}
       title={title}
       className={`p-1.5 rounded transition-colors ${
         active

@@ -549,7 +549,7 @@ function TranscriptTab({
             return (
             <div
               data-theme-popup
-              className="fixed z-50 bg-popover border border-border rounded-lg shadow-xl py-2 min-w-[180px] max-h-[60vh] overflow-y-auto"
+              className="fixed z-50 bg-popover border rounded-lg shadow-lg p-3 min-w-[220px] max-h-[60vh] overflow-y-auto"
               style={{
                 ...(flipUp
                   ? { bottom: window.innerHeight - selectionInfo.rect.top + 8 }
@@ -558,18 +558,35 @@ function TranscriptTab({
                 transform: 'translateX(-50%)',
               }}
             >
-              <div className="px-3 py-1.5 border-b border-border mb-1">
-                <p className="text-xs font-sans text-muted-foreground">Associer une étiquette :</p>
+              <div className="flex flex-wrap gap-1.5 mb-2">
+                {project.allThemes.map((theme: string) => (
+                  <button
+                    key={theme}
+                    className={`px-2 py-0.5 rounded-full text-xs font-sans font-medium transition-colors ${getTagColor(theme, project.allThemes)} hover:opacity-80`}
+                    onClick={() => handleAssignThemeToSelection(theme)}
+                  >
+                    {theme}
+                  </button>
+                ))}
               </div>
-              {project.allThemes.map((theme: string) => (
-                <button
-                  key={theme}
-                  onClick={() => handleAssignThemeToSelection(theme)}
-                  className="w-full text-left px-3 py-2 text-sm font-sans hover:bg-secondary transition-colors"
-                >
-                  {theme}
-                </button>
-              ))}
+              <form
+                className="flex gap-1.5"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const t = newTheme.trim();
+                  if (!t) return;
+                  handleAddTheme();
+                  handleAssignThemeToSelection(t);
+                }}
+              >
+                <input
+                  className="flex-1 px-2 py-1 text-xs border rounded bg-background text-foreground placeholder:text-muted-foreground"
+                  placeholder="Créer une étiquette..."
+                  value={newTheme}
+                  onChange={(e) => setNewTheme(e.target.value)}
+                />
+                <button type="submit" className="px-2 py-1 text-xs bg-primary text-primary-foreground rounded hover:bg-primary/90">+</button>
+              </form>
             </div>
             );
           })()}

@@ -130,7 +130,7 @@ export default function InterviewDetailPage() {
   }
 
   const filteredPassages = activeThemeFilter
-    ? interview.passages.filter(p => p.themes.includes(activeThemeFilter))
+    ? interview.passages.filter(p => p.themeAnnotations.some(a => a.theme === activeThemeFilter))
     : interview.passages;
 
   const dateFormatted = new Date(interview.date).toLocaleDateString('fr-FR', {

@@ -76,28 +76,28 @@ export function ChapterEditor({ content, onUpdate, placeholder }: ChapterEditorP
           onAction={() => editor.chain().focus().toggleBold().run()}
           title="Gras (Ctrl+B)"
         >
-          <Bold className="w-4 h-4" />
+          <span className="font-sans font-bold text-sm">G</span>
         </ToolbarButton>
         <ToolbarButton
           active={editor.isFocused && editor.isActive('italic')}
           onAction={() => editor.chain().focus().toggleItalic().run()}
           title="Italique (Ctrl+I)"
         >
-          <Italic className="w-4 h-4" />
+          <span className="font-sans italic text-sm">I</span>
         </ToolbarButton>
         <ToolbarButton
           active={editor.isFocused && editor.isActive('underline')}
           onAction={() => editor.chain().focus().toggleUnderline().run()}
           title="Souligné (Ctrl+U)"
         >
-          <UnderlineIcon className="w-4 h-4" />
+          <span className="font-sans underline text-sm">S</span>
         </ToolbarButton>
         <ToolbarButton
           active={editor.isFocused && editor.isActive('strike')}
           onAction={() => editor.chain().focus().toggleStrike().run()}
           title="Barré (Ctrl+Shift+S)"
         >
-          <Strikethrough className="w-4 h-4" />
+          <span className="font-sans line-through text-sm">B</span>
         </ToolbarButton>
 
         <div className="w-px h-5 bg-border mx-1" />

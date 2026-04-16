@@ -249,7 +249,7 @@ export default function InterviewDetailPage() {
             <DropdownMenuContent align="end" className="min-w-[180px]">
               <DropdownMenuItem onClick={downloadTranscriptAsDocx} className="gap-2 cursor-pointer">
                 <FileText className="w-4 h-4" />
-                <span className="font-sans text-sm">Transcript (.docx)</span>
+                <span className="font-sans text-sm">Transcript (Word)</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={downloadAudioMp3} className="gap-2 cursor-pointer">
                 <Music className="w-4 h-4" />

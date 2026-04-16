@@ -1,51 +1,20 @@
 
 
-## Plan : Authentification et profil utilisateur
+## Plan : Répliquer le positionnement intelligent du popup d'étiquettes dans le panneau Manuscrit
 
-### Approche proposée
+### Problème
 
-Utiliser **Lovable Cloud** (Supabase intégré) pour l'authentification. Cela fournit automatiquement une base Supabase avec `auth.users`, sans configuration externe.
+Dans la page Manuscrit > Entretiens & Étiquettes > vue d'un entretien, le popup d'assignation d'étiquettes utilise un positionnement simple (`top + 8px`) sans vérifier l'espace disponible. Si le texte sélectionné est en bas de l'écran, le popup est tronqué — exactement le bug corrigé dans `InterviewDetailPage`.
 
-### Ce que l'utilisateur verra
+### Modifications
 
-1. **Page de connexion** (`/login`) : formulaire email + mot de passe, avec options "Créer un compte" et "Mot de passe oublié". Design cohérent avec le style éditorial existant (Lora, tons chauds).
+**Fichier : `src/pages/ManuscritPage.tsx`**
 
-2. **Page d'inscription** (`/signup`) : formulaire email + mot de passe + confirmation. Redirection vers la page d'accueil après validation.
+1. **Ajouter `bottom` au state `selectionInfo`** (lignes 34-40) : passer de `{ top, left }` à `{ top, bottom, left }` pour le `rect`, comme dans `InterviewDetailPage`.
 
-3. **Page de réinitialisation** (`/reset-password`) : formulaire pour définir un nouveau mot de passe après clic sur le lien reçu par email.
+2. **Mettre à jour `handleTextSelectManuscrit`** (ligne 93-96) : stocker `rect.top`, `rect.bottom` et `rect.left + rect.width / 2` en coordonnées viewport (sans `window.scrollY`).
 
-4. **Menu profil** dans le header de la page d'accueil et dans le footer de la sidebar : un petit avatar (initiales de l'email) cliquable qui ouvre un dropdown avec :
-   - Email de l'utilisateur
-   - "Mon profil" (page minimale)
-   - "Se déconnecter"
+3. **Appliquer le flip-up au popup** (lignes 484-543) : calculer `popupHeight`, `spaceBelow`, `flipUp` et basculer entre `top` et `bottom` en CSS, ajouter `max-h-[60vh] overflow-y-auto` — logique identique à celle de `InterviewDetailPage` (lignes 546-559).
 
-5. **Page profil** (`/profil`) : affichage de l'email, possibilité de changer le mot de passe. Rien de plus pour l'instant.
-
-6. **Routes protégées** : toutes les pages sauf `/login`, `/signup` et `/reset-password` nécessitent d'être connecté. Redirection automatique vers `/login` si non authentifié.
-
-### Modifications techniques
-
-1. **Activer Lovable Cloud** pour obtenir le client Supabase (`@supabase/supabase-js`).
-
-2. **Contexte d'auth** (`src/lib/AuthContext.tsx`) : provider React qui écoute `onAuthStateChange`, expose `user`, `loading`, `signIn`, `signUp`, `signOut`, `resetPassword`.
-
-3. **Client Supabase** (`src/integrations/supabase/client.ts`) : créé automatiquement par Lovable Cloud.
-
-4. **Pages auth** :
-   - `src/pages/LoginPage.tsx` : connexion email/mot de passe
-   - `src/pages/SignupPage.tsx` : inscription
-   - `src/pages/ResetPasswordPage.tsx` : nouveau mot de passe
-   - `src/pages/ProfilePage.tsx` : profil minimal
-
-5. **Composant `UserMenu`** (`src/components/UserMenu.tsx`) : avatar + dropdown (profil, déconnexion). Intégré dans `HomePage` (header) et `AppSidebar` (footer).
-
-6. **Route guard** (`src/components/ProtectedRoute.tsx`) : wrapper qui redirige vers `/login` si non authentifié.
-
-7. **Routing** (`src/App.tsx`) : ajout des routes publiques (`/login`, `/signup`, `/reset-password`) et wrapping des routes existantes dans `ProtectedRoute`.
-
-8. **Données** : les biographies restent en mémoire locale pour l'instant (pas de persistance en base). L'auth sert uniquement à identifier l'utilisateur.
-
-### Question ouverte
-
-Faut-il aussi proposer la connexion via Google, ou email/mot de passe suffit pour commencer ?
+Aucune autre modification nécessaire.
 

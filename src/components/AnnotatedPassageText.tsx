@@ -1,17 +1,16 @@
 import { ThemeAnnotation } from '@/lib/types';
 import { X } from 'lucide-react';
 
-// Theme color map using HSL-based backgrounds
-const THEME_COLORS: Record<string, { bg: string; hover: string }> = {};
-const PALETTE = [
-  { bg: 'bg-blue-100/80', hover: '' },
-  { bg: 'bg-amber-100/80', hover: '' },
-  { bg: 'bg-emerald-100/80', hover: '' },
-  { bg: 'bg-purple-100/80', hover: '' },
-  { bg: 'bg-rose-100/80', hover: '' },
-  { bg: 'bg-cyan-100/80', hover: '' },
-  { bg: 'bg-orange-100/80', hover: '' },
-  { bg: 'bg-lime-100/80', hover: '' },
+// HSL colors for inline styles — allows layering & blending
+const PALETTE_HSL = [
+  { h: 217, s: 80, l: 85 }, // blue
+  { h: 45,  s: 80, l: 85 }, // amber
+  { h: 152, s: 60, l: 82 }, // emerald
+  { h: 270, s: 60, l: 87 }, // purple
+  { h: 350, s: 70, l: 87 }, // rose
+  { h: 190, s: 70, l: 85 }, // cyan
+  { h: 25,  s: 80, l: 85 }, // orange
+  { h: 85,  s: 60, l: 85 }, // lime
 ];
 
 const TAG_COLORS = [
@@ -30,12 +29,49 @@ export function getTagColor(theme: string, allThemes: string[]) {
   return TAG_COLORS[idx >= 0 ? idx % TAG_COLORS.length : 0];
 }
 
-function getThemeColor(theme: string, allThemes: string[]) {
-  if (!THEME_COLORS[theme]) {
-    const idx = allThemes.indexOf(theme);
-    THEME_COLORS[theme] = PALETTE[idx >= 0 ? idx % PALETTE.length : 0];
+function getThemeHSL(theme: string, allThemes: string[]) {
+  const idx = allThemes.indexOf(theme);
+  return PALETTE_HSL[idx >= 0 ? idx % PALETTE_HSL.length : 0];
+}
+
+// Darker version of theme color for underlines
+function getUnderlineColor(theme: string, allThemes: string[]) {
+  const c = getThemeHSL(theme, allThemes);
+  return `hsl(${c.h}, ${c.s}%, ${Math.max(c.l - 30, 40)}%)`;
+}
+
+// Blended background for multiple overlapping annotations
+function getBlendedBackground(annotations: ThemeAnnotation[], allThemes: string[]): string {
+  if (annotations.length === 1) {
+    const c = getThemeHSL(annotations[0].theme, allThemes);
+    return `hsla(${c.h}, ${c.s}%, ${c.l}%, 0.6)`;
   }
-  return THEME_COLORS[theme];
+  // Blend all annotation colors with lower opacity each
+  const opacity = Math.max(0.3, 0.7 / annotations.length);
+  const colors = annotations.map(a => {
+    const c = getThemeHSL(a.theme, allThemes);
+    return `hsla(${c.h}, ${c.s}%, ${c.l}%, ${opacity})`;
+  });
+  // Use layered gradient to show all colors
+  const stops = colors.map((col, i) => {
+    const pctStart = (i / colors.length) * 100;
+    const pctEnd = ((i + 1) / colors.length) * 100;
+    return `${col} ${pctStart}%, ${col} ${pctEnd}%`;
+  });
+  return `linear-gradient(to right, ${stops.join(', ')})`;
+}
+
+// Build stacked underlines as box-shadow
+function getStackedUnderlines(annotations: ThemeAnnotation[], allThemes: string[]): string {
+  if (annotations.length <= 1) {
+    const color = getUnderlineColor(annotations[0].theme, allThemes);
+    return `inset 0 -2px 0 0 ${color}`;
+  }
+  return annotations.map((a, i) => {
+    const color = getUnderlineColor(a.theme, allThemes);
+    const offset = 2 + i * 3; // stack underlines 3px apart
+    return `inset 0 -${offset}px 0 0 ${color}`;
+  }).join(', ');
 }
 
 // Merge overlapping annotations into segments
@@ -87,12 +123,22 @@ export function AnnotatedPassageText({ text, annotations, allThemes, onRemoveAnn
         if (seg.annotations.length === 0) {
           return <span key={i}>{seg.text}</span>;
         }
-        const primary = seg.annotations[0];
-        const colors = getThemeColor(primary.theme, allThemes);
+
+        const background = getBlendedBackground(seg.annotations, allThemes);
+        const boxShadow = getStackedUnderlines(seg.annotations, allThemes);
+        const isMulti = seg.annotations.length > 1;
+        const paddingBottom = isMulti ? `${seg.annotations.length * 3}px` : '2px';
+
         return (
           <span
             key={i}
-            className={`${colors.bg} rounded px-0.5 py-0.5 relative group/ann inline border-b-2 border-current/10 transition-colors duration-200`}
+            className="rounded px-0.5 relative group/ann inline transition-colors duration-200"
+            style={{
+              background,
+              boxShadow,
+              paddingTop: '2px',
+              paddingBottom,
+            }}
             title={seg.annotations.map(a => a.theme).join(', ')}
           >
             {seg.text}

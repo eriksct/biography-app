@@ -42,6 +42,7 @@ export default function InterviewDetailPage() {
     const selectedText = selection.toString().trim();
     if (!selectedText) return;
 
+    // Walk up from both start and end containers to find the passage element
     let node: Node | null = range.startContainer;
     let passageEl: HTMLElement | null = null;
     while (node) {
@@ -51,23 +52,47 @@ export default function InterviewDetailPage() {
       }
       node = node.parentNode;
     }
+    if (!passageEl) {
+      // Also try from end container
+      node = range.endContainer;
+      while (node) {
+        if (node instanceof HTMLElement && node.dataset.passageId) {
+          passageEl = node;
+          break;
+        }
+        node = node.parentNode;
+      }
+    }
     if (!passageEl) return;
 
     const passageId = passageEl.dataset.passageId!;
     const passage = interview?.passages.find(p => p.id === passageId);
     if (!passage) return;
 
-    const fullText = passage.text;
-    const selText = selection.toString();
-    const startIdx = fullText.indexOf(selText);
-    if (startIdx === -1) return;
+    // Compute character offset within the passage element using TreeWalker
+    const computeOffset = (container: Node, offset: number): number => {
+      const walker = document.createTreeWalker(passageEl!, NodeFilter.SHOW_TEXT);
+      let charCount = 0;
+      let currentNode: Node | null;
+      while ((currentNode = walker.nextNode())) {
+        if (currentNode === container) {
+          return charCount + offset;
+        }
+        charCount += (currentNode.textContent?.length || 0);
+      }
+      return charCount + offset;
+    };
+
+    const startIdx = computeOffset(range.startContainer, range.startOffset);
+    const endIdx = computeOffset(range.endContainer, range.endOffset);
+    if (startIdx >= endIdx || startIdx < 0 || endIdx > passage.text.length) return;
 
     const rect = range.getBoundingClientRect();
     setSelectionInfo({
       passageId,
       start: startIdx,
-      end: startIdx + selText.length,
-      selectedText: selText,
+      end: endIdx,
+      selectedText: passage.text.slice(startIdx, endIdx),
       rect: { top: rect.bottom + window.scrollY, left: rect.left + rect.width / 2 },
     });
   }, [interview]);

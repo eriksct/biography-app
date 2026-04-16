@@ -10,7 +10,7 @@ import { AnnotatedPassageText, getTagColor } from '@/components/AnnotatedPassage
 type Tab = 'transcript' | 'summary';
 
 export default function InterviewDetailPage() {
-  const { id } = useParams<{ id: string }>();
+  const { id, projectId } = useParams<{ id: string; projectId: string }>();
   const navigate = useNavigate();
   const { project, addPersonToInterview, addPlaceDateToInterview, addEventDateToInterview, addHistoricalEventToInterview, addIssueToInterview, updateInterviewNotes, addTheme, addThemeAnnotation, removeThemeAnnotation, updatePassage, updateInterview, removePassage } = useProject();
   const interview = project.interviews.find(i => i.id === id);

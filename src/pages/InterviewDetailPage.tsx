@@ -30,7 +30,7 @@ export default function InterviewDetailPage() {
     start: number;
     end: number;
     selectedText: string;
-    rect: { top: number; left: number };
+    rect: { top: number; bottom: number; left: number };
   } | null>(null);
   const passagesContainerRef = useRef<HTMLDivElement>(null);
 

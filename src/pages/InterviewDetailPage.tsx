@@ -457,13 +457,29 @@ function TranscriptTab({
                     {passage.timestamp}
                     <Play className="w-3 h-3 opacity-0 group-hover/passage:opacity-100 transition-opacity" />
                   </button>
-                  <button
-                    onClick={() => { setEditingPassageId(passage.id); setEditingText(passage.text); }}
-                    className="opacity-0 group-hover/passage:opacity-100 transition-opacity ml-auto p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground"
-                    title="Modifier le texte"
-                  >
-                    <Pencil className="w-3.5 h-3.5" />
-                  </button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        className="opacity-0 group-hover/passage:opacity-100 transition-opacity ml-auto p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground"
+                        title="Options"
+                      >
+                        <MoreVertical className="w-3.5 h-3.5" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="min-w-[140px]">
+                      <DropdownMenuItem onClick={() => { setEditingPassageId(passage.id); setEditingText(passage.text); }}>
+                        <Pencil className="w-3.5 h-3.5 mr-2" />
+                        Modifier
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => { if (window.confirm('Supprimer ce passage ?')) removePassage(interview.id, passage.id); }}
+                        className="text-destructive focus:text-destructive"
+                      >
+                        <Trash2 className="w-3.5 h-3.5 mr-2" />
+                        Supprimer
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
                 <div className="flex gap-4">
                   {editingPassageId === passage.id ? (

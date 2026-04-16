@@ -62,12 +62,13 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-6 py-16">
-        <header className="mb-12 flex items-start justify-between">
-          <div>
-            <p className="text-xs font-sans uppercase tracking-wider text-muted-foreground mb-2">Biograph</p>
-            <h1 className="font-serif text-3xl font-semibold text-foreground">Mes biographies</h1>
-          </div>
+        <div className="fixed top-4 right-6 z-50">
           <UserMenu />
+        </div>
+
+        <header className="mb-12">
+          <p className="text-xs font-sans uppercase tracking-wider text-muted-foreground mb-2">Biograph</p>
+          <h1 className="font-serif text-3xl font-semibold text-foreground">Mes biographies</h1>
         </header>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">

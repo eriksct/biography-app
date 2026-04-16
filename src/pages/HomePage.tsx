@@ -28,9 +28,14 @@ export default function HomePage() {
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [createOpen, setCreateOpen] = useState(false);
+  const [createName, setCreateName] = useState('');
 
   const handleCreate = () => {
-    const id = createProject('Nouvelle biographie');
+    const name = createName.trim() || 'Nouvelle biographie';
+    const id = createProject(name);
+    setCreateOpen(false);
+    setCreateName('');
     navigate(`/projet/${id}`);
   };
 
@@ -137,7 +142,7 @@ export default function HomePage() {
           {/* Create button */}
           <Card
             className="cursor-pointer border-dashed hover:border-primary/50 hover:shadow-sm transition-all"
-            onClick={handleCreate}
+            onClick={() => { setCreateName(''); setCreateOpen(true); }}
           >
             <CardContent className="p-6 flex flex-col items-center justify-center text-muted-foreground hover:text-primary transition-colors min-h-[140px]">
               <Plus className="h-6 w-6 mb-1" />
@@ -160,6 +165,32 @@ export default function HomePage() {
             <AlertDialogCancel>Annuler</AlertDialogCancel>
             <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
               Supprimer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Create dialog */}
+      <AlertDialog open={createOpen} onOpenChange={open => !open && setCreateOpen(false)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Nouvelle biographie</AlertDialogTitle>
+            <AlertDialogDescription>
+              Choisissez un titre pour votre biographie.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <Input
+            autoFocus
+            value={createName}
+            onChange={e => setCreateName(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter') handleCreate(); }}
+            placeholder="Ex : Mémoires de Jean Dupont"
+            className="font-serif"
+          />
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={handleCreate} disabled={!createName.trim()}>
+              Créer
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

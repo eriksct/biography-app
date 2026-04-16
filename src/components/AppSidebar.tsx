@@ -1,11 +1,14 @@
 import { useState } from 'react';
-import { BookOpen, FileText, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { BookOpen, FileText, PanelLeftClose, PanelLeftOpen, Home } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useProject } from '@/lib/ProjectContext';
+import { useParams, Link } from 'react-router-dom';
 
 export function AppSidebar() {
   const { project } = useProject();
+  const { projectId } = useParams<{ projectId: string }>();
   const [collapsed, setCollapsed] = useState(false);
+  const base = `/projet/${projectId}`;
 
   if (collapsed) {
     return (
@@ -20,7 +23,7 @@ export function AppSidebar() {
 
         <nav className="flex-1 flex flex-col items-center gap-2">
           <NavLink
-            to="/"
+            to={base}
             end
             className="p-2.5 rounded-md text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
             activeClassName="bg-sidebar-accent text-primary"
@@ -29,7 +32,7 @@ export function AppSidebar() {
             <FileText className="w-5 h-5" />
           </NavLink>
           <NavLink
-            to="/manuscrit"
+            to={`${base}/manuscrit`}
             className="p-2.5 rounded-md text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
             activeClassName="bg-sidebar-accent text-primary"
             title="Rédaction"
@@ -39,7 +42,9 @@ export function AppSidebar() {
         </nav>
 
         <div className="mt-auto">
-          <span className="text-[10px] text-muted-foreground font-sans">B</span>
+          <Link to="/" className="p-2 text-muted-foreground hover:text-foreground transition-colors" title="Accueil">
+            <Home className="w-4 h-4" />
+          </Link>
         </div>
       </aside>
     );
@@ -48,15 +53,18 @@ export function AppSidebar() {
   return (
     <aside className="w-64 min-h-screen border-r border-border bg-sidebar flex flex-col flex-shrink-0">
       <div className="p-6 border-b border-border flex items-start justify-between">
-        <div>
-          <p className="text-xs font-sans uppercase tracking-wider text-muted-foreground mb-1">Projet</p>
-          <h2 className="font-serif text-lg font-semibold text-sidebar-foreground leading-tight">
+        <Link to="/" className="group flex-1 min-w-0">
+          <p className="text-xs font-sans uppercase tracking-wider text-muted-foreground mb-1 flex items-center gap-1">
+            <Home className="w-3 h-3" />
+            Projet
+          </p>
+          <h2 className="font-serif text-lg font-semibold text-sidebar-foreground leading-tight group-hover:text-primary transition-colors">
             {project.name}
           </h2>
-        </div>
+        </Link>
         <button
           onClick={() => setCollapsed(true)}
-          className="mt-1 text-muted-foreground hover:text-foreground transition-colors"
+          className="mt-1 text-muted-foreground hover:text-foreground transition-colors flex-shrink-0 ml-2"
           title="Replier le menu"
         >
           <PanelLeftClose className="w-4 h-4" />
@@ -65,7 +73,7 @@ export function AppSidebar() {
 
       <nav className="flex-1 p-4 space-y-2">
         <NavLink
-          to="/"
+          to={base}
           end
           className="flex items-center gap-3 px-4 py-3 rounded-md text-content-sm font-sans text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
           activeClassName="bg-sidebar-accent font-medium text-primary"
@@ -74,7 +82,7 @@ export function AppSidebar() {
           <span>Entretiens</span>
         </NavLink>
         <NavLink
-          to="/manuscrit"
+          to={`${base}/manuscrit`}
           className="flex items-center gap-3 px-4 py-3 rounded-md text-content-sm font-sans text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
           activeClassName="bg-sidebar-accent font-medium text-primary"
         >

@@ -302,6 +302,7 @@ export default function InterviewDetailPage() {
             editingText={editingText}
             setEditingText={setEditingText}
             updatePassage={updatePassage}
+            removePassage={removePassage}
           />
         ) : (
           <SummaryTab
@@ -358,6 +359,7 @@ function TranscriptTab({
   editingText,
   setEditingText,
   updatePassage,
+  removePassage,
 }: any) {
   const [currentTime, setCurrentTime] = useState(0);
   const totalDuration = parseTimestamp(interview.duration);

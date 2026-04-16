@@ -1,20 +1,33 @@
 
 
-## Plan : Répliquer le positionnement intelligent du popup d'étiquettes dans le panneau Manuscrit
+## Plan : Lecteur de passage dans l'onglet Étiquettes
 
-### Problème
+### Contexte
 
-Dans la page Manuscrit > Entretiens & Étiquettes > vue d'un entretien, le popup d'assignation d'étiquettes utilise un positionnement simple (`top + 8px`) sans vérifier l'espace disponible. Si le texte sélectionné est en bas de l'écran, le popup est tronqué — exactement le bug corrigé dans `InterviewDetailPage`.
+Dans **Rédaction > Entretiens & Étiquettes > Étiquettes**, chaque passage a un bouton play (timestamp + icône). L'utilisateur veut que ce bouton ouvre un lecteur, comme dans l'onglet **Entretiens** quand on clique sur un entretien.
 
-### Modifications
+### Problème de design
+
+Les passages listés dans l'onglet Étiquettes proviennent d'entretiens différents. On ne peut pas simplement afficher le transcript complet d'un seul entretien.
+
+### Suggestion retenue
+
+**Réutiliser la Dialog existante** (lignes 669+) qui affiche déjà le transcript complet d'un entretien avec le passage mis en surbrillance. Quand l'utilisateur clique sur le bouton play d'un passage :
+
+1. La Dialog s'ouvre sur l'entretien correspondant
+2. Le passage cliqué est scrollé et mis en surbrillance (fond coloré + ring) — comportement déjà implémenté
+3. L'en-tête de la Dialog affiche clairement "Entretien n°X" avec la date et durée, ce qui lève toute ambiguïté sur la provenance
+
+C'est cohérent car :
+- Le clic sur le texte d'un passage ouvre déjà cette même Dialog (ligne 646)
+- Le design est identique à la vue "Entretiens > Entretien"
+- L'utilisateur sait toujours de quel entretien il s'agit grâce au header
+
+### Modification
 
 **Fichier : `src/pages/ManuscritPage.tsx`**
 
-1. **Ajouter `bottom` au state `selectionInfo`** (lignes 34-40) : passer de `{ top, left }` à `{ top, bottom, left }` pour le `rect`, comme dans `InterviewDetailPage`.
+- **Brancher le bouton play** (lignes 637-643) : ajouter un `onClick` qui appelle `setDialogInterviewId(passage.interviewId)` et `setDialogPassageId(passage.id)` — exactement comme le clic sur le texte du passage (ligne 646).
 
-2. **Mettre à jour `handleTextSelectManuscrit`** (ligne 93-96) : stocker `rect.top`, `rect.bottom` et `rect.left + rect.width / 2` en coordonnées viewport (sans `window.scrollY`).
-
-3. **Appliquer le flip-up au popup** (lignes 484-543) : calculer `popupHeight`, `spaceBelow`, `flipUp` et basculer entre `top` et `bottom` en CSS, ajouter `max-h-[60vh] overflow-y-auto` — logique identique à celle de `InterviewDetailPage` (lignes 546-559).
-
-Aucune autre modification nécessaire.
+C'est une modification d'une seule ligne : ajouter le handler `onClick` sur le `<button>` existant.
 

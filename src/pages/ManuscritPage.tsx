@@ -546,7 +546,8 @@ export default function ManuscritPage() {
                               </button>
                             </div>
                           </div>
-                        )}
+                          );
+                        })()}
                       </div>
                     </div>
                   );

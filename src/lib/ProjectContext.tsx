@@ -235,6 +235,17 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }));
   }, []);
 
+  const removePassage = useCallback((interviewId: string, passageId: string) => {
+    setProject(prev => ({
+      ...prev,
+      interviews: prev.interviews.map(i =>
+        i.id === interviewId
+          ? { ...i, passages: i.passages.filter(p => p.id !== passageId) }
+          : i
+      ),
+    }));
+  }, []);
+
   return (
     <ProjectContext.Provider value={{
       project,
@@ -257,6 +268,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       addTheme,
       addThemeAnnotation,
       removeThemeAnnotation,
+      removePassage,
     }}>
       {children}
     </ProjectContext.Provider>

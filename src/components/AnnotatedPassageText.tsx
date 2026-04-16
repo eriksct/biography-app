@@ -61,17 +61,28 @@ function getBlendedBackground(annotations: ThemeAnnotation[], allThemes: string[
   return `linear-gradient(to right, ${stops.join(', ')})`;
 }
 
-// Build stacked underlines as box-shadow
-function getStackedUnderlines(annotations: ThemeAnnotation[], allThemes: string[]): string {
-  if (annotations.length <= 1) {
-    const color = getUnderlineColor(annotations[0].theme, allThemes);
-    return `inset 0 -2px 0 0 ${color}`;
-  }
-  return annotations.map((a, i) => {
+// Build stacked underlines as background gradients (avoids box-shadow blending)
+function getUnderlineStyles(annotations: ThemeAnnotation[], allThemes: string[]): React.CSSProperties {
+  const lineHeight = 2;
+  const gap = 1;
+  const images: string[] = [];
+  const sizes: string[] = [];
+  const positions: string[] = [];
+
+  annotations.forEach((a, i) => {
     const color = getUnderlineColor(a.theme, allThemes);
-    const offset = 2 + i * 3; // stack underlines 3px apart
-    return `inset 0 -${offset}px 0 0 ${color}`;
-  }).join(', ');
+    const yOffset = i * (lineHeight + gap);
+    images.push(`linear-gradient(${color}, ${color})`);
+    sizes.push(`100% ${lineHeight}px`);
+    positions.push(`0 calc(100% - ${yOffset}px)`);
+  });
+
+  return {
+    backgroundImage: images.join(', '),
+    backgroundSize: sizes.join(', '),
+    backgroundPosition: positions.join(', '),
+    backgroundRepeat: 'no-repeat',
+  };
 }
 
 // Merge overlapping annotations into segments

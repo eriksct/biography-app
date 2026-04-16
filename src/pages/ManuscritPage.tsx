@@ -637,13 +637,19 @@ export default function ManuscritPage() {
                       return (
                         <div
                           key={`${passage.interviewId}-${passage.id}`}
-                          className="p-4 rounded-lg border border-border transition-colors"
+                          className="group/passage p-4 rounded-lg border border-border transition-colors"
                         >
                           <div className="flex items-center gap-2 mb-2">
                             <span className="text-xs font-sans text-muted-foreground">
                               Entretien n°{passage.interviewNumber}
                             </span>
-                            <span className="text-xs font-mono text-muted-foreground">{passage.timestamp}</span>
+                            <button
+                              className="flex items-center gap-1.5 text-xs font-mono text-muted-foreground hover:text-primary transition-colors"
+                              title="Écouter à partir d'ici"
+                            >
+                              {passage.timestamp}
+                              <Play className="w-3 h-3 opacity-0 group-hover/passage:opacity-100 transition-opacity" />
+                            </button>
                           </div>
                           <p
                             onClick={() => { setDialogInterviewId(passage.interviewId); setDialogPassageId(passage.id); }}

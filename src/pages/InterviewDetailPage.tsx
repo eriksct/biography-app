@@ -542,12 +542,18 @@ function TranscriptTab({
           })}
 
           {/* Theme assignment popup */}
-          {selectionInfo && (
+          {selectionInfo && (() => {
+            const popupHeight = (project.allThemes.length + 1) * 36 + 40;
+            const spaceBelow = window.innerHeight - selectionInfo.rect.bottom;
+            const flipUp = spaceBelow < popupHeight && selectionInfo.rect.top > popupHeight;
+            return (
             <div
               data-theme-popup
-              className="fixed z-50 bg-popover border border-border rounded-lg shadow-xl py-2 min-w-[180px]"
+              className="fixed z-50 bg-popover border border-border rounded-lg shadow-xl py-2 min-w-[180px] max-h-[60vh] overflow-y-auto"
               style={{
-                top: selectionInfo.rect.top + 8,
+                ...(flipUp
+                  ? { bottom: window.innerHeight - selectionInfo.rect.top + 8 }
+                  : { top: selectionInfo.rect.bottom + 8 }),
                 left: selectionInfo.rect.left,
                 transform: 'translateX(-50%)',
               }}

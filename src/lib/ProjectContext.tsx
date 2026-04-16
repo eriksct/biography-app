@@ -23,6 +23,7 @@ interface ProjectContextType {
   addTheme: (theme: string) => void;
   addThemeAnnotation: (interviewId: string, passageId: string, start: number, end: number, theme: string) => void;
   removeThemeAnnotation: (interviewId: string, passageId: string, annotationId: string) => void;
+  removePassage: (interviewId: string, passageId: string) => void;
 }
 
 const ProjectContext = createContext<ProjectContextType | null>(null);

@@ -571,7 +571,8 @@ function TranscriptTab({
                 </button>
               ))}
             </div>
-          )}
+            );
+          })()}
         </div>
       </div>
 

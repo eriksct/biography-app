@@ -201,7 +201,7 @@ export default function InterviewDetailPage() {
         {/* Header */}
         <div className="border-b border-border px-8 py-5 flex items-center gap-4 flex-shrink-0">
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate(`/projet/${projectId}`)}
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />

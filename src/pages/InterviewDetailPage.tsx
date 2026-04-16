@@ -589,7 +589,7 @@ function TranscriptTab({
           <div className="flex flex-wrap gap-2">
             {project.allThemes.map((theme: string) => {
               const isActive = activeThemeFilter === theme;
-              const count = interview.passages.filter((p: any) => p.themes.includes(theme)).length;
+              const count = interview.passages.filter((p: any) => p.themeAnnotations.some((a: any) => a.theme === theme)).length;
               return (
                 <button
                   key={theme}

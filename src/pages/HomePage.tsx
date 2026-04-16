@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, MoreVertical, Pencil, Trash2, BookOpen, FileText } from 'lucide-react';
+import { UserMenu } from '@/components/UserMenu';
 import { useApp } from '@/lib/AppContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -61,9 +62,12 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-6 py-16">
-        <header className="mb-12">
-          <p className="text-xs font-sans uppercase tracking-wider text-muted-foreground mb-2">Biograph</p>
-          <h1 className="font-serif text-3xl font-semibold text-foreground">Mes biographies</h1>
+        <header className="mb-12 flex items-start justify-between">
+          <div>
+            <p className="text-xs font-sans uppercase tracking-wider text-muted-foreground mb-2">Biograph</p>
+            <h1 className="font-serif text-3xl font-semibold text-foreground">Mes biographies</h1>
+          </div>
+          <UserMenu />
         </header>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">

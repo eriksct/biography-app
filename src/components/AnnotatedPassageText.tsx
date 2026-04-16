@@ -143,7 +143,7 @@ export function AnnotatedPassageText({ text, annotations, allThemes, onRemoveAnn
           >
             {seg.text}
             {onRemoveAnnotation && seg.annotations.length > 0 && (
-              <span className="pointer-events-none group-hover/ann:pointer-events-auto opacity-0 group-hover/ann:opacity-100 absolute -top-5 left-1/2 -translate-x-1/2 flex gap-1 z-20">
+              <span data-annotation-controls className="pointer-events-none group-hover/ann:pointer-events-auto opacity-0 group-hover/ann:opacity-100 absolute -top-5 left-1/2 -translate-x-1/2 flex gap-1 z-20">
                 {seg.annotations.map(a => (
                   <button
                     key={a.id}

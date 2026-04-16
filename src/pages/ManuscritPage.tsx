@@ -65,11 +65,20 @@ export default function ManuscritPage() {
     const passage = interview?.passages.find(p => p.id === passageId);
     if (!passage) return;
 
+    const isInsideControls = (n: Node): boolean => {
+      let el: Node | null = n;
+      while (el && el !== passageEl) {
+        if (el instanceof HTMLElement && el.hasAttribute('data-annotation-controls')) return true;
+        el = el.parentNode;
+      }
+      return false;
+    };
     const computeOffset = (container: Node, offset: number): number => {
       const walker = document.createTreeWalker(passageEl!, NodeFilter.SHOW_TEXT);
       let charCount = 0;
       let currentNode: Node | null;
       while ((currentNode = walker.nextNode())) {
+        if (isInsideControls(currentNode)) continue;
         if (currentNode === container) return charCount + offset;
         charCount += (currentNode.textContent?.length || 0);
       }
@@ -128,11 +137,20 @@ export default function ManuscritPage() {
     const passage = interview?.passages.find(p => p.id === passageId);
     if (!passage) return;
 
+    const isInsideControls = (n: Node): boolean => {
+      let el: Node | null = n;
+      while (el && el !== passageEl) {
+        if (el instanceof HTMLElement && el.hasAttribute('data-annotation-controls')) return true;
+        el = el.parentNode;
+      }
+      return false;
+    };
     const computeOffset = (container: Node, offset: number): number => {
       const walker = document.createTreeWalker(passageEl!, NodeFilter.SHOW_TEXT);
       let charCount = 0;
       let currentNode: Node | null;
       while ((currentNode = walker.nextNode())) {
+        if (isInsideControls(currentNode)) continue;
         if (currentNode === container) return charCount + offset;
         charCount += (currentNode.textContent?.length || 0);
       }

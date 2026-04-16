@@ -100,7 +100,7 @@ export default function InterviewDetailPage() {
       start: startIdx,
       end: endIdx,
       selectedText: passage.text.slice(startIdx, endIdx),
-      rect: { top: rect.bottom + window.scrollY, left: rect.left + rect.width / 2 },
+      rect: { top: rect.top, bottom: rect.bottom, left: rect.left + rect.width / 2 },
     });
   }, [interview]);
 

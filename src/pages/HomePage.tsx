@@ -65,12 +65,12 @@ export default function HomePage() {
           {projects.map(project => (
             <Card
               key={project.id}
-              className="group relative cursor-pointer hover:shadow-md transition-shadow"
+              className="group relative cursor-pointer hover:shadow-md transition-shadow min-h-[140px]"
               onClick={() => {
                 if (renamingId !== project.id) navigate(`/projet/${project.id}`);
               }}
             >
-              <CardContent className="p-5">
+              <CardContent className="p-6">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
                     {renamingId === project.id ? (
@@ -87,7 +87,7 @@ export default function HomePage() {
                         className="font-serif text-base font-semibold h-8 px-2"
                       />
                     ) : (
-                      <h3 className="font-serif text-base font-semibold text-foreground leading-tight truncate">
+                      <h3 className="font-serif text-lg font-semibold text-foreground leading-tight truncate">
                         {project.name}
                       </h3>
                     )}
@@ -120,7 +120,7 @@ export default function HomePage() {
                   </DropdownMenu>
                 </div>
 
-                <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground font-sans">
+                <div className="flex items-center gap-4 mt-4 text-sm text-muted-foreground font-sans">
                   <span className="flex items-center gap-1">
                     <FileText className="h-3.5 w-3.5" />
                     {project.interviews.length} entretien{project.interviews.length !== 1 ? 's' : ''}
@@ -139,7 +139,7 @@ export default function HomePage() {
             className="cursor-pointer border-dashed hover:border-primary/50 hover:shadow-sm transition-all"
             onClick={handleCreate}
           >
-            <CardContent className="p-5 flex flex-col items-center justify-center text-muted-foreground hover:text-primary transition-colors min-h-[88px]">
+            <CardContent className="p-6 flex flex-col items-center justify-center text-muted-foreground hover:text-primary transition-colors min-h-[140px]">
               <Plus className="h-6 w-6 mb-1" />
               <span className="text-sm font-sans">Nouvelle biographie</span>
             </CardContent>

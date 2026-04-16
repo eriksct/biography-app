@@ -194,22 +194,37 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, []);
 
   const addThemeAnnotation = useCallback((interviewId: string, passageId: string, start: number, end: number, theme: string) => {
-    const annotation: ThemeAnnotation = { id: `ann-${Date.now()}`, start, end, theme };
     setProject(prev => ({
       ...prev,
       interviews: prev.interviews.map(i =>
         i.id === interviewId
           ? {
               ...i,
-              passages: i.passages.map(p =>
-                p.id === passageId
-                  ? {
-                      ...p,
-                      themeAnnotations: [...p.themeAnnotations, annotation],
-                      themes: p.themes.includes(theme) ? p.themes : [...p.themes, theme],
-                    }
-                  : p
-              ),
+              passages: i.passages.map(p => {
+                if (p.id !== passageId) return p;
+                // Find all existing annotations of the same theme that overlap or touch the new range
+                const overlapping = p.themeAnnotations.filter(
+                  a => a.theme === theme && a.start <= end && a.end >= start
+                );
+                const others = p.themeAnnotations.filter(
+                  a => !(a.theme === theme && a.start <= end && a.end >= start)
+                );
+                // Merge into one annotation covering the full range
+                const mergedStart = Math.min(start, ...overlapping.map(a => a.start));
+                const mergedEnd = Math.max(end, ...overlapping.map(a => a.end));
+                const merged: ThemeAnnotation = {
+                  id: overlapping.length > 0 ? overlapping[0].id : `ann-${Date.now()}`,
+                  start: mergedStart,
+                  end: mergedEnd,
+                  theme,
+                };
+                const newAnnotations = [...others, merged];
+                return {
+                  ...p,
+                  themeAnnotations: newAnnotations,
+                  themes: p.themes.includes(theme) ? p.themes : [...p.themes, theme],
+                };
+              }),
             }
           : i
       ),

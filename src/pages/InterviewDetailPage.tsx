@@ -130,7 +130,7 @@ export default function InterviewDetailPage() {
   }
 
   const filteredPassages = activeThemeFilter
-    ? interview.passages.filter(p => p.themes.includes(activeThemeFilter))
+    ? interview.passages.filter(p => p.themeAnnotations.some(a => a.theme === activeThemeFilter))
     : interview.passages;
 
   const dateFormatted = new Date(interview.date).toLocaleDateString('fr-FR', {
@@ -589,7 +589,7 @@ function TranscriptTab({
           <div className="flex flex-wrap gap-2">
             {project.allThemes.map((theme: string) => {
               const isActive = activeThemeFilter === theme;
-              const count = interview.passages.filter((p: any) => p.themes.includes(theme)).length;
+              const count = interview.passages.filter((p: any) => p.themeAnnotations.some((a: any) => a.theme === theme)).length;
               return (
                 <button
                   key={theme}

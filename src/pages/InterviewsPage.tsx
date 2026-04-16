@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { useProject } from '@/lib/ProjectContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Mic, FileText, CheckCircle, Plus, Search, X, Loader2, Pencil } from 'lucide-react';
 import { InterviewStatus, Interview, Passage } from '@/lib/types';
 import { AppLayout } from '@/components/AppLayout';
@@ -161,7 +161,7 @@ export default function InterviewsPage() {
                   <div key={interview.id} className="border border-border rounded-lg overflow-hidden">
                     {/* Interview header */}
                     <button
-                      onClick={() => navigate(`/entretien/${interview.id}`)}
+                      onClick={() => navigate(`entretien/${interview.id}`)}
                       className="w-full text-left bg-card hover:bg-secondary/50 p-4 transition-colors flex items-center justify-between"
                     >
                       <div className="flex items-center gap-3">
@@ -193,7 +193,7 @@ export default function InterviewsPage() {
                           <div
                             key={passage.id}
                             className="px-4 py-3 bg-background hover:bg-secondary/30 transition-colors cursor-pointer"
-                            onClick={() => navigate(`/entretien/${interview.id}`)}
+                            onClick={() => navigate(`entretien/${interview.id}`)}
                           >
                             <div className="flex items-start gap-3">
                               <span className="text-[11px] text-muted-foreground font-mono mt-0.5 shrink-0">
@@ -239,7 +239,7 @@ export default function InterviewsPage() {
               return (
                 <button
                   key={interview.id}
-                  onClick={() => editingId !== interview.id && navigate(`/entretien/${interview.id}`)}
+                  onClick={() => editingId !== interview.id && navigate(`entretien/${interview.id}`)}
                   className="w-full text-left bg-card hover:bg-secondary/50 border border-border rounded-lg p-6 transition-colors group"
                 >
                   <div className="flex items-center justify-between">

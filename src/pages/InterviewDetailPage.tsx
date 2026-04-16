@@ -10,7 +10,7 @@ import { AnnotatedPassageText, getTagColor } from '@/components/AnnotatedPassage
 type Tab = 'transcript' | 'summary';
 
 export default function InterviewDetailPage() {
-  const { id } = useParams<{ id: string }>();
+  const { id, projectId } = useParams<{ id: string; projectId: string }>();
   const navigate = useNavigate();
   const { project, addPersonToInterview, addPlaceDateToInterview, addEventDateToInterview, addHistoricalEventToInterview, addIssueToInterview, updateInterviewNotes, addTheme, addThemeAnnotation, removeThemeAnnotation, updatePassage, updateInterview, removePassage } = useProject();
   const interview = project.interviews.find(i => i.id === id);
@@ -201,7 +201,7 @@ export default function InterviewDetailPage() {
         {/* Header */}
         <div className="border-b border-border px-8 py-5 flex items-center gap-4 flex-shrink-0">
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate(`/projet/${projectId}`)}
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />

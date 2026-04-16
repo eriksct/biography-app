@@ -43,16 +43,12 @@ export function ChapterEditor({ content, onUpdate, placeholder }: ChapterEditorP
     }
   }, [content, editor]);
 
-  const ToolbarButton = useCallback(({ active, onClick, children, title }: { active: boolean; onClick: () => void; children: React.ReactNode; title: string }) => (
+  const ToolbarButton = useCallback(({ active, onAction, children, title }: { active: boolean; onAction: () => void; children: React.ReactNode; title: string }) => (
     <button
       type="button"
       onMouseDown={(e) => {
         e.preventDefault();
-        e.stopPropagation();
-      }}
-      onClick={(e) => {
-        e.preventDefault();
-        onClick();
+        onAction();
       }}
       title={title}
       className={`p-1.5 rounded transition-colors ${
@@ -73,28 +69,28 @@ export function ChapterEditor({ content, onUpdate, placeholder }: ChapterEditorP
       <div className="flex items-center gap-0.5 px-1 py-1.5 border-b border-border mb-6">
         <ToolbarButton
           active={editor.isActive('bold')}
-          onClick={() => editor.chain().focus().toggleBold().run()}
+          onAction={() => editor.chain().focus().toggleBold().run()}
           title="Gras (Ctrl+B)"
         >
           <Bold className="w-4 h-4" />
         </ToolbarButton>
         <ToolbarButton
           active={editor.isActive('italic')}
-          onClick={() => editor.chain().focus().toggleItalic().run()}
+          onAction={() => editor.chain().focus().toggleItalic().run()}
           title="Italique (Ctrl+I)"
         >
           <Italic className="w-4 h-4" />
         </ToolbarButton>
         <ToolbarButton
           active={editor.isActive('underline')}
-          onClick={() => editor.chain().focus().toggleUnderline().run()}
+          onAction={() => editor.chain().focus().toggleUnderline().run()}
           title="Souligné (Ctrl+U)"
         >
           <UnderlineIcon className="w-4 h-4" />
         </ToolbarButton>
         <ToolbarButton
           active={editor.isActive('strike')}
-          onClick={() => editor.chain().focus().toggleStrike().run()}
+          onAction={() => editor.chain().focus().toggleStrike().run()}
           title="Barré (Ctrl+Shift+S)"
         >
           <Strikethrough className="w-4 h-4" />
@@ -104,7 +100,7 @@ export function ChapterEditor({ content, onUpdate, placeholder }: ChapterEditorP
 
         <ToolbarButton
           active={editor.isActive('heading', { level: 2 })}
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+          onAction={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
           title="Titre de paragraphe"
         >
           <span className="font-sans font-medium text-sm">Titre</span>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { BookOpen, FileText, PanelLeftClose, PanelLeftOpen, Home } from 'lucide-react';
+import { UserMenu } from '@/components/UserMenu';
 import { NavLink } from '@/components/NavLink';
 import { useProject } from '@/lib/ProjectContext';
 import { useParams, Link } from 'react-router-dom';
@@ -41,10 +42,11 @@ export function AppSidebar() {
           </NavLink>
         </nav>
 
-        <div className="mt-auto">
+        <div className="mt-auto flex flex-col items-center gap-2">
           <Link to="/" className="p-2 text-muted-foreground hover:text-foreground transition-colors" title="Accueil">
             <Home className="w-4 h-4" />
           </Link>
+          <UserMenu collapsed />
         </div>
       </aside>
     );
@@ -93,7 +95,7 @@ export function AppSidebar() {
       </nav>
 
       <div className="p-4 border-t border-border">
-        <p className="text-xs text-muted-foreground font-sans">Biograph</p>
+        <UserMenu />
       </div>
     </aside>
   );

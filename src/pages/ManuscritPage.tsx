@@ -549,6 +549,7 @@ export default function ManuscritPage() {
                   );
                 })() : (
                   <div className="p-4 space-y-2">
+                    <p className="font-sans text-muted-foreground text-sm font-normal mb-2">Cliquez sur un entretien pour visualiser son contenu</p>
                     {project.interviews.map(interview => (
                       <button
                         key={interview.id}

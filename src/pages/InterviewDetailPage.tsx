@@ -472,7 +472,7 @@ function TranscriptTab({
                         Modifier
                       </DropdownMenuItem>
                       <DropdownMenuItem
-                        onClick={() => { if (window.confirm('Supprimer ce passage ?')) removePassage(interview.id, passage.id); }}
+                        onClick={() => { if (interview && window.confirm('Supprimer ce passage ?')) removePassage(interview.id, passage.id); }}
                         className="text-destructive focus:text-destructive"
                       >
                         <Trash2 className="w-3.5 h-3.5 mr-2" />

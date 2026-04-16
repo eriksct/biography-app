@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useCallback } from 'react';
 import { Project, Interview, Chapter, ManuscriptBlock, Passage, ThemeAnnotation } from './types';
-import { demoProject } from './demoData';
+import { useApp } from './AppContext';
 
 interface ProjectContextType {
   project: Project;
@@ -34,18 +34,23 @@ export const useProject = () => {
   return ctx;
 };
 
-export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [project, setProject] = useState<Project>(demoProject);
+export const ProjectProvider: React.FC<{ projectId: string; children: React.ReactNode }> = ({ projectId, children }) => {
+  const { getProject, updateProject } = useApp();
+  const project = getProject(projectId);
+
+  const update = useCallback((updater: (p: Project) => Project) => {
+    updateProject(projectId, updater);
+  }, [projectId, updateProject]);
 
   const updateInterview = useCallback((id: string, updates: Partial<Interview>) => {
-    setProject(prev => ({
+    update(prev => ({
       ...prev,
       interviews: prev.interviews.map(i => i.id === id ? { ...i, ...updates } : i),
     }));
-  }, []);
+  }, [update]);
 
   const updatePassage = useCallback((interviewId: string, passageId: string, updates: Partial<Passage>) => {
-    setProject(prev => ({
+    update(prev => ({
       ...prev,
       interviews: prev.interviews.map(i =>
         i.id === interviewId
@@ -53,25 +58,25 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
           : i
       ),
     }));
-  }, []);
+  }, [update]);
 
   const addChapter = useCallback((title: string) => {
     const id = `chap-${Date.now()}`;
-    setProject(prev => ({
+    update(prev => ({
       ...prev,
       chapters: [...prev.chapters, { id, title, content: '', blocks: [] }],
     }));
-  }, []);
+  }, [update]);
 
   const updateChapter = useCallback((id: string, updates: Partial<Chapter>) => {
-    setProject(prev => ({
+    update(prev => ({
       ...prev,
       chapters: prev.chapters.map(c => c.id === id ? { ...c, ...updates } : c),
     }));
-  }, []);
+  }, [update]);
 
   const reorderChapter = useCallback((chapterId: string, direction: 'up' | 'down') => {
-    setProject(prev => {
+    update(prev => {
       const idx = prev.chapters.findIndex(c => c.id === chapterId);
       if (idx === -1) return prev;
       const newIdx = direction === 'up' ? idx - 1 : idx + 1;
@@ -80,29 +85,29 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       [chapters[idx], chapters[newIdx]] = [chapters[newIdx], chapters[idx]];
       return { ...prev, chapters };
     });
-  }, []);
+  }, [update]);
 
   const moveChapter = useCallback((fromIndex: number, toIndex: number) => {
-    setProject(prev => {
+    update(prev => {
       if (fromIndex < 0 || toIndex < 0 || fromIndex >= prev.chapters.length || toIndex >= prev.chapters.length || fromIndex === toIndex) return prev;
       const chapters = [...prev.chapters];
       const [moved] = chapters.splice(fromIndex, 1);
       chapters.splice(toIndex, 0, moved);
       return { ...prev, chapters };
     });
-  }, []);
+  }, [update]);
 
   const addBlockToChapter = useCallback((chapterId: string, block: ManuscriptBlock) => {
-    setProject(prev => ({
+    update(prev => ({
       ...prev,
       chapters: prev.chapters.map(c =>
         c.id === chapterId ? { ...c, blocks: [...c.blocks, block] } : c
       ),
     }));
-  }, []);
+  }, [update]);
 
   const updateBlock = useCallback((chapterId: string, blockId: string, updates: Partial<ManuscriptBlock>) => {
-    setProject(prev => ({
+    update(prev => ({
       ...prev,
       chapters: prev.chapters.map(c =>
         c.id === chapterId
@@ -110,10 +115,10 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
           : c
       ),
     }));
-  }, []);
+  }, [update]);
 
   const removeBlock = useCallback((chapterId: string, blockId: string) => {
-    setProject(prev => ({
+    update(prev => ({
       ...prev,
       chapters: prev.chapters.map(c =>
         c.id === chapterId
@@ -121,14 +126,14 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
           : c
       ),
     }));
-  }, []);
+  }, [update]);
 
   const markPassageUsed = useCallback((interviewId: string, passageId: string, chapterId: string) => {
     updatePassage(interviewId, passageId, { usedInChapter: chapterId });
   }, [updatePassage]);
 
   const addPersonToInterview = useCallback((interviewId: string, name: string, relation?: string) => {
-    setProject(prev => ({
+    update(prev => ({
       ...prev,
       interviews: prev.interviews.map(i =>
         i.id === interviewId
@@ -136,10 +141,10 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
           : i
       ),
     }));
-  }, []);
+  }, [update]);
 
   const addPlaceDateToInterview = useCallback((interviewId: string, label: string) => {
-    setProject(prev => ({
+    update(prev => ({
       ...prev,
       interviews: prev.interviews.map(i =>
         i.id === interviewId
@@ -147,10 +152,10 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
           : i
       ),
     }));
-  }, []);
+  }, [update]);
 
   const addEventDateToInterview = useCallback((interviewId: string, label: string) => {
-    setProject(prev => ({
+    update(prev => ({
       ...prev,
       interviews: prev.interviews.map(i =>
         i.id === interviewId
@@ -158,10 +163,10 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
           : i
       ),
     }));
-  }, []);
+  }, [update]);
 
   const addHistoricalEventToInterview = useCallback((interviewId: string, label: string) => {
-    setProject(prev => ({
+    update(prev => ({
       ...prev,
       interviews: prev.interviews.map(i =>
         i.id === interviewId
@@ -169,10 +174,10 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
           : i
       ),
     }));
-  }, []);
+  }, [update]);
 
   const addIssueToInterview = useCallback((interviewId: string, issue: string) => {
-    setProject(prev => ({
+    update(prev => ({
       ...prev,
       interviews: prev.interviews.map(i =>
         i.id === interviewId
@@ -180,21 +185,21 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
           : i
       ),
     }));
-  }, []);
+  }, [update]);
 
   const updateInterviewNotes = useCallback((interviewId: string, notes: string) => {
     updateInterview(interviewId, { notes });
   }, [updateInterview]);
 
   const addTheme = useCallback((theme: string) => {
-    setProject(prev => {
+    update(prev => {
       if (prev.allThemes.includes(theme)) return prev;
       return { ...prev, allThemes: [...prev.allThemes, theme] };
     });
-  }, []);
+  }, [update]);
 
   const addThemeAnnotation = useCallback((interviewId: string, passageId: string, start: number, end: number, theme: string) => {
-    setProject(prev => ({
+    update(prev => ({
       ...prev,
       interviews: prev.interviews.map(i =>
         i.id === interviewId
@@ -202,14 +207,12 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
               ...i,
               passages: i.passages.map(p => {
                 if (p.id !== passageId) return p;
-                // Find all existing annotations of the same theme that overlap or touch the new range
                 const overlapping = p.themeAnnotations.filter(
                   a => a.theme === theme && a.start <= end && a.end >= start
                 );
                 const others = p.themeAnnotations.filter(
                   a => !(a.theme === theme && a.start <= end && a.end >= start)
                 );
-                // Merge into one annotation covering the full range
                 const mergedStart = Math.min(start, ...overlapping.map(a => a.start));
                 const mergedEnd = Math.max(end, ...overlapping.map(a => a.end));
                 const merged: ThemeAnnotation = {
@@ -229,10 +232,10 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
           : i
       ),
     }));
-  }, []);
+  }, [update]);
 
   const removeThemeAnnotation = useCallback((interviewId: string, passageId: string, annotationId: string) => {
-    setProject(prev => ({
+    update(prev => ({
       ...prev,
       interviews: prev.interviews.map(i =>
         i.id === interviewId
@@ -248,10 +251,10 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
           : i
       ),
     }));
-  }, []);
+  }, [update]);
 
   const removePassage = useCallback((interviewId: string, passageId: string) => {
-    setProject(prev => ({
+    update(prev => ({
       ...prev,
       interviews: prev.interviews.map(i =>
         i.id === interviewId
@@ -259,7 +262,15 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
           : i
       ),
     }));
-  }, []);
+  }, [update]);
+
+  if (!project) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <p className="text-muted-foreground font-sans">Projet introuvable.</p>
+      </div>
+    );
+  }
 
   return (
     <ProjectContext.Provider value={{

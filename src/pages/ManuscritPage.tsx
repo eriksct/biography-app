@@ -52,17 +52,37 @@ export default function ManuscritPage() {
       if (node instanceof HTMLElement && node.dataset.passageId) { passageEl = node; break; }
       node = node.parentNode;
     }
+    if (!passageEl) {
+      node = range.endContainer;
+      while (node) {
+        if (node instanceof HTMLElement && node.dataset.passageId) { passageEl = node; break; }
+        node = node.parentNode;
+      }
+    }
     if (!passageEl) return;
     const passageId = passageEl.dataset.passageId!;
     const interview = project.interviews.find(i => i.id === selectedInterviewId);
     const passage = interview?.passages.find(p => p.id === passageId);
     if (!passage) return;
-    const selText = selection.toString();
-    const startIdx = passage.text.indexOf(selText);
-    if (startIdx === -1) return;
+
+    const computeOffset = (container: Node, offset: number): number => {
+      const walker = document.createTreeWalker(passageEl!, NodeFilter.SHOW_TEXT);
+      let charCount = 0;
+      let currentNode: Node | null;
+      while ((currentNode = walker.nextNode())) {
+        if (currentNode === container) return charCount + offset;
+        charCount += (currentNode.textContent?.length || 0);
+      }
+      return charCount + offset;
+    };
+
+    const startIdx = computeOffset(range.startContainer, range.startOffset);
+    const endIdx = computeOffset(range.endContainer, range.endOffset);
+    if (startIdx >= endIdx || startIdx < 0 || endIdx > passage.text.length) return;
+
     const rect = range.getBoundingClientRect();
     setSelectionInfo({
-      passageId, start: startIdx, end: startIdx + selText.length, selectedText: selText,
+      passageId, start: startIdx, end: endIdx, selectedText: passage.text.slice(startIdx, endIdx),
       rect: { top: rect.bottom + window.scrollY, left: rect.left + rect.width / 2 },
     });
   }, [selectedInterviewId, project.interviews]);
@@ -95,17 +115,37 @@ export default function ManuscritPage() {
       if (node instanceof HTMLElement && node.dataset.dialogPassageId) { passageEl = node; break; }
       node = node.parentNode;
     }
+    if (!passageEl) {
+      node = range.endContainer;
+      while (node) {
+        if (node instanceof HTMLElement && node.dataset.dialogPassageId) { passageEl = node; break; }
+        node = node.parentNode;
+      }
+    }
     if (!passageEl) return;
     const passageId = passageEl.dataset.dialogPassageId!;
     const interview = project.interviews.find(i => i.id === dialogInterviewId);
     const passage = interview?.passages.find(p => p.id === passageId);
     if (!passage) return;
-    const selText = selection.toString();
-    const startIdx = passage.text.indexOf(selText);
-    if (startIdx === -1) return;
+
+    const computeOffset = (container: Node, offset: number): number => {
+      const walker = document.createTreeWalker(passageEl!, NodeFilter.SHOW_TEXT);
+      let charCount = 0;
+      let currentNode: Node | null;
+      while ((currentNode = walker.nextNode())) {
+        if (currentNode === container) return charCount + offset;
+        charCount += (currentNode.textContent?.length || 0);
+      }
+      return charCount + offset;
+    };
+
+    const startIdx = computeOffset(range.startContainer, range.startOffset);
+    const endIdx = computeOffset(range.endContainer, range.endOffset);
+    if (startIdx >= endIdx || startIdx < 0 || endIdx > passage.text.length) return;
+
     const rect = range.getBoundingClientRect();
     setDialogSelectionInfo({
-      passageId, start: startIdx, end: startIdx + selText.length, selectedText: selText,
+      passageId, start: startIdx, end: endIdx, selectedText: passage.text.slice(startIdx, endIdx),
       rect: { top: rect.bottom, left: rect.left + rect.width / 2 },
     });
   }, [dialogInterviewId, project.interviews]);

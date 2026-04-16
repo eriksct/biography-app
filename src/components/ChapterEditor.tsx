@@ -30,6 +30,10 @@ export function ChapterEditor({ content, onUpdate, placeholder }: ChapterEditorP
       isInternalUpdate.current = true;
       onUpdate(editor.getHTML());
     },
+    onCreate: ({ editor }) => {
+      // Move cursor to end so toolbar buttons don't appear active on init
+      editor.commands.blur();
+    },
   });
 
   // Sync content from outside (e.g. passage insertion) — skip if the change came from the editor itself

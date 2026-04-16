@@ -61,7 +61,7 @@ export default function HomePage() {
           <h1 className="font-serif text-3xl font-semibold text-foreground">Mes biographies</h1>
         </header>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {projects.map(project => (
             <Card
               key={project.id}
@@ -87,7 +87,7 @@ export default function HomePage() {
                         className="font-serif text-base font-semibold h-8 px-2"
                       />
                     ) : (
-                      <h3 className="font-serif text-lg font-semibold text-foreground leading-tight truncate">
+                      <h3 className="font-serif text-lg font-semibold text-foreground leading-tight">
                         {project.name}
                       </h3>
                     )}

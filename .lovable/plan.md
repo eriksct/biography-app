@@ -1,51 +1,42 @@
-# Panneau droit Rédaction — Onglets "Entretiens" et "Thèmes"
+## Plan : Page d'accueil multi-biographies
 
-## Ce qui change
+### Concept UX
 
-Le panneau droit (w-96) actuellement titré "Passages disponibles" sera restructuré avec **deux onglets** en haut :
+**Page d'accueil** (`/`) : liste des biographies sous forme de cartes. Chaque carte affiche le nom du projet, le nombre d'entretiens et de chapitres. Actions : créer, renommer (inline), supprimer (avec confirmation).
 
-### Onglet "Entretiens"
+**Navigation retour** : dans la sidebar, le nom du projet (déjà affiché en haut) devient un lien cliquable vers `/`. On ajoute une petite icône `ChevronLeft` ou `Home` à côté. En mode replié, l'icône "B" en bas devient un bouton retour accueil.
 
-- Liste des entretiens disponibles (boutons/cards cliquables)
-- Quand un entretien est sélectionné :
-  - Bouton retour pour revenir à la liste
-  - Lecteur audio `<audio controls>` (placeholder — pas d'URL audio réelle dans les données actuelles, mais le player sera prêt)
-  - Transcription complète : tous les passages de l'entretien affichés à la suite, avec timestamps et thèmes
-
-### Onglet "Thèmes"
-
-- Contenu identique à l'actuel : filtres (statut, thème, entretien) + liste de passages filtrés
-
-## Modifications techniques
-
-
-| Fichier                       | Changement                                                                                                                                                                                          |
-| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/pages/ManuscritPage.tsx` | Ajout d'un état `panelTab` (`'entretiens' | 'themes'`), d'un état `selectedInterviewId` pour l'onglet Entretiens. Restructuration du panneau droit avec les deux onglets et leur contenu respectif. |
-
-
-Aucun nouveau fichier, aucune nouvelle dépendance. L'interface `Interview` a déjà toutes les données nécessaires (passages, date, duration). Le champ audio sera préparé mais vide pour l'instant (les interviews n'ont pas encore de `audioUrl`).
-
-## Aperçu
+### Routing
 
 ```text
-┌─ Panneau droit ──────────────┐
-│  [Entretiens]  [Thèmes]     │  ← onglets
-│──────────────────────────────│
-│  (si onglet Entretiens)      │
-│  ← Retour                   │
-│  ▶ ━━━━━━━━━━━ 00:45:00     │  ← audio player
-│                              │
-│  00:03:21                    │
-│  "Texte du passage..."      │
-│  [Enfance] [Famille]        │
-│                              │
-│  00:07:45                    │
-│  "Autre passage..."         │
-│  [Voyage]                   │
-│──────────────────────────────│
-│  (si onglet Thèmes)         │
-│  → filtres + passages        │
-│  (comme actuellement)        │
-└──────────────────────────────┘
+/                    → Page d'accueil (liste des biographies)
+/projet/:projectId   → Entretiens (anciennement /)
+/projet/:projectId/entretien/:id → Détail entretien
+/projet/:projectId/manuscrit     → Rédaction
 ```
+
+### Modifications techniques
+
+1. **Types** (`src/lib/types.ts`) : rien à changer, `Project` existe déjà.
+2. **Nouveau contexte global** (`src/lib/AppContext.tsx`) : gère une liste de `Project[]`, le projet sélectionné, et les actions CRUD (créer, renommer, supprimer, sélectionner). Le `ProjectProvider` existant reste pour le projet courant mais reçoit son `project` depuis `AppContext`.
+3. **Page d'accueil** (`src/pages/HomePage.tsx`) : grille de cartes pour chaque biographie + bouton "Nouvelle biographie". Menu contextuel (trois points) sur chaque carte pour renommer/supprimer. Dialog de confirmation pour la suppression.
+4. **Routing** (`src/App.tsx`) : nouvelle route `/` pour `HomePage`. Les routes existantes passent sous `/projet/:projectId/...`. Le `ProjectProvider` wrappera uniquement les routes projet et chargera le bon projet depuis `AppContext`.
+5. **Sidebar** (`src/components/AppSidebar.tsx`) : le nom du projet en haut devient un `Link` vers `/` avec une icône `Home` ou `ChevronLeft`. En mode replié, même chose avec juste l'icône.
+6. **Données démo** : la biographie existante "Mémoires de Jeanne Moreau" reste comme projet de démo dans la liste initiale.
+
+### Ce que l'utilisateur verra
+
+- Au lancement : une page épurée avec la biographie existante en carte, et un bouton pour en créer une nouvelle.
+- Clic sur une carte → entre dans la biographie (entretiens).
+- Dans la sidebar : le nom du projet est cliquable pour revenir à l'accueil (discret, pas de place supplémentaire).  
+
+
+Il faut respecter le design system existant pour que cela s'intègre bien
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;

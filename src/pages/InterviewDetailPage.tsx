@@ -30,7 +30,7 @@ export default function InterviewDetailPage() {
     start: number;
     end: number;
     selectedText: string;
-    rect: { top: number; left: number };
+    rect: { top: number; bottom: number; left: number };
   } | null>(null);
   const passagesContainerRef = useRef<HTMLDivElement>(null);
 
@@ -100,7 +100,7 @@ export default function InterviewDetailPage() {
       start: startIdx,
       end: endIdx,
       selectedText: passage.text.slice(startIdx, endIdx),
-      rect: { top: rect.bottom + window.scrollY, left: rect.left + rect.width / 2 },
+      rect: { top: rect.top, bottom: rect.bottom, left: rect.left + rect.width / 2 },
     });
   }, [interview]);
 
@@ -542,12 +542,18 @@ function TranscriptTab({
           })}
 
           {/* Theme assignment popup */}
-          {selectionInfo && (
+          {selectionInfo && (() => {
+            const popupHeight = (project.allThemes.length + 1) * 36 + 40;
+            const spaceBelow = window.innerHeight - selectionInfo.rect.bottom;
+            const flipUp = spaceBelow < popupHeight && selectionInfo.rect.top > popupHeight;
+            return (
             <div
               data-theme-popup
-              className="fixed z-50 bg-popover border border-border rounded-lg shadow-xl py-2 min-w-[180px]"
+              className="fixed z-50 bg-popover border border-border rounded-lg shadow-xl py-2 min-w-[180px] max-h-[60vh] overflow-y-auto"
               style={{
-                top: selectionInfo.rect.top + 8,
+                ...(flipUp
+                  ? { bottom: window.innerHeight - selectionInfo.rect.top + 8 }
+                  : { top: selectionInfo.rect.bottom + 8 }),
                 left: selectionInfo.rect.left,
                 transform: 'translateX(-50%)',
               }}
@@ -565,7 +571,8 @@ function TranscriptTab({
                 </button>
               ))}
             </div>
-          )}
+            );
+          })()}
         </div>
       </div>
 

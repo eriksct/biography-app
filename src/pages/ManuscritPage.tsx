@@ -345,13 +345,15 @@ export default function ManuscritPage() {
               <Download className="w-4 h-4" />
               Tout exporter en Word
             </button>
-            <button
-              onClick={() => setShowPassagePanel(!showPassagePanel)}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-sans rounded-md transition-colors bg-primary text-primary-foreground"
-            >
-              <Search className="w-4 h-4" />
-              Entretiens & Étiquettes
-            </button>
+            {!showPassagePanel && (
+              <button
+                onClick={() => setShowPassagePanel(true)}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-sans rounded-md transition-colors bg-primary text-primary-foreground"
+              >
+                <Search className="w-4 h-4" />
+                Entretiens & Étiquettes
+              </button>
+            )}
           </div>
 
           {/* Editor content */}

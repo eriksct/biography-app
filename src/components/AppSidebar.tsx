@@ -55,7 +55,7 @@ export function AppSidebar() {
       <div className="p-6 border-b border-border flex items-center justify-between">
         <Link to="/" className="group flex items-center gap-1 text-xs font-sans uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors">
           <Home className="w-3 h-3" />
-          Biograph
+          Accueil
         </Link>
         <button
           onClick={() => setCollapsed(true)}

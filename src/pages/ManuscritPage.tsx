@@ -207,7 +207,7 @@ export default function ManuscritPage() {
       .map(p => ({ ...p, interviewId: interview.id, interviewNumber: interview.number }))
   ).filter(p => {
 
-    if (passageFilterThemes.length > 0 && !p.themes.some(t => passageFilterThemes.includes(t))) return false;
+    if (passageFilterThemes.length > 0 && !passageFilterThemes.every(t => p.themes.includes(t))) return false;
     if (passageFilterInterviews.length > 0 && !passageFilterInterviews.includes(p.interviewId)) return false;
     return true;
   });

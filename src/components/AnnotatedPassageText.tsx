@@ -135,20 +135,19 @@ export function AnnotatedPassageText({ text, annotations, allThemes, onRemoveAnn
           return <span key={i}>{seg.text}</span>;
         }
 
-        const background = getBlendedBackground(seg.annotations, allThemes);
-        const boxShadow = getStackedUnderlines(seg.annotations, allThemes);
+        const underlineStyles = getUnderlineStyles(seg.annotations, allThemes);
         const isMulti = seg.annotations.length > 1;
-        const paddingBottom = isMulti ? `${seg.annotations.length * 3}px` : '2px';
+        const paddingBottom = isMulti ? `${seg.annotations.length * 3 + 2}px` : '4px';
 
         return (
           <span
             key={i}
             className="rounded px-0.5 relative group/ann inline transition-colors duration-200"
             style={{
-              background,
-              boxShadow,
+              background: getBlendedBackground(seg.annotations, allThemes),
               paddingTop: '2px',
               paddingBottom,
+              ...underlineStyles,
             }}
             title={seg.annotations.map(a => a.theme).join(', ')}
           >

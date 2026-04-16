@@ -343,7 +343,7 @@ export default function ManuscritPage() {
           <div className="border-b border-border px-8 py-4 flex items-center justify-between flex-shrink-0">
             <button className="flex items-center gap-2 px-4 py-2 text-sm font-sans rounded-md hover:opacity-90 transition-opacity text-secondary-foreground bg-secondary">
               <Download className="w-4 h-4" />
-              Télécharger la biographie (Word)
+              Télécharger (Word)
             </button>
             {!showPassagePanel && (
               <button

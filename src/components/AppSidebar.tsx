@@ -52,23 +52,24 @@ export function AppSidebar() {
 
   return (
     <aside className="w-64 min-h-screen border-r border-border bg-sidebar flex flex-col flex-shrink-0">
-      <div className="p-6 border-b border-border flex items-start justify-between">
-        <Link to="/" className="group flex-1 min-w-0">
-          <p className="text-xs font-sans uppercase tracking-wider text-muted-foreground mb-1 flex items-center gap-1">
-            <Home className="w-3 h-3" />
-            Projet
-          </p>
-          <h2 className="font-serif text-lg font-semibold text-sidebar-foreground leading-tight group-hover:text-primary transition-colors">
-            {project.name}
-          </h2>
+      <div className="p-6 border-b border-border flex items-center justify-between">
+        <Link to="/" className="group flex items-center gap-1 text-xs font-sans uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors">
+          <Home className="w-3 h-3" />
+          Biograph
         </Link>
         <button
           onClick={() => setCollapsed(true)}
-          className="mt-1 text-muted-foreground hover:text-foreground transition-colors flex-shrink-0 ml-2"
+          className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0"
           title="Replier le menu"
         >
           <PanelLeftClose className="w-4 h-4" />
         </button>
+      </div>
+
+      <div className="px-6 py-4">
+        <h2 className="font-serif text-lg font-semibold text-sidebar-foreground leading-tight">
+          {project.name}
+        </h2>
       </div>
 
       <nav className="flex-1 p-4 space-y-2">

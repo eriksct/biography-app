@@ -635,6 +635,7 @@ export default function ManuscritPage() {
                               Entretien n°{passage.interviewNumber}
                             </span>
                             <button
+                              onClick={() => { setDialogInterviewId(passage.interviewId); setDialogPassageId(passage.id); }}
                               className="flex items-center gap-1.5 text-xs font-mono text-muted-foreground hover:text-primary transition-colors"
                               title="Écouter à partir d'ici"
                             >

@@ -1,6 +1,7 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
+import Superscript from '@tiptap/extension-superscript';
 import { useEffect, useCallback, useRef } from 'react';
 import { Bold, Italic, Underline as UnderlineIcon, Strikethrough, Heading2 } from 'lucide-react';
 
@@ -19,6 +20,7 @@ export function ChapterEditor({ content, onUpdate, placeholder }: ChapterEditorP
         heading: { levels: [2] },
       }),
       Underline,
+      Superscript,
     ],
     content: content || '<p></p>',
     editorProps: {
@@ -98,6 +100,14 @@ export function ChapterEditor({ content, onUpdate, placeholder }: ChapterEditorP
           title="Barré (Ctrl+Shift+S)"
         >
           <span className="font-sans line-through text-sm">B</span>
+        </ToolbarButton>
+
+        <ToolbarButton
+          active={editor.isFocused && editor.isActive('superscript')}
+          onAction={() => editor.chain().focus().toggleSuperscript().run()}
+          title="Exposant (Ctrl+.)"
+        >
+          <span className="font-sans text-sm">x<sup className="text-[10px]">2</sup></span>
         </ToolbarButton>
 
         <div className="w-px h-5 bg-border mx-1" />

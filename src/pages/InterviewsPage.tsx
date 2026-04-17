@@ -230,9 +230,6 @@ export default function InterviewsPage() {
             <div className="w-20 h-20 rounded-full bg-secondary/60 flex items-center justify-center mb-6">
               <Mic className="w-9 h-9 text-primary" strokeWidth={1.5} />
             </div>
-            <h2 className="font-serif text-2xl font-semibold text-foreground mb-3">
-              Commencez votre première histoire
-            </h2>
             <p className="font-sans text-muted-foreground max-w-sm mb-8 leading-relaxed">
               Enregistrez un entretien pour capturer un récit de vie. Les passages, étiquettes et chapitres apparaîtront ici au fil de vos sessions.
             </p>

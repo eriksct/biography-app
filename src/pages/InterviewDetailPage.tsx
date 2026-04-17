@@ -533,7 +533,7 @@ function TranscriptTab({
                       />
                     </p>
                   )}
-                  {passage.themeAnnotations && passage.themeAnnotations.length > 0 && (
+                  {!isMobile && passage.themeAnnotations && passage.themeAnnotations.length > 0 && (
                     <div className="flex flex-col gap-1 flex-shrink-0 pt-0.5">
                       {[...new Set(passage.themeAnnotations.map((a: any) => a.theme))].map((theme: string) => (
                         <span
@@ -550,8 +550,8 @@ function TranscriptTab({
             );
           })}
 
-          {/* Theme assignment popup */}
-          {selectionInfo && (() => {
+          {/* Theme assignment popup — desktop only */}
+          {!isMobile && selectionInfo && (() => {
             const popupHeight = (project.allThemes.length + 1) * 36 + 40;
             const spaceBelow = window.innerHeight - selectionInfo.rect.bottom;
             const flipUp = spaceBelow < popupHeight && selectionInfo.rect.top > popupHeight;
@@ -602,7 +602,8 @@ function TranscriptTab({
         </div>
       </div>
 
-      {/* Right: Themes, filters, notes */}
+      {/* Right: Themes, filters, notes — hidden on mobile */}
+      {!isMobile && (
       <div className="w-[40%] overflow-y-auto px-6 py-6 space-y-8">
         {/* Étiquettes (filters) */}
         <section>

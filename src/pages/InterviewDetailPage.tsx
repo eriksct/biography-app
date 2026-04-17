@@ -6,12 +6,14 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Button } from '@/components/ui/button';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { AnnotatedPassageText, getTagColor } from '@/components/AnnotatedPassageText';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 type Tab = 'transcript' | 'summary';
 
 export default function InterviewDetailPage() {
   const { id, projectId } = useParams<{ id: string; projectId: string }>();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const { project, addPersonToInterview, addPlaceDateToInterview, addEventDateToInterview, addHistoricalEventToInterview, addIssueToInterview, updateInterviewNotes, addTheme, addThemeAnnotation, removeThemeAnnotation, updatePassage, updateInterview, removePassage } = useProject();
   const interview = project.interviews.find(i => i.id === id);
   const [activeTab, setActiveTab] = useState<Tab>('transcript');

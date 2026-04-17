@@ -34,10 +34,9 @@ export default function HomePage() {
 
   const handleCreate = () => {
     const name = createName.trim() || 'Nouvelle biographie';
-    const id = createProject(name);
+    createProject(name);
     setCreateOpen(false);
     setCreateName('');
-    navigate(`/projet/${id}`);
   };
 
   const startRename = (id: string, currentName: string) => {

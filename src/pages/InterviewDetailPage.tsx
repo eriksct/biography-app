@@ -670,6 +670,7 @@ function TranscriptTab({
           />
         </section>
       </div>
+      )}
     </div>
   );
 }

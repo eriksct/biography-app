@@ -5,7 +5,22 @@ import { Plus, FileText, Download, X, Search, PanelLeftOpen, GripVertical, Arrow
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { getTagColor, AnnotatedPassageText } from '@/components/AnnotatedPassageText';
 import { ChapterEditor, extractHeadings } from '@/components/ChapterEditor';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { Navigate, useParams } from 'react-router-dom';
+
 export default function ManuscritPage() {
+  const isMobile = useIsMobile();
+  const { projectId } = useParams<{ projectId: string }>();
+
+  // On mobile, hide manuscrit entirely — redirect to interviews list
+  if (isMobile) {
+    return <Navigate to={`/projet/${projectId}`} replace />;
+  }
+
+  return <ManuscritPageInner />;
+}
+
+function ManuscritPageInner() {
   const { project, addChapter, updateChapter, reorderChapter, moveChapter, markPassageUsed, addTheme, addThemeAnnotation, removeThemeAnnotation } = useProject();
   const [activeChapterId, setActiveChapterId] = useState<string>(project.chapters[0]?.id || '');
   const [showPassagePanel, setShowPassagePanel] = useState(false);

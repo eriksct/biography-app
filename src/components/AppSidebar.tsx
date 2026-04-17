@@ -4,12 +4,33 @@ import { UserMenu } from '@/components/UserMenu';
 import { NavLink } from '@/components/NavLink';
 import { useProject } from '@/lib/ProjectContext';
 import { useParams, Link } from 'react-router-dom';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export function AppSidebar() {
   const { project } = useProject();
   const { projectId } = useParams<{ projectId: string }>();
   const [collapsed, setCollapsed] = useState(false);
+  const isMobile = useIsMobile();
   const base = `/projet/${projectId}`;
+
+  // Mobile: compact top bar (no Rédaction, no Entretiens link — default view)
+  if (isMobile) {
+    return (
+      <header className="w-full border-b border-border bg-sidebar flex items-center justify-between px-4 py-3 flex-shrink-0">
+        <Link
+          to="/"
+          className="flex items-center gap-1.5 text-xs font-sans uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors"
+          title="Accueil"
+        >
+          <Home className="w-4 h-4" />
+        </Link>
+        <h2 className="font-serif text-base font-semibold text-sidebar-foreground truncate mx-3 flex-1 text-center">
+          {project.name}
+        </h2>
+        <UserMenu collapsed />
+      </header>
+    );
+  }
 
   if (collapsed) {
     return (

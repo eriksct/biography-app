@@ -201,7 +201,7 @@ export default function InterviewDetailPage() {
     <AppLayout>
       <div className="h-screen flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="border-b border-border px-8 py-5 flex items-center gap-4 flex-shrink-0">
+        <div className="border-b border-border px-4 md:px-8 py-4 md:py-5 flex items-center gap-3 md:gap-4 flex-shrink-0">
           <button
             onClick={() => navigate(`/projet/${projectId}`)}
             className="text-muted-foreground hover:text-foreground transition-colors"
@@ -226,7 +226,7 @@ export default function InterviewDetailPage() {
               />
             ) : (
               <h1
-                className="text-2xl font-serif font-semibold group cursor-text flex items-center gap-2"
+                className="text-xl md:text-2xl font-serif font-semibold group cursor-text flex items-center gap-2"
                 onClick={() => {
                   setTitleValue(interview.title || `Entretien n°${interview.number}`);
                   setEditingTitle(true);
@@ -243,9 +243,9 @@ export default function InterviewDetailPage() {
           {/* Download menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="secondary" size="sm" className="gap-2 shrink-0">
+              <Button variant="secondary" size={isMobile ? 'icon' : 'sm'} className={isMobile ? 'shrink-0 h-9 w-9' : 'gap-2 shrink-0'}>
                 <Download className="w-4 h-4" />
-                Télécharger
+                {!isMobile && 'Télécharger'}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="min-w-[180px]">
@@ -260,6 +260,34 @@ export default function InterviewDetailPage() {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+
+        {/* Tabs — hidden on mobile (transcript only) */}
+        {!isMobile && (
+        <div className="border-b border-border px-8 flex-shrink-0">
+          <div className="flex gap-8">
+            <button
+              onClick={() => setActiveTab('transcript')}
+              className={`py-3 font-sans text-sm font-medium border-b-2 transition-colors ${
+                activeTab === 'transcript'
+                  ? 'border-foreground text-foreground'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Transcript
+            </button>
+            <button
+              onClick={() => setActiveTab('summary')}
+              className={`py-3 font-sans text-sm font-medium border-b-2 transition-colors ${
+                activeTab === 'summary'
+                  ? 'border-foreground text-foreground'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Analyse
+            </button>
+          </div>
+        </div>
+        )}
 
         {/* Tabs */}
         <div className="border-b border-border px-8 flex-shrink-0">

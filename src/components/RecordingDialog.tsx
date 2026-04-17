@@ -257,12 +257,12 @@ export function RecordingDialog({ open, onOpenChange, onRecordingComplete }: Rec
                     className="hidden"
                     onChange={handleFileUpload}
                   />
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => fileInputRef.current?.click()}
-                      className="gap-2"
+                      className="gap-2 w-full sm:w-auto"
                     >
                       <Upload className="w-4 h-4" />
                       Fichier audio
@@ -278,7 +278,7 @@ export function RecordingDialog({ open, onOpenChange, onRecordingComplete }: Rec
                       variant="outline"
                       size="sm"
                       onClick={() => textFileInputRef.current?.click()}
-                      className="gap-2"
+                      className="gap-2 w-full sm:w-auto"
                     >
                       <FileText className="w-4 h-4" />
                       Fichier texte

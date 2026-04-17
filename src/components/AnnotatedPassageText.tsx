@@ -1,5 +1,6 @@
 import { ThemeAnnotation } from '@/lib/types';
 import { X } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 // HSL colors for inline styles — allows layering & blending
 const PALETTE_HSL = [
@@ -126,6 +127,13 @@ interface Props {
 }
 
 export function AnnotatedPassageText({ text, annotations, allThemes, onRemoveAnnotation }: Props) {
+  const isMobile = useIsMobile();
+
+  // On mobile: render as plain text — no highlighting, no annotation interactions
+  if (isMobile) {
+    return <span>{text}</span>;
+  }
+
   const segments = buildSegments(text, annotations);
 
   return (

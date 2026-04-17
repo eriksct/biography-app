@@ -7,6 +7,7 @@ import { AppLayout } from '@/components/AppLayout';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { RecordingDialog } from '@/components/RecordingDialog';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const statusConfig: Record<InterviewStatus, { icon: React.ElementType; label: string; className: string }> = {
   recording: { icon: Mic, label: 'En cours', className: 'text-primary' },
@@ -39,6 +40,7 @@ function highlightText(text: string, query: string) {
 export default function InterviewsPage() {
   const { project, updateInterview } = useProject();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [query, setQuery] = useState('');
   const [recordingOpen, setRecordingOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -110,10 +112,10 @@ export default function InterviewsPage() {
 
   return (
     <AppLayout>
-      <div className="max-w-3xl mx-auto px-8 py-10">
+      <div className="max-w-3xl mx-auto px-4 py-6 md:px-8 md:py-10">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-serif font-semibold">Mes entretiens</h1>
-          {sortedInterviews.length > 0 && (
+          <h1 className="text-2xl md:text-3xl font-serif font-semibold">Mes entretiens</h1>
+          {sortedInterviews.length > 0 && !isMobile && (
             <Button onClick={() => setRecordingOpen(true)}>
               <Plus className="w-4 h-4" />
               Nouvel entretien
@@ -316,6 +318,17 @@ export default function InterviewsPage() {
           </div>
         )}
       </div>
+
+      {/* Mobile FAB */}
+      {isMobile && sortedInterviews.length > 0 && (
+        <button
+          onClick={() => setRecordingOpen(true)}
+          className="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:bg-primary/90 transition-colors"
+          aria-label="Nouvel entretien"
+        >
+          <Plus className="w-6 h-6" />
+        </button>
+      )}
     </AppLayout>
   );
 }

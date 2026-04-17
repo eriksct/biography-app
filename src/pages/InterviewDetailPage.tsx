@@ -6,12 +6,14 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Button } from '@/components/ui/button';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { AnnotatedPassageText, getTagColor } from '@/components/AnnotatedPassageText';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 type Tab = 'transcript' | 'summary';
 
 export default function InterviewDetailPage() {
   const { id, projectId } = useParams<{ id: string; projectId: string }>();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const { project, addPersonToInterview, addPlaceDateToInterview, addEventDateToInterview, addHistoricalEventToInterview, addIssueToInterview, updateInterviewNotes, addTheme, addThemeAnnotation, removeThemeAnnotation, updatePassage, updateInterview, removePassage } = useProject();
   const interview = project.interviews.find(i => i.id === id);
   const [activeTab, setActiveTab] = useState<Tab>('transcript');
@@ -199,7 +201,7 @@ export default function InterviewDetailPage() {
     <AppLayout>
       <div className="h-screen flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="border-b border-border px-8 py-5 flex items-center gap-4 flex-shrink-0">
+        <div className="border-b border-border px-4 md:px-8 py-4 md:py-5 flex items-center gap-3 md:gap-4 flex-shrink-0">
           <button
             onClick={() => navigate(`/projet/${projectId}`)}
             className="text-muted-foreground hover:text-foreground transition-colors"
@@ -224,7 +226,7 @@ export default function InterviewDetailPage() {
               />
             ) : (
               <h1
-                className="text-2xl font-serif font-semibold group cursor-text flex items-center gap-2"
+                className="text-xl md:text-2xl font-serif font-semibold group cursor-text flex items-center gap-2"
                 onClick={() => {
                   setTitleValue(interview.title || `Entretien n°${interview.number}`);
                   setEditingTitle(true);
@@ -241,9 +243,9 @@ export default function InterviewDetailPage() {
           {/* Download menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="secondary" size="sm" className="gap-2 shrink-0">
+              <Button variant="secondary" size={isMobile ? 'icon' : 'sm'} className={isMobile ? 'shrink-0 h-9 w-9' : 'gap-2 shrink-0'}>
                 <Download className="w-4 h-4" />
-                Télécharger
+                {!isMobile && 'Télécharger'}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="min-w-[180px]">
@@ -259,7 +261,8 @@ export default function InterviewDetailPage() {
           </DropdownMenu>
         </div>
 
-        {/* Tabs */}
+        {/* Tabs — hidden on mobile (transcript only) */}
+        {!isMobile && (
         <div className="border-b border-border px-8 flex-shrink-0">
           <div className="flex gap-8">
             <button
@@ -284,9 +287,10 @@ export default function InterviewDetailPage() {
             </button>
           </div>
         </div>
+        )}
 
         {/* Tab content */}
-        {activeTab === 'transcript' ? (
+        {(isMobile || activeTab === 'transcript') ? (
           <TranscriptTab
             interview={interview}
             project={project}
@@ -300,7 +304,6 @@ export default function InterviewDetailPage() {
             handleAddTheme={handleAddTheme}
             selectionInfo={selectionInfo}
             handleAssignThemeToSelection={handleAssignThemeToSelection}
-            
             removeThemeAnnotation={removeThemeAnnotation}
             updateInterviewNotes={updateInterviewNotes}
             passagesContainerRef={passagesContainerRef}
@@ -310,6 +313,7 @@ export default function InterviewDetailPage() {
             setEditingText={setEditingText}
             updatePassage={updatePassage}
             removePassage={removePassage}
+            isMobile={isMobile}
           />
         ) : (
           <SummaryTab
@@ -367,6 +371,7 @@ function TranscriptTab({
   setEditingText,
   updatePassage,
   removePassage,
+  isMobile,
 }: any) {
   const [currentTime, setCurrentTime] = useState(0);
   const totalDuration = parseTimestamp(interview.duration);
@@ -391,12 +396,12 @@ function TranscriptTab({
   return (
     <div className="flex-1 flex overflow-hidden">
       {/* Left: Transcript */}
-      <div className="w-[60%] border-r border-border flex flex-col overflow-hidden">
+      <div className={`${isMobile ? 'w-full' : 'w-[60%] border-r border-border'} flex flex-col overflow-hidden`}>
         {/* Audio player */}
-        <div className="border-b border-border px-8 py-4 flex items-center gap-4 flex-shrink-0 bg-card">
+        <div className="border-b border-border px-4 md:px-8 py-3 md:py-4 flex items-center gap-3 md:gap-4 flex-shrink-0 bg-card">
           <button
             onClick={() => setIsPlaying(!isPlaying)}
-            className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:opacity-90 transition-opacity"
+            className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:opacity-90 transition-opacity flex-shrink-0"
           >
             {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
           </button>
@@ -411,20 +416,24 @@ function TranscriptTab({
             <div className="h-full bg-primary rounded-full transition-all duration-150" style={{ width: `${progress}%` }} />
           </div>
           <span className="text-xs font-sans text-muted-foreground whitespace-nowrap">{formatSeconds(currentTime)} / {interview.duration}</span>
-          <select className="text-xs font-sans text-muted-foreground bg-transparent border border-border rounded px-2 py-1">
-            <option>1x</option>
-            <option>0.75x</option>
-            <option>1.25x</option>
-            <option>1.5x</option>
-          </select>
+          {!isMobile && (
+            <select className="text-xs font-sans text-muted-foreground bg-transparent border border-border rounded px-2 py-1">
+              <option>1x</option>
+              <option>0.75x</option>
+              <option>1.25x</option>
+              <option>1.5x</option>
+            </select>
+          )}
         </div>
 
-        {/* Hint */}
-        <div className="px-8 py-2 bg-muted/50 border-b border-border">
-          <p className="text-xs font-sans text-muted-foreground italic">
-            Sélectionnez du texte pour y associer une étiquette
-          </p>
-        </div>
+        {/* Hint — desktop only (no annotation interactions on mobile) */}
+        {!isMobile && (
+          <div className="px-8 py-2 bg-muted/50 border-b border-border">
+            <p className="text-xs font-sans text-muted-foreground italic">
+              Sélectionnez du texte pour y associer une étiquette
+            </p>
+          </div>
+        )}
 
         {/* Passages */}
         <div ref={passagesContainerRef} className="flex-1 overflow-y-auto px-8 py-6 space-y-6 relative">
@@ -524,7 +533,7 @@ function TranscriptTab({
                       />
                     </p>
                   )}
-                  {passage.themeAnnotations && passage.themeAnnotations.length > 0 && (
+                  {!isMobile && passage.themeAnnotations && passage.themeAnnotations.length > 0 && (
                     <div className="flex flex-col gap-1 flex-shrink-0 pt-0.5">
                       {[...new Set(passage.themeAnnotations.map((a: any) => a.theme))].map((theme: string) => (
                         <span
@@ -541,8 +550,8 @@ function TranscriptTab({
             );
           })}
 
-          {/* Theme assignment popup */}
-          {selectionInfo && (() => {
+          {/* Theme assignment popup — desktop only */}
+          {!isMobile && selectionInfo && (() => {
             const popupHeight = (project.allThemes.length + 1) * 36 + 40;
             const spaceBelow = window.innerHeight - selectionInfo.rect.bottom;
             const flipUp = spaceBelow < popupHeight && selectionInfo.rect.top > popupHeight;
@@ -593,7 +602,8 @@ function TranscriptTab({
         </div>
       </div>
 
-      {/* Right: Themes, filters, notes */}
+      {/* Right: Themes, filters, notes — hidden on mobile */}
+      {!isMobile && (
       <div className="w-[40%] overflow-y-auto px-6 py-6 space-y-8">
         {/* Étiquettes (filters) */}
         <section>
@@ -660,6 +670,7 @@ function TranscriptTab({
           />
         </section>
       </div>
+      )}
     </div>
   );
 }

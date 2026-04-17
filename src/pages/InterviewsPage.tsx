@@ -113,10 +113,12 @@ export default function InterviewsPage() {
       <div className="max-w-3xl mx-auto px-8 py-10">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-serif font-semibold">Mes entretiens</h1>
-          <Button onClick={() => setRecordingOpen(true)}>
-            <Plus className="w-4 h-4" />
-            Nouvel entretien
-          </Button>
+          {sortedInterviews.length > 0 && (
+            <Button onClick={() => setRecordingOpen(true)}>
+              <Plus className="w-4 h-4" />
+              Nouvel entretien
+            </Button>
+          )}
         </div>
 
         <RecordingDialog

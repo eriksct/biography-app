@@ -289,34 +289,8 @@ export default function InterviewDetailPage() {
         </div>
         )}
 
-        {/* Tabs */}
-        <div className="border-b border-border px-8 flex-shrink-0">
-          <div className="flex gap-8">
-            <button
-              onClick={() => setActiveTab('transcript')}
-              className={`py-3 font-sans text-sm font-medium border-b-2 transition-colors ${
-                activeTab === 'transcript'
-                  ? 'border-foreground text-foreground'
-                  : 'border-transparent text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Transcript
-            </button>
-            <button
-              onClick={() => setActiveTab('summary')}
-              className={`py-3 font-sans text-sm font-medium border-b-2 transition-colors ${
-                activeTab === 'summary'
-                  ? 'border-foreground text-foreground'
-                  : 'border-transparent text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Analyse
-            </button>
-          </div>
-        </div>
-
         {/* Tab content */}
-        {activeTab === 'transcript' ? (
+        {(isMobile || activeTab === 'transcript') ? (
           <TranscriptTab
             interview={interview}
             project={project}
@@ -330,7 +304,6 @@ export default function InterviewDetailPage() {
             handleAddTheme={handleAddTheme}
             selectionInfo={selectionInfo}
             handleAssignThemeToSelection={handleAssignThemeToSelection}
-            
             removeThemeAnnotation={removeThemeAnnotation}
             updateInterviewNotes={updateInterviewNotes}
             passagesContainerRef={passagesContainerRef}
@@ -340,6 +313,7 @@ export default function InterviewDetailPage() {
             setEditingText={setEditingText}
             updatePassage={updatePassage}
             removePassage={removePassage}
+            isMobile={isMobile}
           />
         ) : (
           <SummaryTab

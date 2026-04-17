@@ -371,6 +371,7 @@ function TranscriptTab({
   setEditingText,
   updatePassage,
   removePassage,
+  isMobile,
 }: any) {
   const [currentTime, setCurrentTime] = useState(0);
   const totalDuration = parseTimestamp(interview.duration);
@@ -395,12 +396,12 @@ function TranscriptTab({
   return (
     <div className="flex-1 flex overflow-hidden">
       {/* Left: Transcript */}
-      <div className="w-[60%] border-r border-border flex flex-col overflow-hidden">
+      <div className={`${isMobile ? 'w-full' : 'w-[60%] border-r border-border'} flex flex-col overflow-hidden`}>
         {/* Audio player */}
-        <div className="border-b border-border px-8 py-4 flex items-center gap-4 flex-shrink-0 bg-card">
+        <div className="border-b border-border px-4 md:px-8 py-3 md:py-4 flex items-center gap-3 md:gap-4 flex-shrink-0 bg-card">
           <button
             onClick={() => setIsPlaying(!isPlaying)}
-            className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:opacity-90 transition-opacity"
+            className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:opacity-90 transition-opacity flex-shrink-0"
           >
             {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
           </button>
@@ -415,20 +416,24 @@ function TranscriptTab({
             <div className="h-full bg-primary rounded-full transition-all duration-150" style={{ width: `${progress}%` }} />
           </div>
           <span className="text-xs font-sans text-muted-foreground whitespace-nowrap">{formatSeconds(currentTime)} / {interview.duration}</span>
-          <select className="text-xs font-sans text-muted-foreground bg-transparent border border-border rounded px-2 py-1">
-            <option>1x</option>
-            <option>0.75x</option>
-            <option>1.25x</option>
-            <option>1.5x</option>
-          </select>
+          {!isMobile && (
+            <select className="text-xs font-sans text-muted-foreground bg-transparent border border-border rounded px-2 py-1">
+              <option>1x</option>
+              <option>0.75x</option>
+              <option>1.25x</option>
+              <option>1.5x</option>
+            </select>
+          )}
         </div>
 
-        {/* Hint */}
-        <div className="px-8 py-2 bg-muted/50 border-b border-border">
-          <p className="text-xs font-sans text-muted-foreground italic">
-            Sélectionnez du texte pour y associer une étiquette
-          </p>
-        </div>
+        {/* Hint — desktop only (no annotation interactions on mobile) */}
+        {!isMobile && (
+          <div className="px-8 py-2 bg-muted/50 border-b border-border">
+            <p className="text-xs font-sans text-muted-foreground italic">
+              Sélectionnez du texte pour y associer une étiquette
+            </p>
+          </div>
+        )}
 
         {/* Passages */}
         <div ref={passagesContainerRef} className="flex-1 overflow-y-auto px-8 py-6 space-y-6 relative">

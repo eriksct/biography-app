@@ -55,9 +55,9 @@ export function AppSidebar() {
   return (
     <aside className="w-64 min-h-screen border-r border-border bg-sidebar flex flex-col flex-shrink-0">
       <div className="p-6 border-b border-border flex items-center justify-between">
-        <Link to="/" className="group flex items-center gap-1 text-xs font-sans uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors">
+        <Link to="/" className="group flex items-center gap-1 text-xs font-sans uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors mx-0">
           <Home className="w-[15px] h-[20px]" />
-          Accueil
+          &nbsp;ACCUEIL
         </Link>
         <button
           onClick={() => setCollapsed(true)}

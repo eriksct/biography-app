@@ -1,33 +1,70 @@
 
 
-## Plan : Lecteur de passage dans l'onglet Étiquettes
+## Plan : version mobile (mise à jour)
 
-### Contexte
+### Périmètre mobile (`<768px`)
+L'utilisateur peut :
+- Voir et choisir une biographie (HomePage)
+- Voir la liste des entretiens d'une biographie
+- Ouvrir un entretien : **transcript + lecteur audio uniquement**
+- Lancer un nouvel enregistrement / uploader un fichier
 
-Dans **Rédaction > Entretiens & Étiquettes > Étiquettes**, chaque passage a un bouton play (timestamp + icône). L'utilisateur veut que ce bouton ouvre un lecteur, comme dans l'onglet **Entretiens** quand on clique sur un entretien.
+On masque entièrement :
+- La partie **Rédaction** (manuscrit / chapitres)
+- Tout ce qui touche aux **étiquettes** (annotations, panneau notes, onglet Analyse qui agrège les étiquettes)
 
-### Problème de design
+Sur ordi/tablette (≥768px), rien ne change.
 
-Les passages listés dans l'onglet Étiquettes proviennent d'entretiens différents. On ne peut pas simplement afficher le transcript complet d'un seul entretien.
+### Détection
+Hook existant `useIsMobile()` (breakpoint 768px).
 
-### Suggestion retenue
+### Changements par fichier
 
-**Réutiliser la Dialog existante** (lignes 669+) qui affiche déjà le transcript complet d'un entretien avec le passage mis en surbrillance. Quand l'utilisateur clique sur le bouton play d'un passage :
+**1. `src/components/AppSidebar.tsx`**
+- Sur mobile : remplacer la sidebar par une **barre supérieure compacte** (titre du projet + lien Accueil + UserMenu).
+- Aucun lien "Rédaction". Pas de lien "Entretiens" (vue par défaut).
 
-1. La Dialog s'ouvre sur l'entretien correspondant
-2. Le passage cliqué est scrollé et mis en surbrillance (fond coloré + ring) — comportement déjà implémenté
-3. L'en-tête de la Dialog affiche clairement "Entretien n°X" avec la date et durée, ce qui lève toute ambiguïté sur la provenance
+**2. `src/components/AppLayout.tsx`**
+- Sur mobile : `flex-col` avec topbar au-dessus du `<main>`.
 
-C'est cohérent car :
-- Le clic sur le texte d'un passage ouvre déjà cette même Dialog (ligne 646)
-- Le design est identique à la vue "Entretiens > Entretien"
-- L'utilisateur sait toujours de quel entretien il s'agit grâce au header
+**3. `src/App.tsx`**
+- Sur mobile, la route `/projet/:projectId/manuscrit` redirige vers `/projet/:projectId`.
 
-### Modification
+**4. `src/pages/HomePage.tsx`**
+- Padding réduit (`px-4 py-8`), header plus serré. Grille déjà responsive.
 
-**Fichier : `src/pages/ManuscritPage.tsx`**
+**5. `src/pages/InterviewsPage.tsx`**
+- Padding réduit (`px-4 py-6`).
+- Bouton "Nouvel entretien" → **FAB rond** en bas à droite sur mobile.
+- Cartes simplifiées (numéro plus petit, layout vertical).
 
-- **Brancher le bouton play** (lignes 637-643) : ajouter un `onClick` qui appelle `setDialogInterviewId(passage.interviewId)` et `setDialogPassageId(passage.id)` — exactement comme le clic sur le texte du passage (ligne 646).
+**6. `src/pages/InterviewDetailPage.tsx`** — page la plus impactée
+- Sur mobile : afficher **uniquement le transcript** + le lecteur audio.
+  - Pas d'onglets "Analyse" / "Étiquettes & notes".
+  - Pas de panneau droit étiquettes/notes.
+  - Pas de surlignage cliquable d'annotations dans le transcript (texte brut lisible).
+- Header : padding réduit, bouton "Télécharger" en icône seule.
+- Lecteur audio : sélecteur de vitesse masqué.
 
-C'est une modification d'une seule ligne : ajouter le handler `onClick` sur le `<button>` existant.
+**7. `src/components/AnnotatedPassageText.tsx`**
+- Sur mobile, rendu en texte simple (sans surbrillance d'étiquettes ni interactions d'annotation).
+
+**8. `src/components/RecordingDialog.tsx`**
+- Vérifier `flex-col sm:flex-row` sur les boutons "Fichier audio" / "Fichier texte" pour très petits écrans.
+
+### Layout mobile vs desktop
+```text
+DESKTOP                          MOBILE
+┌──────┬──────────────┐          ┌──────────────────┐
+│ Side │   Contenu    │          │ Topbar (projet)  │
+│ bar  │ (transcript  │          ├──────────────────┤
+│      │  + étiquettes│          │   Transcript     │
+│ Réd. │  + analyse)  │          │   + lecteur      │
+└──────┴──────────────┘          └──────────────────┘
+```
+
+### Inchangé
+- Logique métier (contextes, données)
+- UX desktop / tablette (≥768px)
+- Routes existantes
 

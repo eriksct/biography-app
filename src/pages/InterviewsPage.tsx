@@ -232,8 +232,8 @@ export default function InterviewsPage() {
             <div className="w-20 h-20 rounded-full bg-secondary/60 flex items-center justify-center mb-6">
               <Mic className="w-9 h-9 text-primary" strokeWidth={1.5} />
             </div>
-            <p className="font-serif italic text-muted-foreground mb-8">
-              Votre biographie commence ici.
+            <p className="italic text-muted-foreground mb-8 text-sm font-sans">
+              Votre récit commence ici.
             </p>
             <Button onClick={() => setRecordingOpen(true)} size="lg">
               <Plus className="w-4 h-4" />
